@@ -1,0 +1,256 @@
+Member
+const _k_search_condition_type_by_parent_cid = "1";
+const _k_search_condition_type_by_group_cid  = "5";
+                                          
+Device
+const _k_search_condition_type_by_owner_cid = "2";
+const _k_search_condition_type_by_agent_cid = "6";
+const _k_search_condition_type_by_product_type = "7";
+const _k_search_condition_type_like_owner_cid = "12";
+const _k_search_condition_type_like_agent_cid = "16";
+const _k_search_condition_type_like_product_type = "17";
+
+Group
+const cs_string_t _k_search_condition_type_by_owner_cid = "2";
+const cs_string_t _k_search_condition_type_by_country = "3";
+
+
+license_type
+product_type
+
+
+return window.sessionStorage.getItem("session_token");
+
+return window.sessionStorage.getItem("member_cid");
+return window.sessionStorage.getItem("tier");
+return window.sessionStorage.getItem("level_uid");
+return window.sessionStorage.getItem("group_cid");
+
+// 取出帳號是第幾層
+return window.sessionStorage.getItem("tier");
+
+
+
+// 寫入與 取得現在選到的是哪一個 產品
+window.sessionStorage.setItem("product_type", "avacast");
+window.sessionStorage.setItem("product_type", "illuminet");
+window.sessionStorage.setItem("product_type", "avaclassroom");
+window.sessionStorage.getItem("product_type");
+
+// 寫入 與 取得是哪一間公司
+window.sessionStorage.setItem("select_group_cid", "JECTOR" );
+window.sessionStorage.getItem("select_group_cid");
+
+
+9/12
+
+/-------------------------------------------------------/
+//目前新增了 distributor頁面 
+
+distributor_dashboard 圖表展示 
+distributor_list 訂單資訊
+distributor_license license 機台啟用時間數據
+
+distributor 的  component 
+放在component底下的distributor 
+有專門用的 sidebar跟nav
+
+
+
+ 我將以每個 HTML 檔案為單位，列出它直接載入的 CSS 和 JavaScript 檔案。
+
+  ---
+
+  `login.html` (登入頁)
+   - JS:
+       - modules/app.module.def.js (共用定義)
+       - locales/app.locale.js (語系)
+       - modules/app.module.login.js (登入模組)
+       - views/app.view.login.js (登入頁邏輯)
+
+  ---
+
+  `home.html` (首頁)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.home.js (首頁模組)
+       - components/app.component.frame.nav.js (導覽列元件)
+       - components/app.component.frame.navbar.js (上方選單列元件)
+       - components/app.component.frame.sidebar-nav.js (側邊選單元件)
+       - views/app.view.home.js (首頁邏輯)
+
+  ---
+
+  `dashboard.html` (儀表板)
+   - CSS:
+       - dashboard.css
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.dashboard.js (儀表板模組)
+       - views/app.view.dashboard.js (儀表板邏輯)
+       - components/app.component.frame.nav.js
+       - components/app.component.frame.navbar.js
+       - components/app.component.frame.sidebar-nav.js
+       - components/app.component.frame.organization-edit.js (組織編輯元件)
+       - scripts/lib/lib.title.groupcid.js (標題工具)
+       - (以及 Chart.js, exceljs 等外部函式庫)
+
+  ---
+
+  `distributor_dashboard.html` (經銷商儀表板)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.dashboard.js
+       - views/app.view.dashboard.js
+       - components/distributor/navbar.js (經銷商上方選單)
+       - components/distributor/sidebar.js (經銷商側邊選單)
+       - (以及 Chart.js, exceljs 等外部函式庫)
+
+  ---
+
+  `member.html` (會員管理)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.member.js (會員模組)
+       - views/app.view.member.js (會員頁邏輯)
+       - components/app.component.frame.add-count.js
+       - components/app.component.frame.nav.js
+       - components/app.component.frame.navbar.js
+       - components/app.component.frame.sidebar-nav.js
+       - components/app.component.frame.organization-edit.js
+       - scripts/lib/lib.title.groupcid.js
+
+  ---
+
+  `organization.html` (組織管理)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.organization.js (組織模組)
+       - views/app.view.organization.js (組織頁邏輯)
+       - components/app.component.frame.nav.js
+       - components/app.component.frame.navbar.js
+       - components/app.component.frame.sidebar-nav.js
+       - components/app.component.frame.organization-edit.js
+       - scripts/lib/lib.title.groupcid.js
+
+  ---
+
+  `license.html` (授權管理)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.license.js (授權模組)
+       - views/app.view.license.js (授權頁邏輯)
+       - components/app.component.frame.edit-list.js
+       - components/app.component.frame.nav.js
+       - components/app.component.frame.navbar.js
+       - components/app.component.frame.sidebar-nav.js
+       - components/app.component.frame.organization-edit.js
+       - scripts/lib/lib.title.groupcid.js
+
+  ---
+
+  `distributor_list.html` (經銷商列表)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.license.js
+       - views/app.html.utility.js
+       - components/distributor/navbar.js
+       - components/distributor/sidebar.js
+       - views/app.view.distributor.list.js (經銷商列表邏輯)
+
+  ---
+
+  `device.html` (設備管理)
+   - JS:
+       - modules/app.module.def.js
+       - locales/app.locale.js
+       - modules/app.module.device.js (設備模組)
+       - modules/app.module.history.js (歷史紀錄模組)
+       - views/app.view.device.js (設備頁邏輯)
+       - components/app.component.frame.nav.js
+       - components/app.component.frame.navbar.js
+       - components/app.component.frame.sidebar-nav.js
+       - components/app.component.frame.organization-edit.js
+       - scripts/lib/lib.title.groupcid.js
+
+  ---
+
+  從上面的分析可以看到一個共通的模式：
+   - 每個主要 HTML 頁面都會載入一個對應的 views/app.view.*.js
+     檔案來處理該頁的主要邏輯。
+   - 頁面會載入 modules/app.module.*.js 來取得資料模型或共用功能。
+   - 頁面會透過 components/*.js 來建立可重複使用的 UI 元件 (如導覽列、側邊欄)。
+
+
+
+
+------------license.html----------------------本季新增
+找到原因了！所有訂單的下單日期都在本季（2025年10月1日）之前，所以本季新增數量確實是 0。        
+
+  從 Console 可以看到：
+  - 訂單 0：下單日期 2022-05-25（3年前）
+  - 訂單 1：下單日期 2024-11-26（去年11月）
+  - 本季範圍：2025-10-01 到 2025-10-07
+
+  這兩筆訂單都不在本季範圍內，所以本季新增 = 0 是正確的。
+
+  ---
+  關於 -100% 的問題
+
+  如果上一季（2025年7月1日 ~ 9月30日）有訂單，但本季（2025年10月1日 ~
+  10月7日）沒有訂單，成長率就會是：
+
+  成長率 = (0 - 上一季數量) / 上一季數量 × 100 = -100%
+
+  這是正常的！表示相比上一季，本季目前還沒有新訂單。
+
+  ---
+  如果你想測試或調整
+
+  選項 1：等到有新訂單
+  - 當有 create_time 在 2025-10-01 之後的訂單時，數字就會更新
+
+  選項 2：調整計算邏輯
+  如果你想要計算的是「本季內仍然有效的授權總數」而不是「本季新增的訂單數」，我可以幫你修改計     
+  算邏輯。
+
+  選項 3：測試用 - 改成計算最近 3 個月
+  如果你想測試，可以改成計算「最近 3 個月」而不是「本季」，這樣 2024-11-26
+  的訂單就能被計入（雖然超過 3 個月了）。
+
+  需要我幫你調整計算邏輯嗎？還是這個結果其實是正確的？
+
+/-------------------------------------------------------/
+// 專案重構紀錄 (Project Refactoring Log) - 2025-10-08
+
+// 儀表板頁面整合 (Dashboard Page Consolidation)
+
+// 變更摘要:
+// 為了減少程式碼冗餘並提升可維護性，已將多個功能相似的儀表板 (Dashboard) HTML 檔案整合成單一檔案，
+// 並透過 URL 參數來動態載入不同產品的內容。
+
+// 1. 一般使用者儀表板
+//    - 變更前: dashboard.html, illuminet_dashboard.html, avaclassroom_dashboard.html
+//    - 變更後: 統一使用 dashboard.html，並透過 URL 參數 ?product=<product_name> 來區分。
+
+// 2. 經銷商儀表板
+//    - 變更前: distributor_dashboard.html, distributor_illuminet_dashboard.html, distributor_avaclassroom_dashboard.html
+//    - 變更後: 統一使用 distributor_dashboard.html，並透過 URL 參數 ?product=<product_name> 來區分。
+
+// 優點:
+// - 減少程式碼冗餘: 大幅減少了內容幾乎相同的 HTML 檔案。
+// - 提升可維護性: 未來若需修改儀表板版面或功能，只需在一個檔案中進行。
+// - 統一前端邏輯: 相關的 JavaScript 邏輯（如 views/app.view.dashboard.js）現在可以更清晰地處理不同產品的狀況。
+
+
+/-------------------------------------------------------/
+在 Console 中手動輸入： localStorage.setItem('LMS_DEBUG_MODE', 'true')
+再次重新整理網頁，您就會看到黃色的警告 ⚠️ [LMS_DEBUG_MODE 開啟]...，並且所有 console.log 完美解除封印，方便您進行開發與除錯！
+想要關閉只要輸入 localStorage.removeItem('LMS_DEBUG_MODE') 即可。

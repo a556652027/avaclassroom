@@ -1,0 +1,111 @@
+/* =============================== */
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.829);
+  z-index: 78787878;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+/* =============================== */
+.scan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: rgb(255, 255, 255);
+  z-index: 78787878;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scan .fingerprint {
+  position: relative;
+  width: 300px;
+  height: 100px;
+  background: url("assets/images/fingerPrint_01.png");
+  background-size: 300px;
+}
+
+/* .scan .fingerprint::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/images/fingerPrint_02.png');
+    background-size: 300px;
+    animation: scan 4s ease-in-out infinite;
+} */
+
+@keyframes scan {
+  0%,
+  100% {
+    height: 0%;
+  }
+
+  50% {
+    height: 100%;
+  }
+}
+
+/* .scan .fingerprint::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: #000000;
+    filter: drop-shadow(0 0 20px #000000) drop-shadow(0 0 60px #000000);
+    animation: line-scan 4s ease-in-out infinite;
+} */
+
+@keyframes line-scan {
+  0%,
+  100% {
+    top: 0%;
+  }
+
+  50% {
+    top: 100%;
+  }
+}
+
+.loading-text {
+  text-transform: uppercase;
+  font-size: 3em;
+  letter-spacing: 2px;
+  margin-top: 20px;
+  text-shadow: none;
+  font-weight: 700;
+  color: rgba(146, 191, 255, 1);
+  /* filter: drop-shadow(0 0 20px #3fefef) drop-shadow(0 0 60px #3fefef); */
+  animation: text-scan 1s ease-in-out infinite;
+}
+
+@keyframes text-scan {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,108 @@
+/* CSS Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Frame Navigation Styles */
+.frame-nav {
+  display: flex;
+  justify-content: flex-start;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.nav-item {
+  height: 52px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-item:hover {
+  background-color: #e6f1fd;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+.dashboard-icon {
+  background-image: url("../assets/images/dashboard.svg");
+}
+
+.list-icon {
+  background-image: url("../assets/images/list.svg");
+}
+
+.license-icon {
+  background-image: url("../assets/images/license.svg");
+}
+
+.nav-text {
+  margin-left: 8px;
+  color: #404040;
+}
+
+/* Responsive Design - iPhone 8 and up */
+@media screen and (max-width: 767px) {
+  .frame-nav {
+    flex-wrap: wrap;
+    padding: 0 8px;
+  }
+
+  .nav-item {
+    padding: 8px 20px;
+  }
+
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-text {
+    display: none;
+  }
+}
+
+/* iPhone 8 specific (375px width) */
+@media screen and (max-width: 375px) {
+  .frame-nav {
+    padding: 0 4px;
+  }
+
+  .nav-item {
+    height: 44px;
+    padding: 10px 6px;
+    min-width: 70px;
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nav-text {
+    margin-left: 4px;
+    font-size: 13px;
+  }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 320px) {
+  .nav-item {
+    padding: 8px 4px;
+    min-width: 60px;
+  }
+
+  .nav-text {
+    font-size: 12px;
+  }
+}

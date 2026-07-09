@@ -1,0 +1,589 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>License Management System</title>
+    <link rel="icon" href="assets/images/favicon.ico" />
+    <script src="modules/app.module.def.js"></script>
+    <script type="text/javascript" src="locales/app.locale.js"></script>
+    <script
+      type="text/javascript"
+      src="modules/app.module.dashboard.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js"></script>
+    <!-- 使用sidebar 的樣式-->
+    <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+
+  <body>
+    <!-- [新增] 靜態 Loading 元素，JS 載入前就會顯示 -->
+    <div id="initial-loader">
+      <div class="scan">
+        <img
+          src="assets/images/Group (3).svg"
+          alt="Loading..."
+          onerror="this.style.display = 'none'"
+        />
+        <div class="fingerprint">
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 擺放 navbar 的容器 -->
+    <div id="app" style="visibility: hidden; flex-direction: column">
+      <div id="navbar-container"></div>
+      <div style="display: flex; height: calc(100vh - 60px)">
+        <div id="sidebar-nav-container"></div>
+        <div
+          style="display: flex; flex-direction: column; flex: 1; min-width: 0"
+        >
+          <div id="nav-container" style="display: none"></div>
+          <div id="avaclassroom-nav-container" style="display: none"></div>
+
+          <!-- _________________________________________________________________-->
+          <!-- 實際內容-->
+          <div class="content">
+            <div class="page" id="page01">
+              <!-- 頁面標題區域 -->
+              <div
+                class="dashboard-header"
+                style="
+                  margin-bottom: 1rem;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                "
+              >
+                <div class="" style="display: flex">
+                  <div class="page-icon-container">
+                    <img
+                      src="assets/images/IdentificationBadge.svg"
+                      alt=""
+                      class=""
+                    />
+                  </div>
+                  <h1 id="dashboard-title" class="dashboard-title">
+                    {{dashboard.title}}
+                  </h1>
+                </div>
+                <div style="display: flex">
+                  <img
+                    src="assets/images/Group (1).svg"
+                    alt=""
+                    style="width: 120px; margin-right: 2rem"
+                    class="page-big-icon"
+                  />
+                  <!-- 統計卡片區域 -->
+                  <div
+                    class="stats-card-container"
+                    style="
+                      background-color: #e6f1fd;
+                      display: flex;
+                      width: fit-content; /* 讓背景框貼合內容，自然往左靠攏 */
+                      align-items: flex-end; /* 改為底部對齊，確保 Label 水平一致 */
+                      border-radius: 16px;
+                      padding: 1rem 1.5rem; /* 上下左右均勻留白 */
+                      gap: 1.5rem; /* 確保統計卡片與搜尋區塊之間有固定安全距離，絕對不重疊 */
+                      flex-wrap: wrap; /* 手機版自動折行 */
+                    "
+                  >
+                    <div class="stats-cards" style="display: flex; gap: 1rem">
+                      <div
+                        class="stat-card"
+                        style="
+                          display: flex;
+                          flex-direction: column;
+                          border-radius: 8px;
+                          min-width: 120px;
+                        "
+                      >
+                        <label
+                          class="device_activated_count"
+                          style="
+                            margin-bottom: 0.5rem;
+                            font-size: 0.9rem;
+                            color: #404040;
+                            white-space: nowrap;
+                          "
+                          >{{dashboard.device_activated_count}}</label
+                        >
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: 1rem;
+                            height: 44px;
+                          "
+                        >
+                          <div
+                            id="dashboard_device_001-activated_count"
+                            class="dashboard_device_001-activated_count"
+                            style="
+                              font-weight: bold;
+                              font-size: 1.75rem;
+                              color: #1c1c1c;
+                              min-width: 60px;
+                            "
+                          >
+                            0
+                          </div>
+                          <div
+                            id="dashboard_device_001-growth_rate"
+                            style="
+                              font-weight: bold;
+                              font-size: 14px;
+                              color: #1c1c1c;
+                              font-weight: 400;
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
+                              gap: 0.5rem;
+                            "
+                          >
+                            <span
+                              id="dashboard_device_001-growth_percentage"
+                              style="min-width: 50px; text-align: right"
+                              >0%</span
+                            >
+                            <img
+                              id="dashboard_device_001-growth_icon"
+                              src="assets/images/up.svg"
+                              alt=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="stat-card"
+                        style="display: flex; flex-direction: column"
+                      >
+                        <label
+                          class="dashboard_device_001-revoked_count"
+                          style="
+                            margin-bottom: 0.5rem;
+                            font-size: 0.9rem;
+                            color: #404040;
+                            white-space: nowrap;
+                          "
+                          >{{dashboard.device_revoked_count}}</label
+                        >
+                        <div
+                          style="
+                            display: flex;
+                            align-items: center;
+                            height: 44px;
+                          "
+                        >
+                          <div
+                            id="dashboard_device_001-revoked_count"
+                            class="dashboard_device_001-revoked_count"
+                            style="
+                              font-weight: bold;
+                              font-size: 1.75rem;
+                              color: #1c1c1c;
+                              min-width: 60px;
+                            "
+                          >
+                            0
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 時間選擇器區域 -->
+                    <div
+                      class="search_time"
+                      style="display: flex; gap: 0.5rem; align-items: flex-end"
+                    >
+                      <div style="display: flex; flex-direction: column">
+                        <label
+                          for="dashboard_device_001-begin_time"
+                          style="
+                            margin-bottom: 0.5rem;
+                            font-size: 0.9rem;
+                            color: #404040;
+                          "
+                        >
+                          {{dashboard.search_date_start}}
+                        </label>
+                        <input
+                          id="dashboard_device_001-begin_time"
+                          type="date"
+                          value=""
+                          required
+                          style="
+                            padding: 0.5rem;
+                            border: 1px solid #ddd;
+                            border-radius: 10px;
+                            width: 140px;
+                            outline: none;
+                            height: 44px;
+                            box-sizing: border-box;
+                          "
+                        />
+                      </div>
+
+                      <div style="display: flex; flex-direction: column">
+                        <label
+                          for="dashboard_device_001-end_time"
+                          style="
+                            margin-bottom: 0.5rem;
+                            font-size: 0.9rem;
+                            color: #404040;
+                          "
+                        >
+                          {{dashboard.search_date_end}}
+                        </label>
+                        <input
+                          id="dashboard_device_001-end_time"
+                          type="date"
+                          value=""
+                          required
+                          style="
+                            padding: 0.5rem;
+                            border: 1px solid #ddd;
+                            border-radius: 10px;
+                            width: 140px;
+                            outline: none;
+                            height: 44px;
+                            box-sizing: border-box;
+                          "
+                        />
+                      </div>
+
+                      <button
+                        id="dashboard_device_001-button-date_search"
+                        style="
+                          height: 44px;
+                          padding: 0 12px;
+                          border-radius: 10px;
+                          border: 1px solid #ddd;
+                          background: #fff;
+                          cursor: pointer;
+                          white-space: nowrap;
+                        "
+                      >
+                        {{dashboard.search_confirm}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 首頁內容 -->
+              <div>
+                <table class="" style="flex-direction: column; width: 100%">
+                  <tr>
+                    <!-- 這邊都消失了用不到 -->
+                    <!-- --------------------------------------------------------- -->
+                    <td colspan="2" style="display: none">
+                      <label
+                        class="label-style-default"
+                        for="dashboard_device_001-search_group_cid"
+                        >{{common.group_cid}}</label
+                      >
+                      <input
+                        id="dashboard_device_001-search_group_cid"
+                        type="text"
+                        name="dashboard_device_001-search_group_cid"
+                        placeholder="{{common.group_cid}}..."
+                        value=""
+                        required
+                      />
+                    </td>
+                    <!-- 間隔用的 td -->
+                    <!-- <td colspan="4"><p style="color: red;">1213</p></td> -->
+                    <!-- 間隔用的 td -->
+                    <td colspan="1" style="display: none">
+                      <div class="styled-select blue rounded">
+                        <select id="dashboard_device_001-space_num">
+                          <option value="4" selected>
+                            {{dashboard.device_model}}
+                          </option>
+                        </select>
+                      </div>
+                    </td>
+                    <!-- <td colspan="1">~</td> -->
+                    <!-- 間隔用的 td -->
+                    <td colspan="1" style="display: none">
+                      <button
+                        id="dashboard_device_001-button-search"
+                        class="image_button_default"
+                      >
+                        <i class="iconfont">&#xe778;&nbsp;</i>
+                        {{common.search}}
+                      </button>
+                    </td>
+                    <td colspan="1" style="display: none">
+                      <button
+                        id="dashboard_device_001-update-ok"
+                        class="image_button_default"
+                      >
+                        <i class="iconfont">&#xe786;&nbsp;</i>
+                        {{common.ok}}
+                      </button>
+                    </td>
+                  </tr>
+                  <!-- --------------------------------------------------------- -->
+                  <!-- <tr style="display: none">
+                    <td colspan="1">{{test.anchor}}123132</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                  </tr> -->
+                  <tr>
+                    <!-- 今天日期 標籤 -->
+                    <!-- <td colspan="2">
+                      <label class="label-style-default">
+                        <i class="iconfont">&#xe78e;&nbsp;</i
+                        >{{dashboard.device_today_time}}
+                      </label>
+                    </td> -->
+                    <!-- 已啟用百分比 標籤-->
+                    <!-- <td colspan="2">
+                      <label class="label-style-default"
+                        >{{dashboard.device_activation_rate}}</label
+                      >
+                    </td> -->
+                    <!-- 預測達標百分比 標籤 -->
+                    <!-- <td colspan="2">
+                      <label class="label-style-default"
+                        >{{dashboard.device_predicted_achievement_rate}}</label
+                      >
+                    </td> -->
+                    <!-- 目標日期 標籤-->
+                    <!-- <td colspan="2">
+                      <label class="label-style-default">
+                        <i class="iconfont">&#xe78e;&nbsp;</i
+                        >{{dashboard.device_target_time}}
+                      </label>
+                    </td> -->
+                    <!-- [優化] 圖表區域改為 Flexbox 排版，支援 RWD 疊放 -->
+                    <td colspan="12">
+                      <div class="dashboard-charts-container">
+                        <!-- 顯示長條圖的地方（左側）-->
+                        <div class="dashboard-chart-box chart-left">
+                          <canvas
+                            id="dashboard_device_001-new_line_chart"
+                            style="
+                              display: block;
+                              width: 100%;
+                              height: 100%;
+                              position: relative;
+                              z-index: 1;
+                            "
+                          ></canvas>
+                        </div>
+                        <!-- 顯示圓餅圖的地方（右側）-->
+                        <div class="dashboard-chart-box chart-right">
+                          <canvas
+                            id="dashboard_device_001-pie_chart"
+                            style="
+                              display: block;
+                              width: 100%;
+                              height: 100%;
+                              position: relative;
+                              z-index: 1;
+                            "
+                          ></canvas>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr style="display: none">
+                    <!-- 今天日期 -->
+                    <td colspan="2">
+                      <div id="dashboard_device_001-today_time">yyyy-mm-dd</div>
+                    </td>
+                    <!-- 已啟用百分比 -->
+                    <td colspan="2">
+                      <div id="dashboard_device_001-activation_rate"></div>
+                    </td>
+                    <!-- 預測達標百分比 -->
+                    <td colspan="2">
+                      <div
+                        id="dashboard_device_001-predicted_achievement_rate"
+                      ></div>
+                    </td>
+                    <!-- 目標日期 -->
+                    <td colspan="2">
+                      <input
+                        id="dashboard_device_001-target_time"
+                        type="date"
+                        name="dashboard_device_001-target_time"
+                        placeholder="{{dashboard.device_target_time}}..."
+                        value=""
+                        required
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: none">
+                    <!-- 空白 -->
+                    <td colspan="2"></td>
+                    <!-- 預測達標數量 標籤 -->
+                    <td colspan="2">
+                      <label class="label-style-default"
+                        >{{dashboard.device_predicted_achievement_count}}</label
+                      >
+                    </td>
+                    <!-- 目標數量 標籤 -->
+                    <td colspan="2">
+                      <label class="label-style-default"
+                        >{{dashboard.device_target_count}}</label
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <!-- 空白 -->
+                    <td colspan="2"></td>
+                    <!-- 預測達標數量 -->
+                    <td colspan="2" style="display: none">
+                      <div
+                        id="dashboard_device_001-predicted_achievement_count"
+                      ></div>
+                    </td>
+                    <!-- 目標數量 -->
+                    <td colspan="2">
+                      <input
+                        id="dashboard_device_001-target_count"
+                        type="number"
+                        name="dashboard_device_001-target_count"
+                        placeholder="0..."
+                        value="0"
+                        required
+                        style="display: none"
+                      />
+                    </td>
+                  </tr>
+
+                  <!-- 間隔行 -->
+                  <tr>
+                    <td colspan="12" style="height: 0.5rem"></td>
+                  </tr>
+
+                  <!-- 顯示原折線圖的地方（下方全寬）-->
+                  <tr>
+                    <td
+                      colspan="12"
+                      style="
+                        position: relative;
+                        background-color: #f7f8f9;
+                        border-radius: 16px;
+                        padding: 1rem;
+                        padding-top: 1.5rem;
+                      "
+                    >
+                      <!-- 匯出按鈕 - 絕對定位在右上角 -->
+                      <button
+                        id="dashboard_device_001-export"
+                        class=""
+                        style="
+                          width: 56px;
+                          height: 30px;
+                          position: absolute;
+                          top: 1rem;
+                          right: 1.5rem;
+                          background-color: #92bfff;
+                          color: white;
+                          border-radius: 15px;
+                          border: none;
+                          cursor: pointer;
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          gap: 0.3rem;
+                          font-size: 0.8rem;
+                          z-index: 10;
+                          transition: all 0.2s ease;
+                        "
+                      >
+                        <img src="assets/images/download_excel.svg" alt="" />
+                        <!-- {{common.export}} -->
+                      </button>
+                      <canvas
+                        id="dashboard_device_001-line_chart"
+                        height="240"
+                        style="
+                          display: block;
+                          margin: 0 auto;
+                          position: relative;
+                          z-index: 1;
+                          width: 100%;
+                          max-height: 240px;
+                        "
+                      ></canvas>
+                    </td>
+                  </tr>
+                  <!-- 顯示資料的地方 -->
+                  <!-- <tr>
+                  <td colspan="12">
+                    <div class="viewpoint-container">
+                      <table id="dashboard_device_001-list_information" class="responstable">
+                        <thead>
+                          <tr>
+                            <th style="width: 5%; background: #2e4660;"></th>
+                            <th>{{dashboard.device_model}}</th>
+                            <th>{{dashboard.device_record_state}}</th>
+                            <th>{{dashboard.device_active_time}}</th>
+                            <th>{{dashboard.device_count}}</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </td>
+                </tr> -->
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- [整合] app.component.frame.nav.js 將由 app.view.dashboard.js 動態載入 -->
+    <!-- 使用 navbar -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.navbar.js"
+    ></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.sidebar-nav.js?v=20260702_seq"
+    ></script>
+
+    <!-- 使用組織編輯彈窗 -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.organization-edit.js"
+    ></script>
+
+    <!-- Profile Modal Component -->
+    <script type="text/javascript" src="modules/app.module.profile.js"></script>
+    <script
+      type="text/javascript"
+      src="components/app.component.profile.modal.js"
+    ></script>
+
+    <!-- 標題動態更新 -->
+    <script
+      type="text/javascript"
+      src="scripts/lib/lib.title.groupcid.js"
+    ></script>
+
+    <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+    <script type="text/javascript" src="views/app.view.dashboard.js?v=20260702_reentry"></script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+scripts/lib/lib.proc.net.js
+    - 傳送API
+        函式: Cyberspace.Client.SendRequest
+        說明: 會組成一個param傳到server
+        e.g.
+            Cyberspace.Client.SendRequest(
+            '/ava_classroom/admin/login',
+            {
+                member_cid: member_cid,
+                password: password,
+            },
+            (error, result) => {
+                if (callback) {
+                    // test
+                    // Success!
+                    console.log(result);
+                    callback(error, result);
+                }
+            }
+    )    
+
+
+
+scripts/lib/lib.html.pagecontainer.js
+    - 切換頁面
+        函式: change_page
+        說明: 切換到html 或 page 並附帶特效
+             特效有 'fade', 'slide', 'slideup', 'slidedown', 'slidefade', 'flip', 'flow', 'pop', 'turn' 幾種
+        e.g.
+            change_page('page02');
+            change_page('member.html');
+
+
+scripts/lib/lib.prco.util.js
+    - 設定cookie 的值
+        函式: setCookie
+        說明: 設定cookie值 如果sec 沒有傳入資料預設存活30天
+        e.g.
+            setCookie(name, value,sec); 回傳值
+    - 取得cookie 的值
+        函式: getCookie
+        說明: 取得cookie 對應的值
+        e.g.
+            getCookie(cookie_name); 回傳值
+    - 在console上顯示目前的cookie
+        函式: listCookiesOnConsole
+        說明: 會在console上顯示目前所有的cookie
+        e.g.
+            listCookiesOnConsole();    
+    - 在當前頁面上顯示目前的cookie
+        函式: listCookiesOnDocument
+        說明: 會在當前的網頁上寫入 一個table 並列出所有的cookie
+        e.g.
+            listCookiesOnDocument();
+    - 在alert上顯示目前的cookie
+        函式: listCookiesOnAlert
+        說明: 會在alert所有的cookie
+        e.g.
+            listCookiesOnAlert();
+
+scripts/lib/lib.html.tablepage.js
+    - 顯示有分頁選取的資料表
+
+    tablepage_d
+        動態要求 取得欄位 用在資料多的狀況 一次取出會花很多時間
+
+    tablepage_s
+        一次性載入後 在隱藏欄位 用在資料較少的狀況
+
+
+
+

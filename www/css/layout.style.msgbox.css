@@ -1,0 +1,10 @@
+/*-----------------------------------------------------------*/
+/* message box */
+.message-box-header {
+    background-color: var(--main-fg-color);
+    height: 30px;
+    font-size: 18px;
+    text-shadow: black 0.2em 0.2em 0.4em;
+    text-align: center;
+    color: #fff;
+}

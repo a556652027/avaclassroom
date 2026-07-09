@@ -1,0 +1,47 @@
+function getSidebarNavHtml() {
+
+var sidebarNavHtml =
+`
+<button id="toggle-btn">
+    <div id="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</button>
+
+<div id="sidebar-nav" class="sidebar-nav">
+    <ul class="menu">
+        <li><a href="#">{{sidebarnav.homepage}}</a></li>
+        <li><a href="#" class="has-submenu">{{sidebarnav.member_management}}</a>
+            <ul class="submenu">
+                <li><a href="#">會員列表</a></li>
+                <li><a href="#">會員等級</a></li>
+                <li><a href="#">會員權限</a></li>
+            </ul>
+        </li>
+        <li><a href="#" class="has-submenu">{{sidebarnav.product_management}}</a>
+            <ul class="submenu">
+                <li><a href="#">產品列表</a></li>
+                <li><a href="#">新增產品</a></li>
+                <li><a href="#">產品分類</a></li>
+            </ul>
+        </li>
+        <li><a href="#" class="has-submenu">{{sidebarnav.order_management}}</a>
+            <ul class="submenu">
+                <li><a href="#">訂單列表</a></li>
+                <li><a href="#">訂單查詢</a></li>
+                <li><a href="#">訂單統計</a></li>
+            </ul>
+        </li>
+        <li><a href="#" class="has-submenu">{{sidebarnav.system_settings}}</a>
+            <ul class="submenu">
+                <li><a href="#">基本設定</a></li>
+                <li><a href="#">進階設定</a></li>
+                <li><a href="#">權限管理</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+`
+};

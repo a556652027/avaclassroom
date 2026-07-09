@@ -1,0 +1,480 @@
+<!-- 個人資料編輯 Modal Component -->
+<style>
+  .modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 0;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-header {
+    background-color: #ffffff;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+  }
+
+  .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+  }
+
+  .modal-body {
+    padding: 1rem 2rem;
+  }
+
+  .modal-footer {
+    padding-right: 2rem;
+    padding-bottom: 1rem;
+    border-radius: 0 0 10px 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .modal-cancel-btn {
+    background-color: #ffffff;
+    border: 1px solid #e5e8ea;
+    padding: 4px 61px;
+    border-radius: 10px;
+    cursor: pointer;
+    height: 48px;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .modal-cancel-btn:hover {
+    background-color: #f5f5f5 !important;
+    color: #333 !important;
+  }
+
+  .modal-ok-btn {
+    background-color: #214f7c !important;
+    border-radius: 10px;
+    border: none;
+    color: #ffffff;
+    height: 48px;
+    transition: background-color 0.2s ease;
+  }
+
+  .modal-ok-btn:hover {
+    background-color: #ee963f !important;
+  }
+</style>
+
+<div id="profile-edit-modal" class="modal" style="display: none">
+  <div class="modal-content">
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 2rem 0rem 2rem;
+      "
+    >
+      <div style="display: flex; gap: 1rem; align-items: center">
+        <img
+          src="assets/images/account_icon.svg"
+          alt=""
+          style="width: 24px; height: 24px"
+        />
+        <div class="modal-header">
+          <h2>{{profile.title_update_profile}}</h2>
+        </div>
+      </div>
+      <span class="close" id="profile-close-btn">&times;</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- 表單欄位 -->
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: 20px;
+        "
+      >
+        <!-- 用戶名稱 -->
+        <div style="grid-column: span 3">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-member_cid"
+          >
+            {{member.member_cid}}
+          </label>
+          <input
+            id="profile_update-member_cid"
+            type="text"
+            name="profile_update-member_cid"
+            placeholder="{{member.member_cid}}..."
+            value=""
+            disabled
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              border: 1px solid #e5e8ea;
+              border-radius: 6px;
+              padding: 6px 12px;
+              font-size: 14px;
+              height: 38px;
+              color: #000;
+              outline: none;
+              background-color: #f9fafb;
+            "
+          />
+        </div>
+
+        <!-- 電子郵件 -->
+        <div style="grid-column: span 3">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-email"
+          >
+            {{member.email}}
+          </label>
+          <input
+            id="profile_update-email"
+            type="email"
+            name="profile_update-email"
+            placeholder="{{member.email}}..."
+            value=""
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              border: 1px solid #e5e8ea;
+              border-radius: 6px;
+              padding: 6px 12px;
+              height: 38px;
+              font-size: 14px;
+              color: #000;
+              outline: none;
+            "
+          />
+        </div>
+
+        <!-- 姓名 -->
+        <div style="grid-column: span 3">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-member_name"
+          >
+            {{member.member_name}}
+          </label>
+          <input
+            id="profile_update-member_name"
+            type="text"
+            name="profile_update-member_name"
+            placeholder="{{member.member_name}}..."
+            value=""
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              border: 1px solid #e5e8ea;
+              height: 38px;
+              border-radius: 6px;
+              padding: 6px 12px;
+              font-size: 14px;
+              color: #000;
+              outline: none;
+            "
+          />
+        </div>
+
+        <div style="grid-column: span 3"></div>
+
+        <!-- 原密碼 -->
+        <div style="grid-column: span 3; position: relative">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-password"
+          >
+            {{member.password}}
+          </label>
+          <input
+            id="profile_update-password"
+            type="password"
+            name="profile_update-password"
+            placeholder="{{member.password}}..."
+            value=""
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              border: 1px solid #e5e8ea;
+              border-radius: 6px;
+              height: 38px;
+              padding: 6px 12px;
+              padding-right: 40px;
+              font-size: 14px;
+              color: #000;
+              outline: none;
+            "
+          />
+          <span
+            id="profile-old-password-toggle"
+            style="
+              position: absolute;
+              right: 15px;
+              top: 55%;
+              transform: translateY(-10%);
+              cursor: pointer;
+            "
+          >
+            <img
+              id="profile-old-password-icon"
+              src="assets/images/passwordeyeclose.svg"
+              alt=""
+            />
+          </span>
+        </div>
+
+        <div style="grid-column: span 3"></div>
+
+        <div style="grid-column: span 6">
+          <span
+            style="color: rgba(0, 0, 0, 1); font-size: 18px; font-weight: 500"
+            >{{profile.change_password}}</span
+          >
+        </div>
+
+        <!-- 新密碼 -->
+        <div style="grid-column: span 3; position: relative">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-new_password"
+          >
+            {{member.new_password}}
+          </label>
+          <input
+            id="profile_update-new_password"
+            type="password"
+            name="profile_update-new_password"
+            placeholder="{{member.new_password_hint}}"
+            value=""
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              border: 1px solid #e5e8ea;
+              height: 38px;
+              border-radius: 6px;
+              padding: 6px 12px;
+              padding-right: 40px;
+              font-size: 14px;
+              color: #000;
+              outline: none;
+            "
+          />
+          <span
+            id="profile-new-password-toggle"
+            style="
+              position: absolute;
+              right: 15px;
+              top: 55%;
+              transform: translateY(-10%);
+              cursor: pointer;
+            "
+          >
+            <img
+              id="profile-new-password-icon"
+              src="assets/images/passwordeyeclose.svg"
+              alt=""
+            />
+          </span>
+        </div>
+
+        <!-- 確認新密碼 -->
+        <div style="grid-column: span 3; position: relative">
+          <label
+            style="
+              display: block;
+              font-size: 14px;
+              font-weight: 500;
+              color: #898c94;
+              margin-bottom: 8px;
+            "
+            for="profile_update-confirm_password"
+          >
+            {{member.new_password_comfirm}}
+          </label>
+          <input
+            id="profile_update-confirm_password"
+            type="password"
+            name="profile_update-confirm_password"
+            placeholder="{{member.new_password_comfirm_hint}}"
+            value=""
+            style="
+              width: 100%;
+              box-sizing: border-box;
+              height: 38px;
+              border: 1px solid #e5e8ea;
+              border-radius: 6px;
+              padding: 6px 12px;
+              padding-right: 40px;
+              font-size: 14px;
+              color: #000;
+              outline: none;
+            "
+          />
+          <span
+            id="profile-confirm-password-toggle"
+            style="
+              position: absolute;
+              right: 15px;
+              top: 55%;
+              transform: translateY(-10%);
+              cursor: pointer;
+            "
+          >
+            <img
+              id="profile-confirm-password-icon"
+              src="assets/images/passwordeyeclose.svg"
+              alt=""
+            />
+          </span>
+        </div>
+
+        <!-- 隱藏欄位 -->
+        <input
+          id="profile_update-gender"
+          type="hidden"
+          name="profile_update-gender"
+          value=""
+        />
+        <input
+          id="profile_update-record_state"
+          type="hidden"
+          name="profile_update-record_state"
+          value=""
+        />
+        <input
+          id="profile_update-birthday"
+          type="hidden"
+          name="profile_update-birthday"
+          value=""
+        />
+        <input
+          id="profile_update-phone_cell"
+          type="hidden"
+          name="profile_update-phone_cell"
+          value=""
+        />
+        <input
+          id="profile_update-phone_home"
+          type="hidden"
+          name="profile_update-phone_home"
+          value=""
+        />
+        <input
+          id="profile_update-phone_work"
+          type="hidden"
+          name="profile_update-phone_work"
+          value=""
+        />
+        <input
+          id="profile_update-country"
+          type="hidden"
+          name="profile_update-country"
+          value=""
+        />
+        <input
+          id="profile_update-city"
+          type="hidden"
+          name="profile_update-city"
+          value=""
+        />
+        <input
+          id="profile_update-address"
+          type="hidden"
+          name="profile_update-address"
+          value=""
+        />
+        <input
+          id="profile_update-note00"
+          type="hidden"
+          name="profile_update-note00"
+          value=""
+        />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        id="profile-cancel-btn"
+        class="modal-cancel-btn"
+        type="button"
+        style="padding: 4px 61px"
+      >
+        {{common.cancel}}
+      </button>
+      <button
+        id="profile_update-button-ok"
+        class="modal-ok-btn"
+        type="submit"
+        style="padding: 4px 61px; cursor: pointer"
+      >
+        {{common.save}}
+      </button>
+    </div>
+  </div>
+</div>

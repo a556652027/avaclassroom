@@ -1,0 +1,2078 @@
+<!doctype html>
+<html>
+  <head>
+    <title>License Management System</title>
+    <link rel="icon" href="assets/images/favicon.ico" />
+    <script src="modules/app.module.def.js"></script>
+    <script type="text/javascript" src="locales/app.locale.js"></script>
+    <style>
+      .license-status-option:hover {
+        background-color: #f5f5f5 !important;
+      }
+
+      /* 編輯按鈕 hover 效果 */
+      #license-edit-button:hover {
+        background-color: #92bfff !important;
+      }
+
+      /* 下載按鈕 hover 效果 */
+      #license-download-button:hover {
+        background-color: #92bfff !important;
+      }
+
+      /* 刪除按鈕 hover 效果 */
+      #license-delete-button:hover {
+        background-color: #ffe6e6 !important;
+        border-color: #c94a4a !important;
+      }
+
+      /* 新增按鈕 hover 效果 */
+      #license_list-button-gotopage_insert:hover {
+        background-color: #ee963f !important;
+      }
+
+      /* 全選 checkbox 顏色樣式 */
+      #license-select-all {
+        margin-right: 0.5rem;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 3px;
+        background-color: white;
+      }
+
+      #license-select-all:checked {
+        border: 1px solid #ee963f;
+        background-color: #ee963f;
+        border-color: #ee963f;
+      }
+
+      /* 表格行 checkbox 顏色樣式 */
+      .license-row-checkbox {
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 3px;
+        background-color: white;
+      }
+
+      .license-row-checkbox:checked {
+        border: 1px solid #ee963f;
+        background-color: #ee963f;
+        border-color: #ee963f;
+      }
+
+      /* Modal buttons hover effects */
+      #license_insert-button-cancel:hover {
+        background-color: #f5f5f5 !important;
+        color: #333 !important;
+        transition: background-color 0.2s ease;
+      }
+
+      #license_insert-button-ok:hover {
+        background-color: #ee963f !important;
+        transition: background-color 0.2s ease;
+      }
+
+      #license_insert-button-cancel,
+      #license_insert-button-ok {
+        transition: background-color 0.2s ease;
+      }
+
+      /* Edit modal buttons hover effects */
+      #license_update-button-cancel:hover {
+        background-color: #f5f5f5 !important;
+        color: #333 !important;
+        transition: background-color 0.2s ease;
+      }
+
+      #license_update-button-ok:hover {
+        background-color: #ee963f !important;
+        transition: background-color 0.2s ease;
+      }
+
+      #license_update-button-cancel,
+      #license_update-button-ok {
+        transition: background-color 0.2s ease;
+      }
+    </style>
+    <script>
+      // 當頁面載入完成後,為按鈕加入圖片切換效果
+      document.addEventListener("DOMContentLoaded", function () {
+        // 新增按鈕的圖片切換
+        const insertButton = document.getElementById(
+          "license_list-button-gotopage_insert",
+        );
+        const insertIcon = insertButton?.querySelector("img");
+
+        if (insertButton && insertIcon) {
+          insertButton.addEventListener("mouseenter", function () {
+            insertIcon.src = "assets/images/information_button_orange.png";
+          });
+
+          insertButton.addEventListener("mouseleave", function () {
+            insertIcon.src = "assets/images/Group 607.svg";
+          });
+        }
+
+        // 編輯按鈕的圖片切換
+        const editButton = document.getElementById("license-edit-button");
+        const editIcon = editButton?.querySelector("img");
+
+        if (editButton && editIcon) {
+          editButton.addEventListener("mouseenter", function () {
+            editIcon.src = "assets/images/edit_button_change.png";
+          });
+
+          editButton.addEventListener("mouseleave", function () {
+            editIcon.src = "assets/images/edit.svg";
+          });
+        }
+
+        // 下載按鈕的圖片切換
+        const downloadButton = document.getElementById(
+          "license-download-button",
+        );
+        const downloadIcon = downloadButton?.querySelector("img");
+
+        if (downloadButton && downloadIcon) {
+          downloadButton.addEventListener("mouseenter", function () {
+            downloadIcon.src = "assets/images/dowload_button_change.png";
+          });
+
+          downloadButton.addEventListener("mouseleave", function () {
+            downloadIcon.src = "assets/images/download.svg";
+          });
+        }
+      });
+    </script>
+    <style>
+      /* 靜態 Loading 遮罩樣式 */
+      #initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        transition: opacity 0.3s ease-out;
+      }
+      #initial-loader .scan {
+        text-align: center;
+      }
+      #initial-loader img {
+        width: 300px;
+        height: 300px;
+        margin-bottom: 10px;
+      }
+      #initial-loader .loading-text {
+        font-size: 60px;
+        color: #92bfff;
+        font-family: sans-serif;
+        font-weight: bold;
+        animation: blink 1.5s infinite;
+      }
+      @keyframes blink {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+    <script type="text/javascript" src="modules/app.module.license.js"></script>
+    <!-- SheetJS 庫 for Excel 匯出 -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <!-- 使用sidebar 的樣式-->
+    <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+  </head>
+
+  <body>
+    <!-- [新增] 靜態 Loading 元素，JS 載入前就會顯示 -->
+    <div id="initial-loader">
+      <div class="scan">
+        <img
+          src="assets/images/Group (3).svg"
+          alt="Loading..."
+          onerror="this.style.display = 'none'"
+        />
+        <div class="fingerprint">
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loader = document.getElementById("initial-loader");
+        if (loader) {
+          loader.style.opacity = "0";
+          setTimeout(() => loader.remove(), 300);
+        }
+      });
+    </script>
+
+    <div id="app" style="visibility: hidden; flex-direction: column">
+      <div id="navbar-container"></div>
+
+      <!-- 擺放sideber 的位置 -->
+      <div style="display: flex; height: calc(100vh - 72px)">
+        <div id="sidebar-nav-container"></div>
+
+        <div
+          style="display: flex; flex-direction: column; flex: 1; min-width: 0"
+        >
+          <div id="nav-container"></div>
+
+          <!-- 實際內容 -->
+          <div
+            class="content"
+            style="
+              flex: 1;
+              overflow-y: auto;
+              overflow-x: scroll;
+              padding: 2rem 2.5rem;
+            "
+          >
+            <!-- 第一頁 訂單列表 -->
+            <div class="page" id="page01" style="min-width: 1400px">
+              <div style="display: flex; justify-content: space-between">
+                <div>
+                  <div
+                    class="page-caption"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    <div class="page-icon-container">
+                      <img
+                        src="assets/images/IdentificationBadge.svg"
+                        alt=""
+                        class="page-icon"
+                      />
+                    </div>
+                    <h1 id="license-title">{{license.title_list_license}}</h1>
+                  </div>
+                  <tr>
+                    <td colspan="1">
+                      <button
+                        id="license_list-button-gotopage_insert"
+                        class=""
+                        style="
+                          background-color: #214f7c;
+                          width: 218px;
+                          height: 48px;
+                          border-radius: 10px;
+                          border: none;
+                          color: white;
+                          cursor: pointer;
+                          align-items: center;
+                          display: flex;
+                          justify-content: center;
+                          gap: 8px;
+                          font-size: 14px;
+                        "
+                      >
+                        <img
+                          src="assets/images/Group 607.svg"
+                          alt=""
+                          style="width: 20px; height: 20px"
+                        />
+                        {{common.insert}}
+                      </button>
+                    </td>
+                  </tr>
+                </div>
+                <div style="display: flex">
+                  <img
+                    src="assets/images/Group (2).svg"
+                    alt=""
+                    style="width: 122px; height: 112px; margin-right: 2rem"
+                  />
+                  <section
+                    style="
+                      background-color: #e6f1fd;
+                      height: 112px;
+                      border-radius: 16px;
+                      color: #404040;
+                      padding: 24px;
+                      display: flex;
+                      gap: 2rem;
+                    "
+                  >
+                    <div>
+                      <p
+                        style="
+                          font-size: 14px;
+                          line-height: 20px;
+                          font-weight: regular;
+                          margin-bottom: 0.5rem;
+                        "
+                      >
+                        已授權數量
+                      </p>
+                      <div
+                        style="display: flex; align-items: center; gap: 1rem"
+                      >
+                        <p
+                          id="license-total-count"
+                          style="font-weight: 600; font-size: 24px"
+                        >
+                          0
+                        </p>
+                        <div
+                          id="license-total-growth-rate"
+                          style="
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                          "
+                        >
+                          <span
+                            id="license-total-growth-percentage"
+                            style="font-size: 14px"
+                            >0%</span
+                          >
+                          <img
+                            id="license-total-growth-icon"
+                            src="assets/images/up.svg"
+                            alt=""
+                            style="width: 16px; height: 16px"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        style="
+                          font-size: 14px;
+                          line-height: 20px;
+                          font-weight: regular;
+                          margin-bottom: 0.5rem;
+                        "
+                      >
+                        本季新增
+                      </p>
+                      <div style="display: flex; align-items: center">
+                        <div
+                          style="display: flex; align-items: center; gap: 1rem"
+                        >
+                          <p
+                            id="license-quarterly-count"
+                            style="
+                              font-weight: 600;
+                              font-size: 24px;
+                              margin-right: 1rem;
+                            "
+                          >
+                            0
+                          </p>
+                          <div
+                            id="license-quarterly-growth-rate"
+                            style="
+                              display: flex;
+                              align-items: center;
+                              gap: 0.5rem;
+                            "
+                          >
+                            <span
+                              id="license-quarterly-growth-percentage"
+                              style="font-size: 14px"
+                              >0%</span
+                            >
+                            <img
+                              id="license-quarterly-growth-icon"
+                              src="assets/images/up.svg"
+                              alt=""
+                              style="width: 16px; height: 16px"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
+              <div>
+                <div
+                  style="
+                    margin-top: 20px;
+                    margin-bottom: 0;
+                    background: #e5e8ea;
+                    height: 70px;
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                    padding: 0 16px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <!-- 左邊 -->
+                  <div style="display: flex; align-items: center">
+                    <input type="checkbox" id="license-select-all" />
+                    <label
+                      for="license-select-all"
+                      style="
+                        display: flex;
+                        align-items: center;
+                        font-size: 14px;
+                        color: #374151;
+                        cursor: pointer;
+                        margin-right: 8px;
+                      "
+                    >
+                      全選
+                    </label>
+                    <button
+                      id="license-edit-button"
+                      onclick="editSelectedRecord()"
+                      style="
+                        border: 1px solid #92bfff;
+                        border-radius: 9999px;
+                        width: 56px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        margin-left: 3rem;
+                      "
+                    >
+                      <img
+                        src="assets/images/edit.svg"
+                        alt="編輯"
+                        style="width: 20px; height: 20px"
+                      />
+                    </button>
+                    <button
+                      id="license-download-button"
+                      onclick="downloadSelectedAttachments()"
+                      style="
+                        border: 1px solid #92bfff;
+                        border-radius: 9999px;
+                        width: 56px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        margin-left: 12px;
+                      "
+                    >
+                      <img
+                        src="assets/images/download.svg"
+                        alt="下載"
+                        style="width: 20px; height: 20px"
+                      />
+                    </button>
+                    <button
+                      id="license-delete-button"
+                      onclick="closeSelectedRecords()"
+                      style="
+                        border: 1px solid #de6565;
+                        border-radius: 9999px;
+                        width: 56px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        margin-left: 12px;
+                      "
+                    >
+                      <img src="assets/images/trash.svg" alt="刪除" />
+                    </button>
+                  </div>
+
+                  <!-- 右邊 -->
+                  <div style="display: flex; gap: 1px">
+                    <div
+                      style="
+                        width: 150px;
+                        height: 38px;
+                        background: #fff;
+                        border-top-left-radius: 10px;
+                        border-bottom-left-radius: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0 4px;
+                        font-size: 14px;
+                      "
+                    >
+                      <input
+                        id="license_list-begin_time"
+                        type="date"
+                        value=""
+                        required
+                        style="
+                          border: none;
+                          background: transparent;
+                          width: 100%;
+                          font-size: 14px;
+                          outline: none;
+                        "
+                      />
+                    </div>
+                    <div
+                      style="
+                        width: 150px;
+                        height: 38px;
+                        background: #fff;
+                        border-top-right-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0 4px;
+                        font-size: 14px;
+                      "
+                    >
+                      <input
+                        id="license_list-end_time"
+                        type="date"
+                        value=""
+                        required
+                        style="
+                          border: none;
+                          background: transparent;
+                          width: 100%;
+                          font-size: 14px;
+                          outline: none;
+                        "
+                      />
+                    </div>
+                    <div
+                      id="license-status-dropdown"
+                      style="position: relative"
+                    >
+                      <div
+                        id="license-status-button"
+                        style="
+                          width: 150px;
+                          height: 38px;
+                          background: #fff;
+                          border-radius: 10px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: space-between;
+                          padding: 0 4px 0 12px;
+                          margin-left: 12px;
+                          cursor: pointer;
+                          font-size: 14px;
+                        "
+                      >
+                        <span
+                          id="license-status-text"
+                          style="color: rgba(0, 0, 0, 0.2)"
+                          >全部訂單</span
+                        >
+                        <img src="assets/images/list_section.svg" alt="選單" />
+                      </div>
+
+                      <!-- 下拉選項 -->
+                      <div
+                        id="license-status-options"
+                        style="
+                          position: absolute;
+                          top: 42px;
+                          left: 12px;
+                          width: 150px;
+                          background: #fff;
+                          border-radius: 10px;
+                          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                          z-index: 1000;
+                          display: none;
+                          overflow: hidden;
+                        "
+                      >
+                        <div
+                          class="license-status-option"
+                          data-value="all"
+                          style="
+                            padding: 12px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            color: rgba(0, 0, 0, 0.7);
+                            transition: background-color 0.2s;
+                          "
+                        >
+                          全部訂單
+                        </div>
+                        <div
+                          class="license-status-option"
+                          data-value="active"
+                          style="
+                            padding: 12px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            color: rgba(0, 0, 0, 0.7);
+                            transition: background-color 0.2s;
+                          "
+                        >
+                          未到期
+                        </div>
+                        <div
+                          class="license-status-option"
+                          data-value="expired"
+                          style="
+                            padding: 12px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            color: rgba(0, 0, 0, 0.7);
+                            transition: background-color 0.2s;
+                          "
+                        >
+                          已到期
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <table
+                  class="frame-table"
+                  style="margin-top: 0; border-spacing: 0"
+                >
+                  <!-- <tr>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                  </tr> -->
+
+                  <!-- 顯示資料的地方 -->
+                  <tr>
+                    <td colspan="12">
+                      <div class="viewpoint-container">
+                        <table
+                          id="license_list-list_information"
+                          class="responstable"
+                        >
+                          <thead>
+                            <tr>
+                              <th style="width: 5%"></th>
+                              <th
+                                style="cursor: pointer"
+                                onclick="sortLicenseTable('create_time')"
+                              >
+                                {{common.create_time}}
+                                <img
+                                  id="sort-create_time"
+                                  src="assets/images/sort_up.svg"
+                                  alt=""
+                                  style="
+                                    width: 1rem;
+                                    height: 1rem;
+                                    margin-left: 5px;
+                                    transition: transform 0.2s ease;
+                                    opacity: 0.5;
+                                  "
+                                />
+                              </th>
+                              <th
+                                style="cursor: pointer"
+                                onclick="sortLicenseTable('license_begin_time')"
+                              >
+                                {{license.license_begin_time}}
+                                <img
+                                  id="sort-license_begin_time"
+                                  src="assets/images/sort_up.svg"
+                                  alt=""
+                                  style="
+                                    width: 1rem;
+                                    height: 1rem;
+                                    margin-left: 5px;
+                                    transition: transform 0.2s ease;
+                                    opacity: 0.5;
+                                  "
+                                />
+                              </th>
+                              <th>
+                                <!-- {{license.license_days}} -->
+                              </th>
+                              <th
+                                style="cursor: pointer"
+                                onclick="sortLicenseTable('license_end_time')"
+                              >
+                                {{license.license_end_time}}
+                                <img
+                                  id="sort-license_end_time"
+                                  src="assets/images/sort_up.svg"
+                                  alt=""
+                                  style="
+                                    width: 1rem;
+                                    height: 1rem;
+                                    margin-left: 5px;
+                                    transition: transform 0.2s ease;
+                                    opacity: 0.5;
+                                  "
+                                />
+                              </th>
+                              <th>
+                                <!-- {{license.expiration_status}} -->
+                              </th>
+                              <th
+                                style="cursor: pointer"
+                                onclick="sortLicenseTable('license_count')"
+                              >
+                                {{license.license_count}}
+                                <img
+                                  id="sort-license_count"
+                                  src="assets/images/sort_up.svg"
+                                  alt=""
+                                  style="
+                                    width: 1rem;
+                                    height: 1rem;
+                                    margin-left: 5px;
+                                    transition: transform 0.2s ease;
+                                    opacity: 0.5;
+                                  "
+                                />
+                              </th>
+                              <th>{{license.license_note}}</th>
+                              <th>{{license.dashboard}}</th>
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 顯示分頁的地方 -->
+                  <tr>
+                    <td colspan="12" style="padding: 4rem 0 0 0">
+                      <div
+                        id="license_list-list_pagination"
+                        class="centered-content"
+                      ></div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- 新增訂單 Modal -->
+            <div
+              id="license-insert-modal"
+              style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  background: white;
+                  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+                  padding: 30px;
+                  width: 800px;
+                  border-radius: 15px;
+                  max-height: 90vh;
+                  overflow-y: auto;
+                "
+              >
+                <div style="display: flex; justify-content: space-between">
+                  <div style="display: flex; align-items: center">
+                    <img src="assets/images/add new_button.svg" alt="" />
+                    <span
+                      style="
+                        color: #000000;
+                        font-size: 24px;
+                        margin-left: 8px;
+                        font-weight: 900;
+                      "
+                    >
+                      {{license.title_insert_order}}新增訂單
+                    </span>
+                  </div>
+                  <img
+                    id="license_insert-close"
+                    src="assets/images/X.svg"
+                    alt=""
+                    style="cursor: pointer"
+                  />
+                </div>
+
+                <table>
+                  <tr style="display: flex">
+                    <!-- 底下的隸屬組織 先讓她消失-->
+                    <td colspan="4" style="display: none">
+                      <label class="" for="license_insert-owner_cid"
+                        >{{common.owner_cid}}</label
+                      >
+                      <input
+                        id="license_insert-owner_cid"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+
+                    <td
+                      colspan="4"
+                      style="display: flex; flex-direction: column"
+                    >
+                      <label
+                        class=""
+                        style="color: #898c94; margin-top: 1rem"
+                        for="license_insert-license_begin_time"
+                        >{{license.license_begin_time}}</label
+                      >
+                      <input
+                        id="license_insert-license_begin_time"
+                        type="date"
+                        style="
+                          padding: 8px;
+                          margin-top: 0.5rem;
+                          width: 200px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                        value=""
+                        required
+                      />
+                    </td>
+
+                    <td colspan="4" style="display: none">
+                      <label class="" for="license_insert-product_type"
+                        >{{common.product_type}}</label
+                      >
+                      <div class="styled-select blue rounded">
+                        <select
+                          id="license_insert-product_type"
+                          data-role="none"
+                        >
+                          <option value="illuminet">
+                            {{common.product_illuminet}}
+                          </option>
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      style="
+                        flex-direction: column;
+                        display: flex;
+                        margin-top: 1rem;
+                        width: 200px;
+                        color: #898c94;
+                      "
+                    >
+                      <label
+                        class=""
+                        for="license_insert-license_days"
+                        style="color: #898c94"
+                        >{{license.license_days}}</label
+                      >
+                      <input
+                        id="license_insert-license_days"
+                        type="number"
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          margin-top: 0.5rem;
+                          width: 200px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+
+                    <td colspan="3" style="display: none">
+                      <label class="" for="license_insert-sale_amount"
+                        >{{license.sale_amount}}</label
+                      >
+                      <input
+                        id="license_insert-sale_amount"
+                        type="number"
+                        value=""
+                        required
+                      />
+                    </td>
+                    <td colspan="3" style="display: none">
+                      <label class="" for="license_insert-country"
+                        >{{license.country}}</label
+                      >
+                      <input
+                        id="license_insert-country"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      colspan="3"
+                      style="display: flex; flex-direction: column"
+                    >
+                      <label
+                        class=""
+                        for="license_insert-license_count"
+                        style="color: #898c94; margin-top: 1rem"
+                        >{{license.license_count}}</label
+                      >
+                      <input
+                        id="license_insert-license_count"
+                        type="number"
+                        value=""
+                        required
+                        style="
+                          width: 400px;
+                          padding: 8px;
+                          margin-top: 0.5rem;
+                          width: 200px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="4" style="display: none">
+                      <label class="" for="license_insert-customer_name"
+                        >{{common_order_info.customer_name}}</label
+                      >
+                      <input
+                        id="license_insert-customer_name"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                    <td colspan="4" style="display: none">
+                      <label class="" for="license_insert-customer_gender"
+                        >{{common_order_info.customer_gender}}</label
+                      >
+                      <input
+                        id="license_insert-customer_gender"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                    <td colspan="4" style="display: none">
+                      <label class="" for="license_insert-customer_birthday"
+                        >{{common_order_info.customer_birthday}}</label
+                      >
+                      <input
+                        id="license_insert-customer_birthday"
+                        type="date"
+                        value=""
+                        required
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="6" style="display: none">
+                      <label class="" for="license_insert-customer_phone"
+                        >{{common_order_info.customer_phone}}</label
+                      >
+                      <input
+                        id="license_insert-customer_phone"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                    <td colspan="6" style="display: none">
+                      <label class="" for="license_insert-customer_postalcode"
+                        >{{common_order_info.customer_postalcode}}</label
+                      >
+                      <input
+                        id="license_insert-customer_postalcode"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="6" style="display: none">
+                      <label class="" for="license_insert-customer_address"
+                        >{{common_order_info.customer_address}}</label
+                      >
+                      <input
+                        id="license_insert-customer_address"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                    <td colspan="6" style="display: none">
+                      <label class="" for="license_insert-customer_email"
+                        >{{common_order_info.customer_email}}</label
+                      >
+                      <input
+                        id="license_insert-customer_email"
+                        type="text"
+                        value=""
+                        required
+                      />
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="display: flex; flex-direction: column">
+                      <label
+                        class=""
+                        for="license_insert-note00"
+                        style="color: #898c94; margin-top: 1rem"
+                        >{{common.note00}}</label
+                      >
+                      <textarea
+                        id="license_insert-note00"
+                        style="
+                          height: 80px;
+                          margin-top: 0.5rem;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                        required
+                      ></textarea>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-top: 1rem">
+                      <span style="color: #898c94">附件</span>
+                      <div id="dropzone" class="dropzone">
+                        <img
+                          src="assets/images/上傳.svg"
+                          alt=""
+                          style="margin-bottom: 4px"
+                        />
+                        <strong style="font-size: 14px; margin-bottom: 2px"
+                          >將文件拖至此處或</strong
+                        >
+                        <u style="font-size: 14px">選擇要上傳的文件</u>
+                        <div
+                          id="fileList"
+                          class="dz-list"
+                          style="margin-top: 8px"
+                        ></div>
+                        <input id="fileInput" type="file" multiple hidden />
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 暫時用不到  -->
+                  <tr style="display: none">
+                    <td>
+                      <button id="btnClear" class="secondary">清除</button>
+                    </td>
+                  </tr>
+
+                  <tr
+                    style="
+                      display: flex;
+                      justify-content: flex-end;
+                      gap: 1rem;
+                      margin-top: 1rem;
+                    "
+                  >
+                    <td style="width: auto">
+                      <button
+                        id="license_insert-button-cancel"
+                        style="
+                          width: 130px;
+                          height: 48px;
+                          background-color: #ffffff;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 10px;
+                          cursor: pointer;
+                        "
+                      >
+                        {{common.cancel}}
+                      </button>
+                    </td>
+                    <td style="width: auto">
+                      <button
+                        id="license_insert-button-ok"
+                        style="
+                          width: 130px;
+                          height: 48px;
+                          background-color: #214f7c;
+                          border-radius: 10px;
+                          border: none;
+                          color: #ffffff;
+                          cursor: pointer;
+                        "
+                      >
+                        {{common.save}}
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- 編輯訂單 Modal -->
+            <div
+              id="license-update-modal"
+              style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  background: white;
+                  border-radius: 15px;
+                  padding: 30px;
+                  box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2);
+                  width: 800px;
+                  max-height: 90vh;
+                  overflow-y: auto;
+                "
+              >
+                <div style="display: flex; justify-content: space-between">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <img src="assets/images/Group 1053.svg" alt="" />
+                    </div>
+                    <h1
+                      style="
+                        margin-top: 3px;
+                        font-size: 24px;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      編輯訂單資訊
+                    </h1>
+                  </div>
+                  <img
+                    id="license_update-close"
+                    src="assets/images/X.svg"
+                    alt=""
+                    style="cursor: pointer"
+                  />
+                </div>
+                <table class="frame-table">
+                  <!-- <tr>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                    <td colspan="1">{{test.anchor}}</td>
+                  </tr> -->
+                  <tr style="display: none; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-license_cid"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.license_cid}}</label
+                      >
+                      <input
+                        id="license_update-license_cid"
+                        type="text"
+                        name="license_update-license_cid"
+                        placeholder="{{member.license_cid}}..."
+                        value=""
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-create_time"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.create_time}}</label
+                      >
+                      <input
+                        id="license_update-create_time"
+                        type="date"
+                        name="license_update-create_time"
+                        placeholder="{{member.create_time}}..."
+                        value=""
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-product_type"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >產品型號</label
+                      >
+                      <input
+                        id="license_update-product_type"
+                        type="text"
+                        name="license_update-product_type"
+                        placeholder="產品型號"
+                        value="我是型號"
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: flex; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-agent_cid"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.agent_cid}}</label
+                      >
+                      <input
+                        id="license_update-agent_cid"
+                        type="text"
+                        name="license_update-agent_cid"
+                        placeholder="{{member.agent_cid}}..."
+                        value=""
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-owner_cid"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.owner_cid}}</label
+                      >
+                      <input
+                        id="license_update-owner_cid"
+                        type="text"
+                        name="license_update-owner_cid"
+                        placeholder="{{member.owner_cid}}..."
+                        value=""
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-record_state"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.record_state}}</label
+                      >
+                      <select
+                        id="license_update-record_state"
+                        data-role="none"
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      >
+                        <option value="1">{{common.open}}</option>
+                        <option value="0">{{common.close}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr style="display: flex; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        flex-direction: column;
+                        width: 300px;
+                        display: none;
+                      "
+                    >
+                      <label
+                        for="license_update-license_Key"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.license_Key}}</label
+                      >
+                      <input
+                        id="license_update-license_Key"
+                        type="text"
+                        name="license_update-license_Key"
+                        placeholder="{{member.license_Key}}..."
+                        value=""
+                        required
+                        disabled
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          background-color: #f5f5f5;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-license_begin_time"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.license_begin_time}}</label
+                      >
+                      <input
+                        id="license_update-license_begin_time"
+                        type="date"
+                        name="license_update-license_begin_time"
+                        placeholder="{{license.license_begin_time}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: flex; gap: 1rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-license_days"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.license_days}}</label
+                      >
+                      <input
+                        id="license_update-license_days"
+                        type="number"
+                        name="license_update-licensing_valid_days"
+                        placeholder="{{license.license_days}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td style="visibility: hidden"></td>
+                  </tr>
+                  <tr style="display: none; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-sale_amount"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >銷售金額</label
+                      >
+                      <input
+                        id="license_update-sale_amount"
+                        type="number"
+                        name="license_update-sale_amount"
+                        placeholder="銷售金額..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-country"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >國家</label
+                      >
+                      <input
+                        id="license_update-country"
+                        type="text"
+                        name="license_update-country"
+                        placeholder="國家..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-license_count"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.license_count}}</label
+                      >
+                      <input
+                        id="license_update-license_count"
+                        type="number"
+                        name="license_update-license_count"
+                        placeholder="{{license.license_count}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: none; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_name"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_name}}訂購人名稱</label
+                      >
+                      <input
+                        id="license_update-customer_name"
+                        type="text"
+                        name="license_update-customer_name"
+                        placeholder="{{license.customer_name}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_gender"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_gender}}性別</label
+                      >
+                      <input
+                        id="license_update-customer_gender"
+                        type="text"
+                        name="license_update-customer_gender"
+                        placeholder="{{license.customer_gender}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 200px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_birthday"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_birthday}}生日</label
+                      >
+                      <input
+                        id="license_update-customer_birthday"
+                        type="date"
+                        name="license_update-customer_birthday"
+                        placeholder="{{license.customer_birthday}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: none; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_phone"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_phone}}手機</label
+                      >
+                      <input
+                        id="license_update-customer_phone"
+                        type="text"
+                        name="license_update-customer_phone"
+                        placeholder="{{license.customer_phone}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_postalcode"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_postalcode}}郵遞區號</label
+                      >
+                      <input
+                        id="license_update-customer_postalcode"
+                        type="text"
+                        name="license_update-customer_postalcode"
+                        placeholder="{{license.customer_postalcode}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: flex; gap: 2rem; margin-bottom: 1rem">
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_address"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_address}}地址</label
+                      >
+                      <input
+                        id="license_update-customer_address"
+                        type="text"
+                        name="license_update-customer_address"
+                        placeholder="{{license.customer_address}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                    <td
+                      style="
+                        display: none;
+                        flex-direction: column;
+                        width: 300px;
+                      "
+                    >
+                      <label
+                        for="license_update-customer_email"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.customer_email}}信箱</label
+                      >
+                      <input
+                        id="license_update-customer_email"
+                        type="text"
+                        name="license_update-customer_email"
+                        placeholder="{{license.customer_email}}..."
+                        value=""
+                        required
+                        style="
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: flex; margin-bottom: 1rem">
+                    <td
+                      style="display: flex; flex-direction: column; width: 100%"
+                    >
+                      <label
+                        for="license_update-note00"
+                        style="color: #898c94; margin-bottom: 0.5rem"
+                        >{{license.note00}}備註</label
+                      >
+                      <textarea
+                        id="license_update-note00"
+                        name="license_update-note00"
+                        placeholder="{{license.note00}}..."
+                        style="
+                          height: 80px;
+                          padding: 8px;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 6px;
+                          outline: none;
+                          width: 740px;
+                        "
+                      ></textarea>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-top: 1rem">
+                      <span style="color: #898c94">附件</span>
+                      <div id="dropzone-update" class="dropzone">
+                        <img
+                          src="assets/images/上傳.svg"
+                          alt=""
+                          style="margin-bottom: 4px"
+                        />
+                        <strong
+                          style="font-size: 14px; margin-bottom: 2px"
+                        ></strong>
+                        <u style="font-size: 14px">移除舊檔案並重新上傳</u>
+                        <div
+                          id="existingFileList-update"
+                          class="dz-list"
+                          style="margin-top: 8px"
+                        ></div>
+                        <div
+                          id="fileList-update"
+                          class="dz-list"
+                          style="margin-top: 8px"
+                        ></div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr
+                    style="
+                      display: flex;
+                      justify-content: flex-end;
+                      gap: 1rem;
+                      margin-top: 2rem;
+                    "
+                  >
+                    <td style="width: auto">
+                      <button
+                        id="license_update-button-cancel"
+                        style="
+                          width: 130px;
+                          height: 48px;
+                          background-color: #ffffff;
+                          border: 1px solid #e5e8ea;
+                          border-radius: 10px;
+                          cursor: pointer;
+                          font-size: 14px;
+                        "
+                      >
+                        {{common.cancel}}
+                      </button>
+                    </td>
+                    <td style="width: auto">
+                      <button
+                        id="license_update-button-ok"
+                        style="
+                          width: 130px;
+                          height: 48px;
+                          background-color: #214f7c;
+                          border-radius: 10px;
+                          border: none;
+                          color: #ffffff;
+                          cursor: pointer;
+                          font-size: 14px;
+                        "
+                      >
+                        {{common.save}}
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /content -->
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div
+        id="delete-confirmation-modal"
+        style="
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <div
+          style="
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <!-- Modal Header -->
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              margin-bottom: 16px;
+              padding-bottom: 16px;
+            "
+          >
+            <div
+              style="
+                width: 40px;
+                height: 40px;
+                background: #fee2e2;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 12px;
+              "
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.75 3.75H11.25M3.75 5H16.25M14.5833 5L14.0833 14.0833C14.0833 14.7513 13.8179 15.3918 13.3490 15.8607C12.8801 16.3296 12.2396 16.5833 11.5833 16.5833H8.41667C7.76041 16.5833 7.11992 16.3296 6.65101 15.8607C6.1821 15.3918 5.91667 14.7513 5.91667 14.0833L5.41667 5M8.33333 8.33333V13.3333M11.6667 8.33333V13.3333"
+                  stroke="#dc2626"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3
+                style="
+                  margin: 0;
+                  font-size: 24px;
+                  font-weight: 600;
+                  color: #111827;
+                "
+              >
+                確認刪除
+              </h3>
+            </div>
+          </div>
+
+          <!-- Modal Content -->
+          <div style="margin-bottom: 24px">
+            <p
+              id="delete-modal-message"
+              style="
+                margin: 0;
+                font-size: 14px;
+                color: #374151;
+                line-height: 1.5;
+              "
+            >
+              <!-- 動態內容 -->
+            </p>
+            <div
+              id="delete-modal-items"
+              style="
+                margin-top: 12px;
+                max-height: 200px;
+                overflow-y: auto;
+                border-radius: 6px;
+                padding: 12px;
+              "
+            >
+              <!-- 動態項目列表 -->
+            </div>
+          </div>
+
+          <!-- Modal Actions -->
+          <div style="display: flex; gap: 12px; justify-content: flex-end">
+            <button
+              id="delete-modal-cancel"
+              style="
+                padding: 8px 16px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                background: white;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+              onmouseover="this.style.background = '#f3f4f6'"
+              onmouseout="this.style.background = 'white'"
+            >
+              取消
+            </button>
+            <button
+              id="delete-modal-confirm"
+              style="
+                padding: 8px 16px;
+                border: none;
+                border-radius: 6px;
+                background: rgba(33, 79, 124, 1);
+                color: white;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+              onmouseover="this.style.background = 'rgba(33, 79, 124, 1)'"
+              onmouseout="this.style.background = 'rgba(33, 79, 124, 1)'"
+            >
+              確認刪除
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit List 彈出視窗容器 -->
+      <!-- <div
+        id="edit-list-container"
+        style="
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+          justify-content: center;
+          align-items: center;
+        "
+      ></div> -->
+
+      <!-- 使用 nav / navbar / sidebar / edit-list / organization-edit -->
+      <script
+        type="text/javascript"
+        src="components/app.component.frame.edit-list.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="components/app.component.frame.nav.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="components/app.component.frame.navbar.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="components/app.component.frame.sidebar-nav.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="components/app.component.frame.organization-edit.js"
+      ></script>
+      <!-- Profile Modal Component -->
+      <script
+        type="text/javascript"
+        src="modules/app.module.profile.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="components/app.component.profile.modal.js"
+      ></script>
+      <!-- 標題動態更新 -->
+      <script
+        type="text/javascript"
+        src="scripts/lib/lib.title.groupcid.js"
+      ></script>
+      <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效 -->
+    </div>
+    <!-- /#app -->
+
+    <script type="text/javascript" src="views/app.view.license.js"></script>
+
+    <script>
+      // 初始化標題更新;
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          updatePageTitleWithGroupCid("#license-title", "", "");
+        });
+      });
+    </script>
+  </body>
+</html>

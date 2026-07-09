@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sidebar Example</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <script src="sidebar.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- sidebar -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-items">
+          <!-- Sidebar Items -->
+          <div class="nav-item">
+            <p class="nav-text">
+              <img src="/assets/images/dashboard.svg" alt="" class="icon" />
+              <span class="item-label">Dashboard</span>
+            </p>
+          </div>
+
+          <div class="nav-item">
+            <p class="nav-text">
+              <img
+                src="/assets/images/list_information.svg"
+                alt=""
+                class="icon"
+              />
+              <span class="item-label">訂單資訊</span>
+            </p>
+          </div>
+
+          <!-- Dropdown -->
+          <ul class="dropdown">
+            <li class="dropdown-item">
+              <a href="#" class="dropdown-toggle">
+                <img
+                  src="/assets/images/point_noramal.svg"
+                  alt=""
+                  class="point-icon"
+                />
+                <img
+                  src="/assets/images/list_imformation.svg"
+                  alt=""
+                  class="icon"
+                />
+                <span
+                  class="item-label"
+                  style="align-items: center; display: flex"
+                  ><img
+                    src="/assets/images/distributor_license.svg"
+                    alt=""
+                    ;
+                  />License</span
+                >
+              </a>
+              <ul class="dropdown-menu">
+                <!-- <li class="li-list-item"><a href="#">JECTOR Digita</a></li>
+                <li class="li-list-item"><a href="#">GeneTouch</a></li>
+                <li class="li-list-item"><a href="#">JJNET</a></li> -->
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Toggle Button -->
+        <div id="toggleSidebar" class="toggle-btn">
+          <img id="toggleIcon" src="/assets/Vector.svg" alt="#" />
+        </div>
+      </aside>
+
+      <main class="main">132123</main>
+    </div>
+  </body>
+</html>

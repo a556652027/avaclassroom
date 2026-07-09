@@ -1,0 +1,370 @@
+<!--
+    頁面架構會分為 選單 與 內容兩部分
+    內容會再依照頁面去選擇不同的功能頁面
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CsX Front Template</title>
+        <script src="modules/app.module.def.js"></script>
+        <script type="text/javascript" src="locales/app.locale.js"></script>
+        <script type="text/javascript" src="modules/app.module.device.js"></script>
+        <script type="text/javascript" src="modules/app.module.history.js"></script>
+
+        <!-- 使用sidebar 的樣式-->
+        <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+    </head>
+
+    <body>
+        <div id="app" style="visibility: hidden">
+            <!-- 擺放sideber 的位置 -->
+            <div id="sidebar-nav-container"></div>
+
+            <!-- /////////////////////////////////////////////////////////////////////-->
+            <!-- 實際內容-->
+            <div class="content">
+                <!-- _________________________________________________________________-->
+                <!-- 第一頁 設備列表-->
+                <div data-role="page" id="page01">
+                    <div class="page-caption">
+                        <h1>{{device.title_list_device}}</h1>
+                    </div>
+                    <!-- 訂單列表 -->
+                    <div>
+                        <table class="frame-table">
+                            <tr>
+                                <td colspan="6"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <div class="styled-select blue rounded">
+                                        <select id="device_list-input_search_field" data-role="none">
+                                            <option value="agent_cid">{{device.agent_cid}}</option>
+                                            <option value="owner_cid">{{device.owner_cid}}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td colspan="1">
+                                    <input id="device_list-input_search_value" type="search" placeholder="{{common.search_condition}}..." />
+                                </td>
+                                <td colspan="1">
+                                    <label class="label-style-default" class="label-style-default" for="device_list-begin_time">{{common.search_begin_time}}</label>
+                                    <input id="device_list-begin_time" type="date" name="device_list-begin_time" placeholder="{{common.search_begin_time}}..." value="{{common.empty_date}}" required />
+                                </td>
+                                <td colspan="1">~</td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <label class="label-style-default" for="device_list-end_time">{{common.search_end_time}}</label>
+                                    <input id="device_list-end_time" type="date" name="device_list-end_time" placeholder="{{common.search_end_time}}..." value="{{common.empty_date}}" required />
+                                </td>
+                                <td colspan="1">
+                                    <button id="device_list-button-search" class="image_button_default">
+                                        <i class="iconfont">&#xe778;&nbsp;</i>
+                                        {{common.search}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                            </tr>
+                            <!-- 顯示資料的地方 -->
+                            <tr>
+                                <td colspan="12">
+                                    <div class="viewpoint-container">
+                                        <table id="device_list-list_information" class="responstable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 5%; background: #2e4660"></th>
+                                                    <th>{{device.device_cid}}</th>
+                                                    <th>{{device.device_type}}</th>
+                                                    <th>{{common.create_time}}</th>
+                                                    <th>{{device.device_state}}</th>
+                                                    <th>{{device.active_time}}</th>
+                                                    <th>{{license.agent_cid}}</th>
+                                                    <th>{{device.owner_cid}}</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 顯示分頁的地方 -->
+                            <tr>
+                                <td colspan="12"><div id="device_list-list_pagination" class="centered-content"></div></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 第二頁設備修改-->
+                <div data-role="page" id="page02">
+                    <div class="page-caption">
+                        <h1>{{order.title_update_order}}</h1>
+                    </div>
+                    <div>
+                        <table class="frame-table">
+                            <tr>
+                                <td colspan="6"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="4"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <button id="device_update-button-cancel" class="image_button_default">
+                                        <i class="iconfont">&#xe788;&nbsp;</i>
+                                        {{common.cancel}}
+                                    </button>
+                                </td>
+                                <td colspan="1">
+                                    <button id="device_update-button-ok" class="image_button_default">
+                                        <i class="iconfont">&#xe786;&nbsp;</i>
+                                        {{common.ok}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-device_cid">{{device.device_cid}}</label>
+                                    <input id="device_update-device_cid" type="text" name="device_update-device_cid" placeholder="{{device.device_cid}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-device_type">{{device.device_type}}</label>
+                                    <input id="device_update-device_type" type="text" name="device_update-device_type" placeholder="{{device.device_type}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-record_state">{{device.device_state}}</label>
+                                    <div class="styled-select blue rounded">
+                                        <select id="device_update-record_state" data-role="none">
+                                            <option value="1">{{common.open}}</option>
+                                            <option value="0">{{common.close}}</option>
+                                            <option value="-1">{{common.Revoke}}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-create_time">{{common.create_time}}</label>
+                                    <input id="device_update-create_time" type="datetime" name="device_update-create_time" placeholder="{{common.create_time}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-active_time">{{device.active_time}}</label>
+                                    <input id="device_update-active_time" type="datetime" name="device_update-active_time" placeholder="{{device.active_time}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-owner_type">{{device.owner_type}}</label>
+                                    <input id="device_update-owner_type" type="text" name="device_update-owner_type" placeholder="{{device.owner_type}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-owner_cid">{{device.owner_cid}}</label>
+                                    <input id="device_update-owner_cid" type="text" name="device_update-owner_cid" placeholder="{{device.owner_cid}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-agent_cid">{{device.agent_cid}}</label>
+                                    <input id="device_update-agent_cid" type="text" name="device_update-agent_cid" placeholder="{{device.agent_cid}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">
+                                    <label class="label-style-default" for="device_update-license_Key">{{common.license_Key}}</label>
+                                    <input id="device_update-license_Key" type="text" name="device_update-license_Key" placeholder="{{common.license_Key}}..." value="{{test.test_srting_00}}" required disabled />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-customer_name">{{common_order_info.customer_name}}</label>
+                                    <input id="device_update-customer_name" type="text" name="device_update-customer_name" placeholder="{{common_order_info.customer_name}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-customer_gender">{{common_order_info.customer_gender}}</label>
+                                    <input id="device_update-customer_gender" type="text" name="device_update-customer_gender" placeholder="{{common_order_info.customer_gender}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="4">
+                                    <label class="label-style-default" for="device_update-customer_birthday">{{common_order_info.customer_birthday}}</label>
+                                    <input id="device_update-customer_birthday" type="date" name="device_update-customer_birthday" placeholder="{{common_order_info.customer_birthday}}..." value="{{common.empty_date}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-customer_phone">{{common_order_info.customer_phone}}</label>
+                                    <input id="device_update-customer_phone" type="text" name="device_update-customer_phone" placeholder="{{common_order_info.customer_phone}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-customer_postalcode">{{common_order_info.customer_postalcode}}</label>
+                                    <input id="device_update-customer_postalcode" type="text" name="device_update-customer_postalcode" placeholder="{{common_order_info.customer_postalcode}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-customer_address">{{common_order_info.customer_address}}</label>
+                                    <input id="device_update-customer_address" type="text" name="device_update-customer_address" placeholder="{{common_order_info.customer_address}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-customer_email">{{common_order_info.customer_email}}</label>
+                                    <input id="device_update-customer_email" type="text" name="device_update-customer_email" placeholder="{{common_order_info.customer_email}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec00">{{device.spec00}}</label>
+                                    <input id="device_update-spec00" type="text" name="device_update-spec00" placeholder="{{device.spec00}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec01">{{device.spec01}}</label>
+                                    <input id="device_update-spec01" type="text" name="device_update-spec01" placeholder="{{device.spec01}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec02">{{device.spec02}}</label>
+                                    <input id="device_update-spec02" type="text" name="device_update-spec02" placeholder="{{device.spec02}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec03">{{device.spec03}}</label>
+                                    <input id="device_update-spec03" type="text" name="device_update-spec03" placeholder="{{device.spec03}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec04">{{device.spec04}}</label>
+                                    <input id="device_update-spec04" type="text" name="device_update-spec04" placeholder="{{device.spec04}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec05">{{device.spec05}}</label>
+                                    <input id="device_update-spec05" type="text" name="device_update-spec05" placeholder="{{device.spec05}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec06">{{device.spec06}}</label>
+                                    <input id="device_update-spec06" type="text" name="device_update-spec06" placeholder="{{device.spec06}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                                <td colspan="6">
+                                    <label class="label-style-default" for="device_update-spec07">{{device.spec07}}</label>
+                                    <input id="device_update-spec07" type="text" name="device_update-spec07" placeholder="{{device.spec07}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">
+                                    <label class="label-style-default" for="device_update-note00">{{common.note00}}</label>
+                                    <input id="device_update-note00" type="text" name="device_update-note00" placeholder="{{common.note00}}..." value="{{test.test_srting_00}}" required />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 第四頁設備紀錄-->
+                <div data-role="page" id="page04">
+                    <div class="page-caption">
+                        <h1>{{device.title_history_device}}</h1>
+                    </div>
+                    <!-- 訂單列表 -->
+                    <div>
+                        <table class="frame-table">
+                            <tr>
+                                <td colspan="1">
+                                    <div id="device_history-device_cid"></div>
+                                </td>
+                                <td colspan="6"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <label class="label-style-default" for="device_history-begin_time">{{common.search_begin_time}}</label>
+                                    <input id="device_history-begin_time" type="date" name="device_history-begin_time" placeholder="{{common.search_begin_time}}..." value="{{common.empty_date}}" required />
+                                </td>
+                                <td colspan="1">~</td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <label class="label-style-default" for="device_history-end_time">{{common.search_end_time}}</label>
+                                    <input id="device_history-end_time" type="date" name="device_history-end_time" placeholder="{{common.search_end_time}}..." value="{{common.empty_date}}" required />
+                                </td>
+                                <td colspan="1">
+                                    <button id="device_history-button-search" class="image_button_default">
+                                        <i class="iconfont">&#xe778;&nbsp;</i>
+                                        {{common.search}}
+                                    </button>
+                                </td>
+                                <td colspan="1">
+                                    <button id="device_history-button-cancel" class="image_button_default">
+                                        <i class="iconfont">&#xe788;&nbsp;</i>
+                                        {{common.cancel}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                            </tr>
+                            <!-- 顯示資料的地方 -->
+                            <tr>
+                                <td colspan="12">
+                                    <div class="viewpoint-container">
+                                        <table id="device_history-list_information" class="responstable">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{common.create_time}}</th>
+                                                    <th>{{common.event_type}}</th>
+                                                    <th>{{common.label}}</th>
+                                                    <th>{{common.content}}</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 顯示分頁的地方 -->
+                            <tr>
+                                <td colspan="12"><span id="device_history-list_pagination"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- _________________________________________________________________-->
+            </div>
+            <!-- /////////////////////////////////////////////////////////////////////-->
+        </div>
+
+        <!-- _________________________________________________________________-->
+        <!-- 使用sidebar 的樣式-->
+        <script type="text/javascript" src="components/app.component.frame.sidebar-nav.js"></script>
+
+        <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+        <script type="text/javascript" src="views/app.view.device.js"></script>
+    </body>
+</html>

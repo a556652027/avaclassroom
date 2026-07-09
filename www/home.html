@@ -1,0 +1,91 @@
+<!--
+    頁面架構會分為 選單 與 內容兩部分
+    內容會再依照頁面去選擇不同的功能頁面
+-->
+<!doctype html>
+<html>
+  <head>
+    <title>License Management System</title>
+    <link rel="icon" href="assets/images/favicon.ico" />
+    <script src="modules/app.module.def.js"></script>
+    <script type="text/javascript" src="locales/app.locale.js"></script>
+    <script type="text/javascript" src="modules/app.module.home.js"></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+  </head>
+
+  <body>
+    <!-- [新增] 靜態 Loading 元素，JS 載入前就會顯示 -->
+    <div id="initial-loader">
+      <div class="scan">
+        <img
+          src="assets/images/Group (3).svg"
+          alt="Loading..."
+          onerror="this.style.display = 'none'"
+        />
+        <div class="fingerprint">
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="app" style="visibility: hidden; flex-direction: column">
+      <div id="navbar-container"></div>
+      <!-- 擺放sideber 的位置 -->
+      <div style="display: flex; height: calc(100vh - 60px)">
+        <div id="sidebar-nav-container"></div>
+        <div style="display: flex; flex-direction: column; flex: 1">
+          <div id="nav-container"></div>
+          <!-- _________________________________________________________________-->
+          <!-- 實際內容-->
+          <div class="content">
+            <div class="page" id="page01">
+              <div class="page-caption">
+                <h1>{{home.title}}</h1>
+              </div>
+              <!-- 首頁內容 -->
+              <div>
+                <table class="frame-table">
+                  <div>
+                    <table class="frame-table">
+                      <tr>
+                        <td colspan="12">-</td>
+                      </tr>
+                      <tr>
+                        <td colspan="12">
+                          <h1>歡迎使用後台管理系統</h1>
+                          <p>這裡顯示主要的頁面內容。</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 使用 nav -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.nav.js"
+    ></script>
+
+    <!-- 使用 navbar -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.navbar.js"
+    ></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.sidebar-nav.js"
+    ></script>
+
+    <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+    <script type="text/javascript" src="views/app.view.home.js"></script>
+  </body>
+</html>

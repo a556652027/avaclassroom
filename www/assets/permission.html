@@ -1,0 +1,266 @@
+<!--
+    頁面架構會分為 選單 與 內容兩部分
+    內容會再依照頁面去選擇不同的功能頁面
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CsX Front Template</title>
+        <script src="modules/app.module.def.js"></script>
+        <script type="text/javascript" src="locales/app.locale.js"></script>
+        <script type="text/javascript" src="modules/app.module.permission.js"></script>
+
+        <!-- 使用sidebar 的樣式-->
+        <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+    </head>
+
+    <body>
+        <div id="app" style="visibility: hidden">
+            <!-- 擺放sideber 的位置 -->
+            <div id="sidebar-nav-container"></div>
+
+            <!-- _________________________________________________________________-->
+            <!-- 實際內容-->
+            <div class="content">
+                <div data-role="page" id="page01">
+                    <div class="page-caption">
+                        <h1>{{permission.title}}</h1>
+                    </div>
+                    <!-- 首頁內容 -->
+                    <div>
+                        <table class="frame-table">
+                            <tr>
+                                <td colspan="8"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <button id="permission-button-gotopage_admin" class="image_button_default">
+                                        <i class="iconfont">&#xe7A7;&nbsp;</i>
+                                        {{role.1}}
+                                    </button>
+                                </td>
+                                <td colspan="1">
+                                    <button id="permission-button-gotopage_agent" class="image_button_default">
+                                        <i class="iconfont">&#xe7A7;&nbsp;</i>
+                                        {{role.2}}
+                                    </button>
+                                </td>
+                                <td colspan="1">
+                                    <button id="permission-button-gotopage_manager" class="image_button_default">
+                                        <i class="iconfont">&#xe7A7;&nbsp;</i>
+                                        {{role.3}}
+                                    </button>
+                                </td>
+                                <td colspan="1">
+                                    <button id="permission-button-gotopage_user" class="image_button_default">
+                                        <i class="iconfont">&#xe7A7;&nbsp;</i>
+                                        {{role.4}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1" id="permission-role">
+                                    <div id="permission-role"></div>
+                                </td>
+                                <td colspan="10"></td>
+                                <!-- 間隔用的 td -->
+                                <td colspan="1">
+                                    <button id="permission-button-update_ok" class="image_button_default">
+                                        <i class="iconfont">&#xe786;&nbsp;</i>
+                                        {{common.ok}}
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                                <td colspan="1">{{test.anchor}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="block">
+                                        <p>{{permission.label_setting_operation}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_operate_member" type="checkbox" name="permission-is_operate_member" placeholder="{{permission.is_operate_member}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="1">
+                                                    <label class="label-style-default" for="permission-is_operate_member">{{permission.is_operate_member}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_operate_organization" type="checkbox" name="permission-is_operate_organization" placeholder="{{permission.is_operate_organization}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="1">
+                                                    <label class="label-style-default" for="permission-is_operate_organization">{{permission.is_operate_organization}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_operate_license" type="checkbox" name="permission-is_operate_license" placeholder="{{permission.is_operate_license}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="1">
+                                                    <label class="label-style-default" for="permission-is_operate_license">{{permission.is_operate_license}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_operate_device" type="checkbox" name="permission-is_operate_device" placeholder="{{permission.is_operate_device}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="1">
+                                                    <label class="label-style-default" for="permission-is_operate_device">{{permission.is_operate_device}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_operate_analytics" type="checkbox" name="permission-is_operate_analytics" placeholder="{{permission.is_operate_analytics}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="1">
+                                                    <label class="label-style-default" for="permission-is_operate_analytics">{{permission.is_operate_analytics}}</label>
+                                                </td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="block">
+                                        <p>{{permission.label_setting_member}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_select_own_member" type="checkbox" name="permission-is_select_own_member" placeholder="{{permission.is_select_own_member}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_select_own_member">{{permission.is_select_own_member}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_insert_own_member" type="checkbox" name="permission-is_insert_own_member" placeholder="{{permission.is_insert_own_member}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_insert_own_member">{{permission.is_insert_own_member}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_update_own_member" type="checkbox" name="permission-is_update_own_member" placeholder="{{permission.is_update_own_member}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_update_own_member">{{permission.is_insert_own_member}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="block">
+                                        <p>{{permission.label_setting_organization}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_select_own_organization" type="checkbox" name="permission-is_select_own_organization" placeholder="{{permission.is_select_own_organization}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_select_own_organization">{{permission.is_select_own_organization}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_insert_own_organization" type="checkbox" name="permission-is_insert_own_organization" placeholder="{{permission.is_insert_own_organization}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_insert_own_organization">{{permission.is_insert_own_organization}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_update_own_organization" type="checkbox" name="permission-is_update_own_organization" placeholder="{{permission.is_update_own_organization}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_update_own_organization">{{permission.is_update_own_organization}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="block">
+                                        <p>{{permission.label_setting_license}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_select_own_license" type="checkbox" name="permission-is_select_own_license" placeholder="{{permission.is_select_own_license}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_select_own_license">{{permission.is_select_own_license}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_insert_own_license" type="checkbox" name="permission-is_insert_own_license" placeholder="{{permission.is_insert_own_license}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_insert_own_license">{{permission.is_insert_own_license}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_update_own_license" type="checkbox" name="permission-is_update_own_license" placeholder="{{permission.is_update_own_license}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_update_own_license">{{permission.is_update_own_license}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="block">
+                                        <p>{{permission.label_setting_device}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_select_own_device" type="checkbox" name="permission-is_select_own_device" placeholder="{{permission.is_select_own_device}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="4">
+                                                    <label class="label-style-default" for="permission-is_select_own_device">{{permission.is_select_own_device}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_insert_own_device" type="checkbox" name="permission-is_insert_own_device" placeholder="{{permission.is_insert_own_device}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="4">
+                                                    <label class="label-style-default" for="permission-is_insert_own_device">{{permission.is_insert_own_device}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_update_own_device" type="checkbox" name="permission-is_update_own_device" placeholder="{{permission.is_update_own_device}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="4">
+                                                    <label class="label-style-default" for="permission-is_update_own_device">{{permission.is_update_own_device}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="block">
+                                        <p>{{permission.label_setting_analytics}}</p>
+                                        <table class="frame-table">
+                                            <tr>
+                                                <td colspan="1">
+                                                    <input id="permission-is_select_own_analytics" type="checkbox" name="permission-is_select_own_analytics" placeholder="{{permission.is_select_own_analytics}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_select_own_analytics">{{permission.is_select_own_analytics}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_insert_own_analytics" type="checkbox" name="permission-is_insert_own_analytics" placeholder="{{permission.is_insert_own_analytics}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_insert_own_analytics">{{permission.is_insert_own_analytics}}</label>
+                                                </td>
+                                                <td colspan="1">
+                                                    <input id="permission-is_update_own_analytics" type="checkbox" name="permission-is_update_own_analytics" placeholder="{{permission.is_update_own_analytics}}..." value="{{test.test_srting_00}}" required />
+                                                </td>
+                                                <td colspan="3">
+                                                    <label class="label-style-default" for="permission-is_update_own_analytics">{{permission.is_update_own_analytics}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用sidebar 的樣式-->
+        <script type="text/javascript" src="components/app.component.frame.sidebar-nav.js"></script>
+
+        <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+        <script type="text/javascript" src="views/app.view.permission.js"></script>
+    </body>
+</html>

@@ -1,0 +1,83 @@
+<!--
+    頁面架構會分為 選單 與 內容兩部分
+    內容會再依照頁面去選擇不同的功能頁面
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CsX Front 123</title>
+    <link rel="icon" href="assets/images/favicon.ico" />
+    <script src="modules/app.module.def.js"></script>
+
+    <script type="text/javascript" src="locales/app.locale.js"></script>
+    <script type="text/javascript" src="modules/app.module.profile.js"></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+  </head>
+
+  <body>
+    <!-- [新增] 靜態 Loading 元素，JS 載入前就會顯示 -->
+    <div id="initial-loader">
+      <div class="scan">
+        <img
+          src="assets/images/Group (3).svg"
+          alt="Loading..."
+          onerror="this.style.display = 'none'"
+        />
+        <div class="fingerprint">
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 擺放 navbar 的容器 -->
+
+    <div id="app" style="visibility: hidden; flex-direction: column">
+      <div id="navbar-container"></div>
+      <!-- 擺放sideber 的位置 -->
+      <div style="display: flex; height: calc(100vh - 72px)">
+        <div id="sidebar-nav-container"></div>
+        <div style="display: flex; flex-direction: column; flex: 1">
+          <div id="nav-container"></div>
+          <!-- /////////////////////////////////////////////////////////////////////-->
+          <!-- 實際內容-->
+          <div class="content">
+            <!-- _________________________________________________________________-->
+            <!-- Profile Modal 會透過 component 自動載入 -->
+            <!-- _________________________________________________________________-->
+          </div>
+        </div>
+      </div>
+      <!-- /////////////////////////////////////////////////////////////////////-->
+    </div>
+
+    <!-- 使用nav -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.nav.js"
+    ></script>
+    <!-- _________________________________________________________________-->
+    <!-- 使用 navbar -->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.navbar.js"
+    ></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <script
+      type="text/javascript"
+      src="components/app.component.frame.sidebar-nav.js"
+    ></script>
+
+    <!-- Profile Modal Component -->
+    <script
+      type="text/javascript"
+      src="components/app.component.profile.modal.js"
+    ></script>
+
+    <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+    <script type="text/javascript" src="views/app.view.profile.js"></script>
+  </body>
+</html>

@@ -1,0 +1,533 @@
+<!--
+    頁面架構會分為 選單 與 內容兩部分
+    內容會再依照頁面去選擇不同的功能頁面
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>License Management System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="assets/images/favicon.ico" />
+
+    <!-- 優先載入核心庫以避免 document.write 警告 -->
+    <script src="vender/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+
+    <script src="modules/app.module.def.js"></script>
+    <script type="text/javascript" src="locales/app.locale.js"></script>
+    <script type="text/javascript" src="modules/app.module.login.js"></script>
+
+    <!-- 使用sidebar 的樣式-->
+    <!-- <link rel="stylesheet" href="components/app.component.frame.sidebar-nav.css"> -->
+
+    <style>
+      #login_username::placeholder,
+      #login_password::placeholder {
+        color: #d1d5db !important;
+      }
+
+      #remember_me {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+        border-radius: 0.125rem;
+        appearance: none;
+        border: 1px solid #d9dde3;
+        cursor: pointer;
+      }
+
+      #remember_me:checked {
+        background-color: #ee963f;
+      }
+
+      #login_username:focus,
+      #login_password:focus {
+        outline: none;
+      }
+
+      #login_username,
+      #login_password {
+        color: #333 !important;
+      }
+
+      #login_username:-webkit-autofill,
+      #login_password:-webkit-autofill {
+        -webkit-text-fill-color: #333 !important;
+        -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+      }
+      .login-button:hover {
+        background-color: #ee963f !important;
+        transition: background-color 0.2s ease;
+      }
+      .login-button {
+        transition: background-color 0.2s ease;
+      }
+
+      /* [修正] 覆寫 loader CSS 中錯誤的圖片路徑，避免 404 錯誤 */
+      .fingerprint {
+        background-image: none !important; /* 暫時移除背景圖，若確認圖片位置可改為 url('assets/images/fingerPrint_01.png') */
+      }
+
+      /* [優化] 登入頁專屬排版，解決 RWD 寬度坍縮與手機版疊放問題 */
+      .login-layout {
+        background-color: #f1f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5rem;
+        min-height: 100vh;
+        width: 100%;
+      }
+      .login-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+      }
+      .login-white-box {
+        background-color: white;
+        width: 100%;
+        border-radius: 24px;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+      .login-brand {
+        margin-bottom: 5rem;
+      }
+      .login-brand p {
+        font-size: 50px;
+        font-weight: bold;
+        line-height: 1.2;
+        color: #214f7c;
+      }
+      @media (max-width: 850px) {
+        .login-layout {
+          flex-direction: column-reverse; /* 手機版將 Logo 移至上方 */
+          gap: 2rem;
+          padding: 2rem 1rem;
+        }
+        .login-brand {
+          margin-bottom: 0;
+          text-align: center;
+        }
+        .login-brand p {
+          font-size: 36px !important; /* 手機版字體縮小 */
+        }
+        .login-brand img {
+          max-width: 80%;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- [新增] 靜態 Loading 元素，JS 載入前就會顯示 -->
+    <div id="initial-loader">
+      <div class="scan">
+        <img
+          src="assets/images/Group (3).svg"
+          alt="Loading..."
+          onerror="this.style.display = 'none'"
+        />
+        <div class="fingerprint">
+          <span class="loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="app" style="visibility: hidden">
+      <!-- _________________________________________________________________-->
+      <!-- 實際內容-->
+      <div class="content login-layout">
+        <!-- 登入 -->
+        <div class="login-wrapper">
+          <div class="login-white-box">
+            <div class="page" id="page01" style="width: 100%">
+              <div>
+                <img
+                  src="assets/images/empia小-03 1.svg"
+                  style="
+                    display: block;
+                    padding: 20px 0px 10px 0px;
+                    margin: 0 auto;
+                  "
+                />
+              </div>
+              <div
+                role="main"
+                class="ui-content"
+                style="
+                  width: 100%;
+                  max-width: 464px;
+                  margin: 0 auto;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <!-- Username Field -->
+                <div style="display: flex; flex-direction: column">
+                  <label
+                    for="login_username"
+                    style="
+                      color: #898c94;
+                      font-size: 14px;
+                      box-sizing: border-box;
+                    "
+                    >{{common.member_cid}}</label
+                  >
+                  <input
+                    id="login_username"
+                    type="text"
+                    name="member_cid"
+                    placeholder="{{common.member_cid_input}}"
+                    value=""
+                    required
+                    style="
+                      font-size: 14px;
+                      width: 100%;
+                      border-radius: 23px;
+                      padding: 14px;
+                      border: 1px solid #d9dde3;
+                      margin-top: 5px;
+                      box-sizing: border-box;
+                    "
+                  />
+                </div>
+
+                <!-- Password Field -->
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    margin-top: 10px;
+                  "
+                >
+                  <label
+                    for="login_password"
+                    style="color: #898c94; font-size: 14px"
+                    >{{common.password}}</label
+                  >
+                  <div style="position: relative">
+                    <input
+                      id="login_password"
+                      type="password"
+                      name="password"
+                      placeholder="{{common.password_input}}"
+                      value=""
+                      required
+                      style="
+                        font-size: 14px;
+                        width: 100%;
+                        border-radius: 23px;
+                        padding: 14px;
+                        border: 1px solid #d9dde3;
+                        margin-top: 5px;
+                        box-sizing: border-box;
+                      "
+                    />
+                    <span
+                      id="password-eye-toggle"
+                      style="
+                        position: absolute;
+                        right: 15px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        cursor: pointer;
+                        padding-top: 5px;
+                      "
+                    >
+                      <img
+                        id="password-eye-icon"
+                        src="assets/images/passwordeyeclose.svg"
+                        alt=""
+                      />
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div
+                  style="display: flex; align-items: center; margin-top: 10px"
+                >
+                  <input type="checkbox" id="remember_me" />
+                  <label
+                    for="remember_me"
+                    style="color: #898c94; font-size: 14px; margin: 0"
+                    >{{login.remember_username}}</label
+                  >
+                </div>
+
+                <!-- Login Button -->
+                <div>
+                  <button
+                    type="submit"
+                    id="Login"
+                    style="
+                      width: 100%;
+                      background-color: #214f7c;
+                      color: white;
+                      padding: 0.5rem 0;
+                      border-radius: 23px;
+                      height: 48px;
+                      transition: all 0.2s ease;
+                      cursor: pointer;
+                      border: none;
+                      margin-top: 15px;
+                    "
+                    class="login-button"
+                  >
+                    {{login.login_submit}}
+                  </button>
+                </div>
+
+                <!-- Forgot Password -->
+                <div style="text-align: center">
+                  <button
+                    id="reset_password"
+                    class="link_text"
+                    style="
+                      color: #ee963f;
+                      margin-top: 15px;
+                      background: none;
+                      border: none;
+                      cursor: pointer;
+                      font-size: inherit;
+                    "
+                  >
+                    {{login.forget_password}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 重設密碼區塊 -->
+            <div class="page" id="page02" style="display: none; width: 100%">
+              <div>
+                <img
+                  src="assets/images/empia小-03 1.svg"
+                  style="
+                    display: block;
+                    padding: 20px 0px 10px 0px;
+                    margin: 0 auto;
+                  "
+                />
+              </div>
+              <div
+                role="main"
+                class="ui-content"
+                style="
+                  height: 400px;
+                  border: 5px;
+                  margin: 0 auto;
+                  width: 100%;
+                  max-width: 464px;
+                "
+              >
+                <table
+                  class=""
+                  style="position: relative; flex-direction: column"
+                >
+                  <tr style="display: flex; flex-direction: column">
+                    <td colspan="1">
+                      <label
+                        style="
+                          color: #898c94;
+                          font-size: 14px;
+                          box-sizing: border-box;
+                        "
+                        for="reset_password-username"
+                        >{{common.member_cid}}</label
+                      >
+                    </td>
+                    <td colspan="1">
+                      <input
+                        id="reset_password-username"
+                        type="text"
+                        name="reset_password-username"
+                        placeholder="{{common.member_cid}}"
+                        value=""
+                        required
+                        style="
+                          font-size: 14px;
+                          width: 100%;
+                          max-width: 464px;
+                          width: 100%;
+                          max-width: 464px;
+                          border-radius: 23px;
+                          padding: 14px;
+                          border: 1px solid #d9dde3;
+                          margin-top: 5px;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr style="display: flex; flex-direction: column">
+                    <td colspan="1">
+                      <label
+                        style="
+                          color: #898c94;
+                          font-size: 14px;
+                          margin-top: 10px;
+                        "
+                        for="reset_password-email"
+                        >{{common.email}}</label
+                      >
+                    </td>
+                    <td colspan="1">
+                      <input
+                        id="reset_password-email"
+                        type="text"
+                        name="reset_password-email"
+                        placeholder="{{common.email}}"
+                        value=""
+                        required
+                        style="
+                          font-size: 14px;
+                          width: 464px;
+                          border-radius: 23px;
+                          padding: 14px;
+                          border: 1px solid #d9dde3;
+                          margin-top: 5px;
+                        "
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <button
+                        type="submit"
+                        id="reset_password-send"
+                        style="
+                          width: 100%;
+                          background-color: #214f7c;
+                          color: white;
+                          padding: 0.5rem 0;
+                          border-radius: 23px;
+                          height: 48px;
+                          transition: all 0.2s ease;
+                          cursor: pointer;
+                          border: none;
+                          margin-top: 25px;
+                        "
+                        class="login-button"
+                      >
+                        {{common.send}}
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <button
+                        type="button"
+                        id="reset_password-cancel"
+                        style="
+                          width: 100%;
+                          background-color: #ffffff;
+                          color: #898c94;
+                          padding: 0.5rem 0;
+                          border-radius: 23px;
+                          height: 48px;
+                          transition: all 0.2s ease;
+                          cursor: pointer;
+                          border: 1px solid #d9dde3;
+                          margin-top: 10px;
+                        "
+                      >
+                        {{common.cancel}}
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              cursor: pointer;
+              display: flex;
+              position: relative;
+              margin-top: 15px;
+            "
+          >
+            <img src="assets/images/Default.svg" alt="" id="language-toggle" />
+            <div
+              id="language-selector"
+              style="
+                display: none;
+                position: absolute;
+                left: 60px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                min-width: 120px;
+              "
+            >
+              <button
+                onclick="changeLanguage('zh-tw')"
+                style="
+                  display: block;
+                  width: 100%;
+                  padding: 8px 16px;
+                  margin-bottom: 4px;
+                  background: none;
+                  border: none;
+                  text-align: left;
+                  cursor: pointer;
+                  border-radius: 4px;
+                  font-size: 14px;
+                  color: #333;
+                "
+              >
+                繁體中文
+              </button>
+              <button
+                onclick="changeLanguage('en-us')"
+                style="
+                  display: block;
+                  width: 100%;
+                  padding: 8px 16px;
+                  background: none;
+                  border: none;
+                  text-align: left;
+                  cursor: pointer;
+                  border-radius: 4px;
+                  font-size: 14px;
+                  color: #333;
+                "
+              >
+                English
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="login-brand">
+          <p>
+            License <br />
+            Management <br />
+            System
+          </p>
+          <img src="assets/images/Group.svg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 請把 view 的相關 js放最前面 以免render後導致監聽事件失效-->
+    <script type="text/javascript" src="views/app.view.login.js"></script>
+  </body>
+</html>
