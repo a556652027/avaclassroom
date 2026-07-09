@@ -13,6 +13,7 @@
 
     <ProfileModal />
     <OrganizationAddModal />
+    <OrganizationEditModal />
   </div>
 </template>
 
@@ -22,6 +23,7 @@ import AppSidebar from '@/components/AppSidebar.vue'
 import SecondaryNav from '@/components/SecondaryNav.vue'
 import ProfileModal from '@/components/ProfileModal.vue'
 import OrganizationAddModal from '@/components/OrganizationAddModal.vue'
+import OrganizationEditModal from '@/components/OrganizationEditModal.vue'
 </script>
 
 <style>

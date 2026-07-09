@@ -20,7 +20,8 @@ const routes = [
   { path: '/reset-password', name: 'reset-password', component: () => import('@/views/ResetPasswordView.vue'), meta: { public: true } },
   { path: '/home', name: 'home', component: () => import('@/views/HomeView.vue') },
   { path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardView.vue') },
-  { path: '/list-dashboard', name: 'list-dashboard', component: () => import('@/views/ListDashboardView.vue') },
+  // list_dashboard.html 與 dashboard.html 共用同一份 view 邏輯，直接重用
+  { path: '/list-dashboard', name: 'list-dashboard', component: () => import('@/views/DashboardView.vue') },
   { path: '/device', name: 'device', component: () => import('@/views/DeviceView.vue') },
   { path: '/member', name: 'member', component: () => import('@/views/MemberView.vue') },
   { path: '/organization', name: 'organization', component: () => import('@/views/OrganizationView.vue') },
