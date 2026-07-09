@@ -1,0 +1,37 @@
+/* d:\SVN\prg\front_end\ava-orbital_admin\Application\www\css\page\distributor_dashboard.css */
+
+/* 靜態 Loading 遮罩樣式 */
+#initial-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: opacity 0.3s ease-out;
+}
+#initial-loader .scan {
+  text-align: center;
+}
+#initial-loader img {
+  width: 300px;
+  height: 300px;
+  margin-bottom: 10px;
+}
+#initial-loader .loading-text {
+  font-size: 60px;
+  color: #92bfff;
+  font-family: sans-serif;
+  font-weight: bold;
+  animation: blink 1.5s infinite;
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

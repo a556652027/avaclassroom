@@ -1,0 +1,575 @@
+﻿﻿/*
+    框架
+*/
+
+/*-----------------------------------------------------------*/
+/* 顏色定義 */
+:root {
+  /* --main-bg-color: #58b2dc; */
+  /*主要背景色*/
+  --main-fg-color: #1e2d3d;
+  /*主要前景色*/
+  --main-fr-color: #006284;
+  /* 選到發亮 */
+  --tab-fg-color: #fcfaf2;
+  /* tab 置前 */
+  --tab-bg-color: #bdc0ba;
+  /* tab 置後 */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*-----------------------------------------------------------*/
+/* 背景圖片控制*/
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #f0f0f0, #d9d9d9);
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+@media (max-width: 1250px) {
+  body {
+    background-position:
+      98% 14%,
+      260px 70px;
+    /* background-size: 6%, cover; */
+  }
+}
+
+/* #代表用ID找 */
+#app {
+  display: flex;
+  /* flex-direction: column; */
+  /* 讓裡面的元素可以水平並排*/
+  width: 100%;
+  height: auto;
+  background: #ffffff;
+  color: #fff;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/*-----------------------------------------------------------*/
+.content {
+  width: 100%;
+  overflow: auto;
+  background-color: #ffffff;
+  padding: 2rem 2.5rem;
+  /* [RWD 修復] 統一桌面版內距，取代行內樣式 */
+  /* 內容超出時顯示滾動條 */
+  /* border: 1px solid black; */
+  /* 為了方便觀察，加上邊框 */
+  position: relative;
+  flex: 1;
+  /* [RWD 修復] 讓內容區塊填滿剩餘空間 */
+  min-height: 0;
+  /* [RWD 修復] 搭配 flex:1 與 overflow:auto 使用，確保在 flex 容器中能正確滾動 */
+}
+
+/* [RWD 修復] 響應式工具列 (取代寫死的 height: 70px) */
+.responsive-toolbar {
+  margin-top: 20px;
+  background: #e5e8ea;
+  min-height: 70px;
+  height: auto;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* 允許空間不夠時換行 */
+  gap: 10px;
+}
+
+.responsive-toolbar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* [RWD 修復] 手機版縮小 Padding，把空間還給表格，桌機版不受影響 */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem 0.5rem;
+  }
+
+  /* [RWD 修復] 空間極度受限時，隱藏裝飾性 Icon 把空間還給標題文字 */
+  .page-icon-container {
+    display: none !important;
+  }
+}
+
+/*-----------------------------------------------------------*/
+/*想要水平置中的放這個裡面*/
+.center_container {
+  table-layout: fixed;
+  /* 使用 flexbox 進行置中 */
+  justify-content: center;
+  /* 水平置中 */
+  align-items: center;
+  /* 垂直置中 */
+  width: auto;
+  height: auto;
+}
+
+.center_container table td,
+.center_container table th {
+  text-align: left;
+  vertical-align: middle;
+  /* 可選：設置邊框 測試為了讓框架可以被看到*/
+}
+
+/*-----------------------------------------------------------*/
+.page-content {
+  display: inline-block;
+  /* text-align: left; */
+  /* 避免內部文字也置中 */
+}
+
+/*-----------------------------------------------------------*/
+/*放置頁面最上方的資訊*/
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+/*-----------------------------------------------------------*/
+/*放置頁面的標題*/
+.page-caption {
+  width: 100%;
+  text-align: left;
+}
+
+.page-caption h1 {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 125%;
+  letter-spacing: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.page-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #404040;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-right: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.page-icon-container:hover {
+  background-color: #214f7c;
+}
+
+.page-icon {
+  width: auto;
+  height: auto;
+  max-width: 20px;
+  max-height: 20px;
+}
+
+.edit-button {
+  border: 1px solid #92bfff;
+  border-radius: 20px;
+  color: #374151;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button-trash {
+  border: 1px solid #de6565;
+  border-radius: 20px;
+  color: #374151;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #92bfff;
+  color: white;
+}
+
+.edit-button-trash:hover {
+  background-color: #de6565;
+  color: white;
+}
+
+.search-box {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  width: 150px;
+  height: 38px;
+  border-radius: 10px;
+  padding: 0 12px;
+  transition: background-color 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .search-box {
+    width: 284px;
+  }
+}
+
+.search-box:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.search-box-icon {
+  width: 16px;
+  height: 16px;
+  color: rgba(0, 0, 0, 0.2);
+  margin-right: 8px;
+  flex-shrink: 0;
+  /* [RWD 修復] 確保在極端擠壓下，放大鏡也不會變形 */
+}
+
+.search-box-input {
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  border: none;
+}
+
+@media (min-width: 1024px) {
+  .search-box-input {
+    display: block;
+  }
+}
+
+/*-----------------------------------------------------------*/
+/*放在裡面的東西 可以滾動*/
+.viewpoint-container {
+  width: 100%;
+  /* 或者指定固定寬度 */
+  /* height: 70vh; */
+  /* 設定高度為視窗高度的 auto */
+  overflow: auto;
+  /* 內容超出時顯示滾動條 */
+  border: 0px solid #ccc;
+}
+
+/*-----------------------------------------------------------*/
+/*排版框架*/
+.frame-table {
+  table-layout: fixed;
+  width: 100%; /* [RWD 修復] 確保表格不會因為內容過長而撐破父容器 */
+  /* 可選：設置表格寬度 */
+  border-collapse: collapse;
+  /* 可選：讓表格邊框合併 */
+}
+
+.frame-table td,
+.frame-table th {
+  /* display: flex; */
+  /* 讓 td 內的元素使用 flex 佈局 */
+  text-align: left;
+  /* 水平置中 */
+  /* 垂直置中 */
+  padding: 0.1rem 0;
+  /* 可選：增加內邊距，使內容不貼邊 */
+  /* border: 1px solid #ccc; */
+  /* 可選：設置邊框 測試為了讓框架可以被看到*/
+}
+
+.frame-table td input {
+  display: block;
+  /* 避免 inline 元素的额外间距 */
+  box-sizing: border-box;
+  /* 让 padding 也包含在宽度内 */
+}
+
+.frame-table td input::placeholder {
+  color: #d9dde3 !important;
+  /* 設定placeholder顏色 */
+}
+
+.frame-table td input:focus {
+  outline: none;
+  /* 移除預設的黑色邊框 */
+  border: 1px solid #d9dde3;
+  /* 保持原本的邊框顏色 */
+}
+
+/*-----------------------------------------------------------*/
+/*顯示區塊
+  label 文字 向左靠
+*/
+.block {
+  border: 2px solid #2c3e50;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+.block-float {
+  float: left;
+  /* 向左浮動 */
+  width: 50%;
+}
+
+.block p {
+  text-align: left;
+  font-weight: bold;
+  /* 將段落文字設定為粗體 */
+}
+
+.block label {
+  text-align: left;
+  /* border: 1px solid #2c3e50; 線框 */
+}
+
+.block-rounded {
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px #ccc;
+}
+
+.block:hover {
+  border: 2px solid #4980b6;
+  transform: scale(1.01);
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .block {
+    width: 100%;
+    /* 在小螢幕上佔據整行 */
+  }
+}
+
+/*-----------------------------------------------------------*/
+/*內容置中的樣式*/
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  /* 文字與圖片上下排列 */
+  align-items: center;
+  /* 水平置中 */
+  justify-content: center;
+  /* 垂直置中 */
+  text-align: center;
+  /* 文字置中 */
+  height: 100%;
+  /* 需要時設定高度以啟用垂直置中 */
+  padding: 0px;
+  /* 保持一點內距更好看 */
+}
+
+.centered-content table {
+  border-collapse: collapse;
+}
+
+.centered-content table td,
+.centered-content table th {
+  flex-direction: column;
+  /* 文字與圖片上下排列 */
+  align-items: center;
+  /* 水平置中 */
+  justify-content: center;
+  /* 垂直置中 */
+  text-align: center;
+  /* 文字置中 */
+}
+
+.centered-content div {
+  flex-direction: column;
+  /* 文字與圖片上下排列 */
+  align-items: center;
+  /* 水平置中 */
+  justify-content: center;
+  /* 垂直置中 */
+  text-align: center;
+  /* 文字置中 */
+}
+
+.centered-content button {
+  flex-direction: column;
+  /* 文字與圖片上下排列 */
+  align-items: center;
+  /* 水平置中 */
+  justify-content: center;
+  /* 垂直置中 */
+  text-align: center;
+  /* 文字置中 */
+}
+
+/*-----------------------------------------------------------*/
+/*元件的底板*/
+/* header filpswitch*/
+.ui-bar-inherit {
+  background-color: #ebebeb;
+}
+
+/*-----------------------------------------------------------*/
+/* 表單頭*/
+/* header */
+.ui-title {
+  background: linear-gradient(to bottom right, #004831, #004831);
+  color: #fff;
+  text-shadow: black 0.1em 0.1em 0.2em;
+  font-size: 20px !important;
+  width: 100%;
+  /*占滿全部 蓋掉底下的 .ui-bar-inherit */
+  height: 35px;
+  margin: 0 !important;
+  padding: 0;
+  position: relative;
+  font-weight: bold;
+  /* box-sizing:border-box; 內邊框 */
+  border-bottom: #abce03 10px solid !important;
+}
+
+.logo {
+  display: block;
+  width: 200px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.logo img {
+  width: 100%;
+  /* height: 65px; */
+  object-fit: cover;
+}
+
+.ui-title {
+  /* line-height: 2em !important; */
+  text-align: left !important;
+  padding-left: 220px !important;
+  font-size: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+@media (max-width: 1399px) {
+  .logo {
+    width: 180px;
+  }
+
+  .ui-title {
+    font-size: 22px !important;
+  }
+}
+
+/* 要把page 設為透明*/
+.ui-page {
+  background: transparent;
+}
+
+.ui-dialog {
+  background-image: none;
+}
+
+/*-----------------------------------------------------------*/
+/*  工具列   */
+@media (min-width: 40em) {
+  #panelLeft {
+    visibility: visible;
+    position: relative;
+    float: left;
+    transform: none !important;
+    box-shadow: none;
+    background-color: transparent;
+  }
+
+  #panelLeft::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  .ui-panel-inner {
+    width: 13em !important;
+    left: -13.5rem;
+    transition: 0.7s !important;
+  }
+
+  .ui-panel-inner:hover {
+    left: 0;
+  }
+
+  .content-right {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .panel-btn {
+    visibility: hidden;
+  }
+
+  .ui-li-static.ui-collapsible {
+    padding: 0;
+    background:
+      url(../assets/images/panel_background.png),
+      linear-gradient(to bottom left, #ebebeb, #ebebeb);
+    text-indent: 55px;
+    box-shadow: 4px 4px 4px rgba(10%, 10%, 10%, 0.7);
+    text-shadow: black 0.1em 0.1em 0.2em;
+    margin: 9px 5px;
+    border: 0px black solid;
+    border-radius: 5px;
+    width: 220px;
+  }
+
+  .ui-li-static.ui-collapsible>.ui-collapsible-heading {
+    margin: 0;
+  }
+
+  .ui-li-static.ui-collapsible>.ui-collapsible-heading>.ui-btn {
+    border-top-width: 0;
+    background:
+      url(../assets/images//button01_00.png) no-repeat,
+      var(--main-fg-color);
+    font-size: 18px;
+    height: 20px;
+  }
+
+  .ui-li-static.ui-collapsible>.ui-collapsible-content {
+    border-bottom-width: 0;
+  }
+}

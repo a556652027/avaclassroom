@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+.reportpop {
+  z-index: 2000;
+  position: absolute;
+  top: 15px;
+  right: 5px;
+  font-size: 22px;
+  border: none;
+  cursor: pointer;
+  /* filter: invert(1); */
+}
+/* .reportpop:hover {
+  animation: bounce 0.75s infinite;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    right: 10px;
+  }
+  50% {
+    right: 15px;
+  }
+  70% {
+    right: 0px;
+  }
+} */
+@media (min-width: 1366px) {
+  .reportpop {
+    top: 10px;
+    right: 10px;
+  }
+}
+@media (max-width: 1365px) {
+  .reportpop {
+    top: 10px;
+    right: 10px;
+  }
+}
+canvas {
+  z-index: 78787878;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* .bgwrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  z-index: 99999999999999;
+}
+.bgwrap:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(3, 0, 10);
+  mix-blend-mode: soft-light;
+}
+.bgwrap img#bg,
+.bgwrap img#moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  animation: bg 7s linear;
+}
+.bgwrap img#moon {
+  animation: moon 8s linear;
+}
+.bgwrap img#cloud1 {
+  position: absolute;
+  top: 100px;
+  left: 50px;
+  max-width: 600px;
+  z-index: 2;
+  animation: cloud 8s linear;
+}
+.bgwrap img#cloud2 {
+  position: absolute;
+  top: 200px;
+  right: 50px;
+  max-width: 600px;
+  z-index: 2;
+  animation: cloud 8s linear;
+}
+.bgwrap img#santa {
+  position: absolute;
+  bottom: 50px;
+  left: -600px;
+  z-index: 1;
+  max-width: 600px;
+  transform: scale(0.5);
+  animation: santa 6s linear;
+  filter: invert(0.97);
+}
+.bgwrap #tree {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 266px;
+  background-image: url(../images/tree.png);
+  background-position-y: 266px;
+  background-position-x: 0px;
+  z-index: 10;
+  animation: tree 7s linear;
+}
+.bgwrap #text1 {
+  position: absolute;
+  bottom: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 1000px;
+  height: 90px;
+  object-fit: cover;
+  z-index: 9;
+  animation: text1 7s linear;
+}
+.bgwrap #text2 {
+  position: absolute;
+  bottom: 25vh;
+  left: 50%;
+  max-width: 420px;
+  height: 30px;
+  object-fit: cover;
+  z-index: 11;
+  animation: text 7s linear;
+  animation-delay: 3.4s;
+  opacity: 0;
+}
+@keyframes santa {
+  0% {
+    bottom: 70px;
+    left: -300px;
+    transform: scale(0.5);
+  }
+  25% {
+    bottom: 160px;
+  }
+  50% {
+    bottom: 270px;
+  }
+  70% {
+    bottom: 390px;
+  }
+  100% {
+    bottom: 600px;
+    left: 120%;
+    transform: scale(1.5);
+  }
+}
+@keyframes bg {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(2);
+  }
+}
+@keyframes moon {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+@keyframes tree {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-45%);
+  }
+}
+@keyframes cloud {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-75%);
+  }
+}
+@keyframes text1 {
+  0% {
+    transform: translate(-50%, 0);
+  }
+  40%,
+  100% {
+    transform: translate(-50%, calc(-50vh - 300px));
+  }
+}
+@keyframes text {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  40%,
+  100% {
+    opacity: 1;
+  }
+} 
+*/
+
+.bgwrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  z-index: 99999999999999;
+}
+.bgwrap .box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background: #222;
+}
+
+.bgwrap .box::before {
+  content: '';
+  position: absolute;
+  width: 30vw;
+  height: 30vw;
+  border: 5vw solid #ff1062;
+  border-radius: 50%;
+  box-shadow: 0 0 1vw #222, 0 0 1.5vw #fff;
+}
+
+.bgwrap .title {
+  color: #fff;
+  font-size: 6vw;
+  text-align: center;
+  line-height: 2em;
+  z-index: 10;
+  transform: skewY(-7deg);
+  text-shadow: 1px 1px 0 #ccc, 2px 2px 0 #ccc, 3px 3px 0 #ccc, 4px 4px 0 #ccc,
+    5px 5px 0 #ccc, 1px 1px 0 #ccc, 10px 10px 0 rgba(0, 0, 0, 0.2);
+  animation: f 5s ease-in-out infinite;
+}
+@keyframes f {
+  0%,
+  100% {
+    transform: skewY(-7deg) translateY(-20px);
+  }
+  50% {
+    transform: skewY(-7deg) translateY(20px);
+  }
+}
+.title .year {
+  font-weight: 700;
+  font-size: 3em;
+  text-shadow: 1px 1px 0 #ccc, 2px 2px 0 #ccc, 3px 3px 0 #ccc, 4px 4px 0 #ccc,
+    5px 5px 0 #ccc, 6px 6px 0 #ccc, 7px 7px 0 #ccc, 8px 8px 0 #ccc,
+    9px 9px 0 #ccc, 10px 10px 0 rgba(0, 0, 0, 0.2);
+}
+.box i {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff, 0 0 80px #fff;
+  animation: s linear infinite;
+}
+@keyframes s {
+  0% {
+    opacity: 1;
+  }
+  1% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

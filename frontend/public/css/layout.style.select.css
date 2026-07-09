@@ -1,0 +1,54 @@
+﻿﻿select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* 移除預設樣式 */
+  padding: 8px 32px 8px 12px;
+  /* 減少 padding，從而減少高度 */
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  /* 將段落文字大小設定為父元素字體大小的 80% */
+  background-color: #ffffff;
+  cursor: pointer;
+  width: 100%;
+  min-width: 120px;
+  height: 38px;
+  color: #374151;
+  /* 設定寬度 */
+
+  /* 使用 SVG 作為背景圖來繪製箭頭 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #214f7c;
+  /* focus 時的邊框顏色 */
+  box-shadow: 0 0 0 3px rgba(33, 79, 124, 0.1);
+  /* focus 時的陰影效果 */
+}
+
+/* 下拉箭頭樣式 */
+select::-ms-expand {
+  display: none;
+  /* IE11 */
+}
+
+select::after {
+  content: none;
+}
+
+/* option 樣式 */
+option {
+  padding: 8px 20px;
+  /*font-size: 8px;*/
+}
+
+option:hover {
+  background-color: #346a9f;
+  /* hover 時的背景顏色 */
+}

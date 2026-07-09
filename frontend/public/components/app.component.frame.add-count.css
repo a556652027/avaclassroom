@@ -1,0 +1,160 @@
+/* 全域 */
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: #f9f9f9;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.form-box {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  padding: 32px;
+  border-radius: 15px;
+  width: 800px;
+  max-width: 90vw;
+  height: auto;
+}
+
+/* 標題列 */
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  cursor: pointer;
+}
+
+/* 表單欄位 */
+.form-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.form-field {
+  grid-column: span 3;
+}
+
+.form-field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #898c94;
+  margin-bottom: 8px;
+}
+
+.form-field input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #000;
+  outline: none;
+}
+
+/* 密碼輸入 */
+.input-wrapper {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 36px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* 按鈕 */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+.btn {
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e5e8ea;
+}
+
+.btn.cancel {
+  background: #fff;
+  color: #898c94;
+  width: 130px;
+  height: 48px;
+  margin-right: 20px;
+}
+
+.btn.cancel:hover {
+  background: #e5e8ea;
+}
+
+.btn.save {
+  background: #214f7c;
+  color: #fff;
+  width: 270px;
+  height: 48px;
+}
+
+.btn.save:hover {
+  background: #ee963f;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .form-box {
+    padding: 20px;
+    width: 100%;
+    margin: 20px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-field {
+    grid-column: span 1;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .btn {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+}

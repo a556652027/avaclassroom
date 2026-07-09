@@ -1,0 +1,436 @@
+/* Edit List 專用樣式 - 使用高優先級選擇器 */
+#edit-list-container .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+  width: 100%;
+  height: 100%;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+  width: 100%;
+  height: 100%;
+}
+
+#edit-list-container .form-box {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  width: fit-content;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.form-box {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  width: fit-content;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+/* 標題列 */
+#edit-list-container .form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#edit-list-container .header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#edit-list-container .header-left span {
+  font-size: 24px;
+  font-weight: 600;
+  color: #404040;
+}
+
+.header-left span {
+  font-size: 24px;
+  font-weight: 600;
+  color: #404040;
+}
+
+#edit-list-container .close-btn {
+  cursor: pointer;
+}
+
+.close-btn {
+  cursor: pointer;
+}
+
+/* 表單網格 */
+#edit-list-container .form-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.form-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+#edit-list-container .form-field {
+  grid-column: span 6;
+}
+
+.form-field {
+  grid-column: span 6;
+}
+
+#edit-list-container .form-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #898c94;
+  margin-bottom: 0.5rem;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #898c94;
+  margin-bottom: 0.5rem;
+}
+
+#edit-list-container .flex-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.flex-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 輸入框 */
+#edit-list-container .date-input,
+#edit-list-container .textarea-input {
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  outline: none;
+}
+
+.date-input,
+.textarea-input {
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  outline: none;
+}
+
+#edit-list-container .text-input {
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  outline: none;
+}
+
+.text-input {
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  font-size: 14px;
+  outline: none;
+}
+
+#edit-list-container .date-input {
+  width: 200px;
+  height: 38px;
+  cursor: pointer;
+}
+.date-input {
+  width: 200px;
+  height: 38px;
+  cursor: pointer;
+}
+
+#edit-list-container .text-input {
+  width: 425px;
+}
+.text-input {
+  width: 425px;
+}
+
+#edit-list-container .textarea-input {
+  width: 720px;
+  max-width: 100%;
+  height: 80px;
+  resize: vertical;
+}
+.textarea-input {
+  width: 720px;
+  max-width: 100%;
+  height: 80px;
+  resize: vertical;
+}
+
+/* 上傳區 */
+#edit-list-container .upload-trigger {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem 2rem !important;
+  border: 1px dashed #92bfff !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.upload-trigger {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem 2rem !important;
+  border: 1px dashed #92bfff !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+#edit-list-container .upload-trigger img {
+  width: 24px !important;
+  height: 24px !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.upload-trigger img {
+  width: 24px !important;
+  height: 24px !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#edit-list-container .upload-trigger p {
+  color: #404040 !important;
+  font-size: 14px !important;
+}
+
+.upload-trigger p {
+  color: #404040 !important;
+  font-size: 14px !important;
+}
+
+#edit-list-container .upload-trigger span {
+  color: #92bfff !important;
+  text-decoration: underline !important;
+  font-size: 14px !important;
+}
+.upload-trigger span {
+  color: #92bfff !important;
+  text-decoration: underline !important;
+  font-size: 14px !important;
+}
+
+#edit-list-container .hidden {
+  display: none !important;
+}
+.hidden {
+  display: none !important;
+}
+
+/* 上傳中 */
+#edit-list-container .uploading {
+  display: none !important;
+  margin-top: 1rem !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border: 1px solid #92bfff !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+}
+.uploading {
+  display: none !important;
+  margin-top: 1rem !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border: 1px solid #92bfff !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+}
+
+#edit-list-container .progress-bar {
+  width: 12rem !important;
+  height: 0.5rem !important;
+  background: linear-gradient(to right, #92bfff, #d1e7ff) !important;
+  border-radius: 9999px !important;
+  animation: pulse 2s infinite !important;
+}
+.progress-bar {
+  width: 12rem !important;
+  height: 0.5rem !important;
+  background: linear-gradient(to right, #92bfff, #d1e7ff) !important;
+  border-radius: 9999px !important;
+  animation: pulse 2s infinite !important;
+}
+
+#edit-list-container .uploading p {
+  margin-top: 0.5rem !important;
+  font-size: 14px !important;
+  color: #404040 !important;
+}
+.uploading p {
+  margin-top: 0.5rem !important;
+  font-size: 14px !important;
+  color: #404040 !important;
+}
+
+/* 上傳完成 */
+#edit-list-container .uploaded {
+  display: none !important;
+  margin-top: 1rem !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border: 1px solid #92bfff !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+}
+
+/* 上傳完成 */
+.uploaded {
+  display: none !important;
+  margin-top: 1rem !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border: 1px solid #92bfff !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+}
+
+#edit-list-container .uploaded img {
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 0.5rem !important;
+}
+.uploaded img {
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#edit-list-container .uploaded button {
+  font-size: 14px !important;
+  color: #404040 !important;
+  text-decoration: underline !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.uploaded button {
+  font-size: 14px !important;
+  color: #404040 !important;
+  text-decoration: underline !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+/* 按鈕 */
+#edit-list-container .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.75rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.75rem;
+}
+
+#edit-list-container .btn {
+  font-size: 14px;
+  width: 130px;
+  height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e5e8ea;
+}
+
+.btn {
+  font-size: 14px;
+  width: 130px;
+  height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e5e8ea;
+}
+
+#edit-list-container .btn.cancel {
+  background: #fff;
+  color: #898c94;
+  margin-right: 1.25rem;
+}
+
+#edit-list-container .btn.cancel:hover {
+  background: #e5e8ea;
+}
+
+#edit-list-container .btn.save {
+  background: #214f7c;
+  color: #fff;
+}
+
+#edit-list-container .btn.save:hover {
+  background: #ee963f;
+}
+
+.btn.cancel {
+  background: #fff;
+  color: #898c94;
+  margin-right: 1.25rem;
+}
+
+.btn.cancel:hover {
+  background: #e5e8ea;
+}
+
+.btn.save {
+  background: #214f7c;
+  color: #fff;
+}
+
+.btn.save:hover {
+  background: #ee963f;
+}
+
+/* 動畫 */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

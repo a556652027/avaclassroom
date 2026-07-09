@@ -1,0 +1,474 @@
+/*  
+    當前使用的各種通用元件
+*/
+
+/*----------------------------------------------------------
+    label
+    Default label styling
+*/
+
+label {
+  color: #b4886b;
+  font-weight: bold;
+  float: left;
+}
+
+/* 浮動邊框型 Label（hover 突顯）*/
+.label-style-1 {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  color: #444;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.label-style-1:hover {
+  color: white;
+  background-color: #0d5661; /* 主色請自行調整 */
+}
+
+/* 漸變圓角 Badge（吸睛效果）*/
+.label-style-default,
+.label-style-2 {
+  padding: 4px 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(to right, #0d5661, #258790);
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.label-style-default:hover,
+.label-style-2:hover {
+  transform: scale(1.05);
+}
+
+/* 狀態色條型 Label（左側條色）*/
+.label-style-3 {
+  display: inline-block;
+  padding: 5px 12px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* 狀態色條型 Label（左側條色） */
+.label-style-4 {
+  display: inline-block;
+  position: relative;
+  padding: 5px 10px 5px 16px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  color: #444;
+  font-weight: 600;
+  border-left: 5px solid #0d5661; /* 調整顏色即可 */
+}
+
+/* 文字縮放進場動畫 Label */
+.label-style-5 {
+  padding: 5px 12px;
+  font-weight: bold;
+  color: white;
+  background-color: #0d5661;
+  border-radius: 6px;
+  animation: popIn 0.4s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/*----------------------------------------------------------
+    button 
+    Default button styling - this applies to all anchors with the .button class 
+    各種button的樣式放這邊
+*/
+
+/* 這個專案的 按鈕*/
+.image_button_default,
+.image_button_005 {
+  /*
+    background-image: -moz-linear-gradient(#cae387, #5DAC81);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5DAC81), to(#cae387));
+    background-image: -webkit-linear-gradient(#cae387, #5DAC81);
+    background-image: -o-linear-gradient(#cae387, #5DAC81);
+    border-radius: 15px !important;
+    border: 1px solid #D9E4E6;
+    box-shadow: 0px 5px 4px #000;
+    */
+  display: flex;
+  align-items: center;
+  /* 垂直置中 */
+  justify-content: center;
+  /* 水平置中，可選 */
+  background: url(../assets/images//button05_00.png) no-repeat,
+    linear-gradient(to left, #0089a7, var(--main-fr-color));
+  background-size: auto;
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  text-shadow: black 0.2em 0.2em 0.4em;
+  color: #fff;
+  border: 2px #bdc0ba solid;
+  border-radius: 5px;
+  box-shadow: 0px 5px 4px #000;
+  margin: 0px;
+  /*間距 上 右 下 左*/
+}
+
+.image_button_default:hover,
+.image_button_005:hover {
+  display: flex;
+  align-items: center;
+  /* 垂直置中 */
+  justify-content: center;
+  /* 水平置中，可選 */
+  background: url(../assets/images//button05_00.png) no-repeat,
+    linear-gradient(to left, #0089a7, var(--main-fg-color));
+  padding: 8px;
+  font-size: 18px;
+  background-size: auto;
+  border: 2px #bdc0ba solid;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+/*-----------------------------------------------------------*/
+/*  link_text   */
+/* 超連結的 文字*/
+.link_text {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  color: #404040;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.link_text:hover {
+  background: none;
+  border: none;
+  /* text-decoration: underline; */
+  text-decoration: none;
+  /* font-weight: bold; */
+}
+
+/*-----------------------------------------------------------*/
+/* 偽裝成超連結的 按鈕*/
+.link_button {
+  background: url(../assets/images//button05_00.png) no-repeat,
+    linear-gradient(to left, #86c166, var(--main-fr-color));
+  background-size: auto;
+  width: 95%;
+  height: 40px;
+  font-size: 14px;
+  text-shadow: black 0.2em 0.2em 0.4em;
+  color: #fff;
+  border: 1px var(--main-bg-color) solid;
+  border-radius: 5px;
+  box-shadow: 0px 5px 4px #000;
+  margin: 0px;
+  /*間距 上 右 下 左*/
+}
+
+.link_button:hover {
+  background: url(../assets/images//button05_00.png) no-repeat,
+    linear-gradient(to left, #86c166, var(--main-fg-color));
+  background-size: auto;
+  border: 1px #3abfb7 solid;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+/*----------------------------------------------------------
+    select
+    Default select styling - this applies to all anchors with the .button class 
+    各種button的樣式放這邊
+*/
+
+select {
+  appearance: none;
+  /* 移除預設樣式 */
+  padding: 5px 10px;
+  /* 減少 padding，從而減少高度 */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.8em;
+  /* 將段落文字大小設定為父元素字體大小的 80% */
+  background-color: #f9f9f9;
+  cursor: pointer;
+  width: 100px;
+  /* 設定寬度 */
+}
+
+select:focus {
+  outline: none;
+  border-color: #bdc0ba;
+  /* focus 時的邊框顏色 */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  /* focus 時的陰影效果 */
+}
+
+/* 下拉箭頭樣式 */
+select::-ms-expand {
+  display: none;
+  /* IE11 */
+}
+
+select::after {
+  content: "\25BC";
+  /* 下拉箭頭符號 */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  /* 防止箭頭影響點擊 */
+}
+
+/* -------------------- Select Box Styles: bavotasan.com Method (with special adaptations by ericrasch.com) */
+/* -------------------- Source: http://bavotasan.com/2011/style-select-box-using-only-css/ */
+.styled-select {
+  clear: inherit;
+  height: 30px;
+  overflow: hidden;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.styled-select select {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  height: 30px;
+  padding: 5px;
+  /* If you add too much padding here, the options won't show in IE */
+  width: 95%;
+}
+
+.styled-select option:disabled {
+  color: #ddd;
+  font-weight: bold;
+}
+
+/*
+    .styled-select.slate {
+        background: url(http://i62.tinypic.com/2e3ybe1.jpg) no-repeat right center;
+        height: 30px;
+        width: 90%;
+    }
+
+
+        .styled-select.slate select {
+            border: 1px solid #ccc;
+            font-size: 16px;
+            height: 30px;
+            width: 90%;
+        }
+        */
+
+/* -------------------- Rounded Corners */
+.rounded {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.semi-square {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+/* -------------------- Colors: Background */
+.slate {
+  background-color: #ddd;
+}
+
+.green {
+  background-color: #00896c;
+  -webkit-box-shadow: 0px 5px 4px #000;
+  -moz-box-shadow: 0px 5px 4px #000;
+  box-shadow: 0px 5px 4px #000;
+}
+
+.green:hover {
+  background-color: #5dac81;
+}
+
+.green option {
+  background-color: #000;
+}
+
+.blue {
+  background-color: #3b8ec2;
+  -webkit-box-shadow: 0px 5px 4px #000;
+  -moz-box-shadow: 0px 5px 4px #000;
+  box-shadow: 0px 5px 4px #000;
+}
+
+.blue option {
+  background-color: #000;
+}
+
+.blue:hover {
+  background-color: #6ec4f7;
+}
+
+.yellow {
+  background-color: #eec111;
+}
+
+.black {
+  background-color: #000;
+}
+
+/* -------------------- Colors: Text #1a3d84*/
+.slate select {
+  color: #000;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.green select {
+  color: #fff;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.blue select {
+  color: #fff;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.yellow select {
+  color: #000;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.black select {
+  color: #fff;
+  text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+/* -------------------- Select Box Styles: danielneumann.com Method */
+/* -------------------- Source: http://danielneumann.com/blog/how-to-style-dropdown-with-css-only/ */
+#mainselection select {
+  border: 0;
+  color: #eee;
+  background: transparent;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 2px 10px;
+  width: 80%;
+  /* *width: 350px;*/
+  /* *background: #58B14C; */
+  /* -webkit-appearance: none; */
+}
+
+#mainselection {
+  overflow: hidden;
+  width: 350px;
+  -moz-border-radius: 9px 9px 9px 9px;
+  -webkit-border-radius: 9px 9px 9px 9px;
+  border-radius: 9px 9px 9px 9px;
+  box-shadow: 1px 1px 11px #330033;
+  background: #58b14c url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll
+    319px center;
+}
+
+/* -------------------- Select Box Styles: stackoverflow.com Method */
+/* -------------------- Source: http://stackoverflow.com/a/5809186 */
+select#soflow,
+select#soflow-color {
+  -webkit-appearance: button;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  /*-webkit-padding-end: 20px;*/
+  -webkit-padding-start: 2px;
+  -webkit-user-select: none;
+  /*background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);*/
+  background-color: #000;
+  background-position: 97% center;
+  background-repeat: no-repeat;
+  border: 1px solid #aaa;
+  color: #555;
+  font-size: inherit;
+  margin: 20px;
+  overflow: hidden;
+  padding: 5px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 80%;
+}
+
+select#soflow-color {
+  color: #fff;
+  background-image: url(http://i62.tinypic.com/15xvbd5.png),
+    -webkit-linear-gradient(#779126, #779126 40%, #779126);
+  background-color: #779126;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  padding-left: 15px;
+}
+
+/*-----------------------------------------------------------*/
+/* option 樣式 */
+option {
+  padding: 8px 20px;
+  /*font-size: 8px;*/
+}
+
+option:hover {
+  background-color: #346a9f;
+  /* hover 時的背景顏色 */
+}
+
+/*-----------------------------------------------------------*/
+/* filpswitch */
+.ui-flipswitch.ui-flipswitch-active {
+  background-color: #38c;
+}
+
+.disabled {
+  filter: grayscale(100%);
+  /* 變成灰階 */
+  opacity: 0.5;
+  /* 透明度降低 */
+  pointer-events: none;
+  /* 無法點擊 */
+  cursor: not-allowed;
+  /* 滑鼠顯示禁止符號 */
+}
+
+/*-----------------------------------------------------------*/
+/* 拖曳檔案 */
+#dropzone {
+  border: 1px dashed #92bfff;
+  border-radius: 12px;
+  min-height: 120px;
+  background: #ffffff;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  user-select: none;
+}
+#dropzone.highlight {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
