@@ -267,10 +267,15 @@ async function SelectDeviceSpec003(retryCount = 0, callback = null) {
     }
 
     const json_object = currentYearResult.value
-    const json_tablesi = json_object.records
+    const json_tablesi = json_object?.records && typeof json_object.records === 'object' ? json_object.records : {}
     const field_count = Object.keys(json_tablesi).length
+    const hasChartRows =
+      Array.isArray(json_tablesi.record_state) ||
+      Array.isArray(json_tablesi.device_count) ||
+      Array.isArray(json_tablesi.active_time) ||
+      Array.isArray(json_tablesi.spec04)
 
-    if (field_count == 0) {
+    if (field_count == 0 || !hasChartRows) {
       showNoDataMessage()
     } else {
       // 1. 計算今年基礎數據

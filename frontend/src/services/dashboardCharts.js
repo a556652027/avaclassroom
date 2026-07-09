@@ -9,13 +9,42 @@ export const lineChartExport = {
   imageBase64: null,
 }
 
+function normalizeDashboardData(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return {
+      recordState: [],
+      spec04: [],
+      deviceCount: [],
+      activeTime: [],
+    }
+  }
+
+  const readArray = (key) => {
+    const value = data[key]
+    return Array.isArray(value) ? value : []
+  }
+
+  return {
+    recordState: readArray('record_state'),
+    spec04: readArray('spec04'),
+    deviceCount: readArray('device_count'),
+    activeTime: readArray('active_time'),
+  }
+}
+
+function hasRenderableChartData(data) {
+  const normalized = normalizeDashboardData(data)
+  return normalized.recordState.length > 0 || normalized.deviceCount.length > 0 || normalized.spec04.length > 0 || normalized.activeTime.length > 0
+}
+
 // 算出 啟動/撤銷 數量 (原 GetStateCount)
 export function GetStateCount(data, state) {
+  const normalized = normalizeDashboardData(data)
   let di = 0
   let total_count = 0
-  for (let value of data['record_state']) {
+  for (let value of normalized.recordState) {
     if (value == state) {
-      total_count += Number(data['device_count'][di])
+      total_count += Number(normalized.deviceCount[di] || 0)
     }
     di++
   }
@@ -71,6 +100,12 @@ export function destroyCharts(canvases) {
 
 // 畫出設備條件0003圓餅圖 (原 RenderDevice003PieChart)
 export function RenderDevice003PieChart(canvas, data) {
+  const normalized = normalizeDashboardData(data)
+  if (!canvas || !hasRenderableChartData(normalized)) {
+    showNoDataOnCharts([canvas])
+    return
+  }
+
   // 先整理資料
   let labels = []
   let datasets_data = []
@@ -81,11 +116,11 @@ export function RenderDevice003PieChart(canvas, data) {
     let device_model_count = new Map()
     {
       let di = 0
-      for (let value of data['record_state']) {
-        // 判斷 record_state 是否為 0 或是 1
-        if (value != '0') {
-          let spec_model = data['spec04'][di]
-          let device_count = Number(data['device_count'][di])
+      for (let value of normalized.recordState) {
+        // 原版 Dashboard 圓餅圖僅排除已撤銷狀態 -1，保留 0 或 1 作為平台機型分佈
+        if (String(value) !== '-1') {
+          let spec_model = normalized.spec04[di]
+          let device_count = Number(normalized.deviceCount[di] || 0)
 
           // 將空字串或空值顯示為 "Other"
           if (!spec_model || spec_model.trim() === '') {
@@ -129,6 +164,11 @@ export function RenderDevice003PieChart(canvas, data) {
       datasets_border_color.push('#ffffff')
       colorIndex++
     }
+  }
+
+  if (!datasets_data.length) {
+    showNoDataOnCharts([canvas])
+    return
   }
 
   Chart.register(ChartDataLabels)
@@ -207,15 +247,26 @@ export function RenderDevice003PieChart(canvas, data) {
 
 // 畫出設備條件0003長條圖 (原 RenderDevice003BarChart)
 export function RenderDevice003BarChart(canvas, data) {
+  const normalized = normalizeDashboardData(data)
+  if (!canvas || !hasRenderableChartData(normalized)) {
+    showNoDataOnCharts([canvas])
+    return
+  }
+
   // 過濾並整理資料
-  const filteredData = data.active_time
+  const filteredData = normalized.activeTime
     .map((time, index) => ({
       time,
-      count: Number(data.device_count[index]),
-      spec: data.spec04[index],
-      state: data.record_state[index],
+      count: Number(normalized.deviceCount[index] || 0),
+      spec: normalized.spec04[index],
+      state: normalized.recordState[index],
     }))
-    .filter((item) => item.state === '1')
+    .filter((item) => String(item.state) === '1')
+
+  if (filteredData.length === 0) {
+    showNoDataOnCharts([canvas])
+    return
+  }
 
   const allMonths = [...new Set(filteredData.map((d) => d.time))].sort()
 
@@ -278,15 +329,26 @@ export function RenderDevice003BarChart(canvas, data) {
 
 // 畫出設備條件0003折線圖 (原 RenderDevice003LineChart，累積計算)
 export function RenderDevice003LineChart(canvas, data, isExportSource) {
+  const normalized = normalizeDashboardData(data)
+  if (!canvas || !hasRenderableChartData(normalized)) {
+    showNoDataOnCharts([canvas])
+    return
+  }
+
   // 過濾並整理資料
-  const filteredData = data.active_time
+  const filteredData = normalized.activeTime
     .map((time, index) => ({
       time,
-      count: Number(data.device_count[index]),
-      spec: data.spec04[index],
-      state: data.record_state[index],
+      count: Number(normalized.deviceCount[index] || 0),
+      spec: normalized.spec04[index],
+      state: normalized.recordState[index],
     }))
-    .filter((item) => item.state === '1')
+    .filter((item) => String(item.state) === '1')
+
+  if (filteredData.length === 0) {
+    showNoDataOnCharts([canvas])
+    return
+  }
 
   const allMonths = [...new Set(filteredData.map((d) => d.time))].sort()
 

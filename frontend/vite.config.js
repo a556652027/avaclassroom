@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// 開發時將 /orbital 與 /backend 轉發至本地 API (與舊版 www 的 127.0.0.1:8023 行為一致)
+// 開發時將 /orbital 與 /backend 代理到可用的後端服務，讓前端可直接測試登入與管理功能
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -13,8 +13,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/orbital': { target: 'http://127.0.0.1:8023', changeOrigin: true },
-      '/backend': { target: 'http://127.0.0.1:8023', changeOrigin: true },
+      '/orbital': { target: 'https://lms.narvitech.com', changeOrigin: true, secure: false },
+      '/backend': { target: 'https://lms.narvitech.com', changeOrigin: true, secure: false },
     },
   },
 })
