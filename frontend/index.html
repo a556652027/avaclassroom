@@ -27,7 +27,9 @@
     <link rel="stylesheet" href="/components/avaclassroom-nav/avaclassroom.css" />
   </head>
   <body>
-    <div id="app"></div>
+    <!-- flex-direction: column 對應原 www 各頁 <div id="app"> 的行內樣式
+         (utility.css 的 #app 是 display:flex 橫向，缺這行整頁會縮成內容寬) -->
+    <div id="app" style="flex-direction: column"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

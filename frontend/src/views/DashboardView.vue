@@ -162,7 +162,9 @@ const beginTime = ref('')
 const endTime = ref('')
 const targetTime = ref('')
 const targetCount = ref('0')
-const searchSpec = ref('%%') // 原 space_num 預設值
+// 原 dashboard_device_001-space_num 隱藏下拉的預設值為 "4" (要求後端回傳 spec04 機型欄位)；
+// 若送 '%%' 後端不會回機型資料，導致圓餅圖全部歸類 Other、折線圖只剩 undefined 一條線
+const searchSpec = ref('4')
 
 const activatedCount = ref(0)
 const revokedCount = ref(0)
