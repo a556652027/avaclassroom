@@ -101,7 +101,7 @@ export function destroyCharts(canvases) {
 // 畫出設備條件0003圓餅圖 (原 RenderDevice003PieChart)
 export function RenderDevice003PieChart(canvas, data) {
   const normalized = normalizeDashboardData(data)
-  if (!canvas || !hasRenderableChartData(normalized)) {
+  if (!canvas || !hasRenderableChartData(data)) {
     showNoDataOnCharts([canvas])
     return
   }
@@ -248,7 +248,7 @@ export function RenderDevice003PieChart(canvas, data) {
 // 畫出設備條件0003長條圖 (原 RenderDevice003BarChart)
 export function RenderDevice003BarChart(canvas, data) {
   const normalized = normalizeDashboardData(data)
-  if (!canvas || !hasRenderableChartData(normalized)) {
+  if (!canvas || !hasRenderableChartData(data)) {
     showNoDataOnCharts([canvas])
     return
   }
@@ -330,7 +330,7 @@ export function RenderDevice003BarChart(canvas, data) {
 // 畫出設備條件0003折線圖 (原 RenderDevice003LineChart，累積計算)
 export function RenderDevice003LineChart(canvas, data, isExportSource) {
   const normalized = normalizeDashboardData(data)
-  if (!canvas || !hasRenderableChartData(normalized)) {
+  if (!canvas || !hasRenderableChartData(data)) {
     showNoDataOnCharts([canvas])
     return
   }
