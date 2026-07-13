@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="page">
+    <div class="page license-page">
       <div class="license-header-container" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div class="page-caption" style="display: flex; align-items: center; margin-bottom: 1rem;">
@@ -1840,5 +1840,52 @@ onBeforeUnmount(() => {
 #license_insert-button-ok:hover,
 #license_update-button-ok:hover {
   background-color: #ee963f !important;
+}
+/* 原 www/license.html：手機版 RWD 調整 (Max Width 767px) */
+@media screen and (max-width: 767px) {
+  .license-page .page-big-icon {
+    display: none !important;
+  }
+  .license-page .license-header-container {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .license-page .stats-card-container {
+    width: 100% !important;
+    padding: 1rem !important;
+    gap: 1rem !important;
+    justify-content: space-around !important;
+  }
+  #license_list-button-gotopage_insert {
+    width: 100% !important;
+  }
+  .license-page .responsive-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    height: auto !important;
+  }
+  .license-page .responsive-toolbar-group {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  /* 右側過濾區塊改為上下堆疊 */
+  .license-page .responsive-toolbar-group:last-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    margin-top: 1rem;
+  }
+  .license-page .responsive-toolbar-group:last-child > div,
+  .license-page .responsive-toolbar-group:last-child > button,
+  #license_list-customer_name,
+  #license-status-button {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0.2rem !important;
+    box-sizing: border-box;
+  }
+  #license-status-options {
+    width: 100% !important;
+    left: 0 !important;
+  }
 }
 </style>

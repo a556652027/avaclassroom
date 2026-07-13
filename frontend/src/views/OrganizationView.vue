@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="page">
+    <div class="page organization-page">
       <div class="page-caption">
         <h1 id="organization-title">{{ t('organization.title_list_organization') || t('sidebarnav.organization') }}</h1>
       </div>
@@ -206,3 +206,42 @@ onBeforeUnmount(() => {
   requestController?.abort()
 })
 </script>
+
+<style>
+/* 原 www/organization.html：調淺 Placeholder 顏色 */
+.organization-page input::placeholder,
+.organization-page textarea::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+/* 原 www/organization.html：手機版 RWD 調整 (Max Width 767px) */
+@media screen and (max-width: 767px) {
+  .organization-page .responsive-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    height: auto !important;
+    padding: 10px !important;
+  }
+  .organization-page .responsive-toolbar-group {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  /* 右側過濾區塊改為上下堆疊 */
+  .organization-page .responsive-toolbar-group:last-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    margin-top: 1rem;
+  }
+  .organization-page .responsive-toolbar-group:last-child > div,
+  .organization-page .responsive-toolbar-group:last-child > input,
+  .organization-page .responsive-toolbar-group:last-child > button {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0.2rem !important;
+    box-sizing: border-box;
+  }
+  .organization-page .styled-select select {
+    width: 100% !important;
+  }
+}
+</style>

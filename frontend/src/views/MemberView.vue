@@ -1,6 +1,6 @@
 <template>
   <AppLayout>
-    <div class="page">
+    <div class="page member-page">
       <!-- 頁面標題 (原 member.html page-caption：圖示 + 公司名稱標題) -->
       <div class="page-caption">
         <div style="display: flex">
@@ -1055,5 +1055,67 @@ onBeforeUnmount(() => {
   border: 1px solid #ee963f;
   background-color: #ee963f;
   border-color: #ee963f;
+}
+/* 原 www/member.html：調淺 Placeholder 顏色 (頁面級) */
+.member-page input::placeholder,
+.member-page textarea::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+/* 原 www/member.html：編輯/刪除膠囊按鈕 (白底 + hover 覆寫) */
+.member-page .edit-button,
+.member-page .edit-button-trash {
+  border: 1px solid #92bfff;
+  border-radius: 9999px;
+  width: 56px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: white;
+}
+.member-page .edit-button-trash {
+  border-color: #de6565;
+}
+.member-page .edit-button:hover {
+  background-color: #92bfff !important;
+}
+.member-page .edit-button-trash:hover {
+  background-color: #ffe6e6 !important;
+  border-color: #c94a4a !important;
+}
+/* 原 www/member.html：手機版 RWD 調整 (Max Width 767px) */
+@media screen and (max-width: 767px) {
+  .member-page .responsive-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    height: auto !important;
+    padding: 10px !important;
+  }
+  .member-page .responsive-toolbar-group {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  .member-page .search-box {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0.5rem !important;
+    box-sizing: border-box;
+  }
+  #member_list-button-open_modal {
+    width: 100% !important;
+  }
+  /* 解決表格在手機版縮起來時，Checkbox 與資料重疊的問題 */
+  .member-page .responstable td {
+    max-width: 100% !important;
+  }
+  .member-page .responstable td:first-child {
+    width: 40px !important;
+    padding-left: 10px !important;
+  }
+  .member-row-checkbox {
+    margin-left: 0 !important;
+  }
 }
 </style>
