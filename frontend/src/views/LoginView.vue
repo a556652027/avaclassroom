@@ -409,7 +409,24 @@ function closeLangSelector() {
   langOpen.value = false
 }
 
+// 原 login.html <head> 的 Google Fonts Inter：僅登入頁載入，
+// 離開時移除，讓其他頁面與 www 一致地退回系統字體渲染
+const INTER_FONT_ID = 'login-inter-font'
+function mountInterFont() {
+  if (document.getElementById(INTER_FONT_ID)) return
+  const link = document.createElement('link')
+  link.id = INTER_FONT_ID
+  link.rel = 'stylesheet'
+  link.href =
+    'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+  document.head.appendChild(link)
+}
+function unmountInterFont() {
+  document.getElementById(INTER_FONT_ID)?.remove()
+}
+
 onMounted(() => {
+  mountInterFont()
   // 原 initLoginView: 進入登入頁面時強制清除 SessionStorage，防止殘留狀態
   window.sessionStorage.clear()
   CsRequestLogout()
@@ -426,7 +443,10 @@ onMounted(() => {
   document.addEventListener('click', closeLangSelector)
 })
 
-onBeforeUnmount(() => document.removeEventListener('click', closeLangSelector))
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeLangSelector)
+  unmountInterFont()
+})
 </script>
 
 <style>
