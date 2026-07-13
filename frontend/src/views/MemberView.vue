@@ -1,59 +1,80 @@
 <template>
   <AppLayout>
     <div class="page">
-          <div class="page-caption" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem">
-        <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 0">
+      <!-- 頁面標題 (原 member.html page-caption：圖示 + 公司名稱標題) -->
+      <div class="page-caption">
+        <div style="display: flex">
           <div class="page-icon-container">
             <img src="/assets/images/IdentificationBadge.svg" alt="" class="page-icon" />
           </div>
-          <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ t('sidebarnav.member') }}</h1>
-        </div>
-        <button
-          type="button"
-          id="member_list-button-open_modal"
-          class="image_button_default"
-          style="background-color: #214f7c; width: 218px; height: 48px; border-radius: 10px; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem;"
-          @click="openAddModal"
-        >
-          <img src="/assets/images/Group 607.svg" alt="" style="width: 20px; height: 20px" />
-          <span>{{ t('common.add') || '新增' }}</span>
-        </button>
-      </div>
-
-      <div class="responsive-toolbar" style="margin-bottom: 1rem; border: 1px solid #d9dde3; border-radius: 12px; background: #f5f7f9; padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;">
-        <div class="responsive-toolbar-group" style="display: flex; align-items: center; gap: 0.5rem;">
-          <input id="member-select-all" type="checkbox" v-model="selectAll" @change="toggleSelectAll" />
-          <label for="member-select-all" style="color: #404040; font-size: 14px; cursor: pointer; user-select: none;">{{ t('common.select_all') || '全選' }}</label>
-          <button type="button" id="member-edit-button" class="edit-button" @click="openEditSelected" style="display: inline-flex; align-items: center; justify-content: center;">
-            <img src="/assets/images/edit.svg" alt="編輯" style="width: 20px; height: 20px" />
-          </button>
-          <button type="button" id="member-delete-button" class="edit-button-trash" @click="deleteSelectedMembers" style="display: inline-flex; align-items: center; justify-content: center;">
-            <img src="/assets/images/trash.svg" alt="刪除" style="width: 20px; height: 20px" />
-          </button>
-        </div>
-        <div class="responsive-toolbar-group" style="flex: 1; justify-content: flex-end; min-width: 240px;">
-          <div class="search-box" style="height: 38px; width: 100%; max-width: 340px;">
-            <svg class="search-box-icon" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M13.293 14.707a8 8 0 111.414-1.414l4.586 4.586a1 1 0 01-1.414 1.414l-4.586-4.586zM8 14a6 6 0 100-12 6 6 0 000 12z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <input
-              id="member-search-input"
-              v-model="searchKeyword"
-              type="search"
-              :placeholder="t('common.search')"
-              class="search-box-input"
-              @input="loadMembers(1)"
-            />
-          </div>
+          <h1 id="member-title">{{ pageTitle }}</h1>
         </div>
       </div>
 
-      <div class="viewpoint-container">
-        <table class="responstable">
+      <!-- 會員列表 -->
+      <div>
+        <!-- 新增帳戶按鈕 (獨立一行，原版位置) -->
+        <div style="margin-top: 1rem; margin-bottom: 1rem">
+          <button
+            type="button"
+            id="member_list-button-open_modal"
+            style="background-color: #214f7c; cursor: pointer; width: 218px; height: 48px; border-radius: 10px; color: #ffffff; border: none"
+            @click="openAddModal"
+          >
+            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-size: 14px">
+              <img src="/assets/images/Group 607.svg" alt="" style="width: 20px; height: 20px" />
+              {{ t('member.insert') || '新增帳戶' }}
+            </div>
+          </button>
+        </div>
+
+        <table class="frame-table" style="margin-top: 0">
+          <tbody>
+            <!-- 顯示資料的地方 -->
+            <tr>
+              <td colspan="12">
+                <div class="viewpoint-container" style="margin-top: 1rem">
+                  <!-- 工具列與表格相連 (原版 border 貼合樣式) -->
+                  <div class="responsive-toolbar" style="margin-top: 0; border: 1px solid #d9dde3; border-bottom: none">
+                    <div class="responsive-toolbar-group">
+                      <input
+                        id="member-select-all"
+                        v-model="selectAll"
+                        type="checkbox"
+                        style="margin-right: 5px; cursor: pointer"
+                        @change="toggleSelectAll"
+                      />
+                      <label for="member-select-all" style="color: #404040; font-size: 14px; font-weight: 400; margin-right: 1rem">
+                        {{ t('common.select_all') || '全選' }}
+                      </label>
+                      <button type="button" id="member-edit-button" class="edit-button" @click="openEditSelected">
+                        <img src="/assets/images/edit.svg" class="edit_change" alt="" style="width: 20px; height: 20px" />
+                      </button>
+                      <button type="button" id="member-delete-button" class="edit-button-trash" @click="deleteSelectedMembers">
+                        <img src="/assets/images/trash.svg" class="edit_change" alt="刪除" />
+                      </button>
+                    </div>
+                    <div class="responsive-toolbar-group">
+                      <div class="search-box">
+                        <svg class="search-box-icon" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fill-rule="evenodd"
+                            d="M13.293 14.707a8 8 0 111.414-1.414l4.586 4.586a1 1 0 01-1.414 1.414l-4.586-4.586zM8 14a6 6 0 100-12 6 6 0 000 12z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <input
+                          id="member-search-input"
+                          v-model="searchKeyword"
+                          type="search"
+                          placeholder="Search"
+                          class="search-box-input"
+                          @input="loadMembers(1)"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <table class="responstable">
           <thead>
             <tr>
               <th style="width: 5%"></th>
@@ -96,12 +117,21 @@
                 </div>
               </td>
             </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+            <!-- 顯示分頁的地方 -->
+            <tr>
+              <td colspan="12">
+                <div class="centered-content">
+                  <TablePagination :total-records="totalRecords" :rows-per-page="rowsPerPage" :current-page="currentPage" @change="(page) => loadMembers(page)" />
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
-      </div>
-
-      <div class="centered-content" style="margin-top: 1rem">
-        <TablePagination :total-records="totalRecords" :rows-per-page="rowsPerPage" :current-page="currentPage" @change="(page) => loadMembers(page)" />
       </div>
 
       <!-- 新增帳號 Modal (原 member-add-modal，樣式與 www/member.html 一致) -->
@@ -398,6 +428,10 @@ import {
   CsRequestMemberSendEMail,
 } from '@/api/member'
 import { CsRequestGroupSelectAllRecordsByCondition } from '@/api/organization'
+import { getGroupDisplayName } from '@/core/title'
+
+// 原 lib.title.groupcid.js：頁面標題顯示目前選擇的公司名稱
+const pageTitle = computed(() => getGroupDisplayName() || t('member.title_list_member'))
 
 const rows = ref([])
 const totalRecords = ref(0)
@@ -990,5 +1024,36 @@ onBeforeUnmount(() => {
 }
 #member_list-button-open_modal:hover {
   background-color: #ee963f !important;
+}
+/* 原 www/member.html：全選與表格行 checkbox 橘色樣式 */
+#member-select-all {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  background-color: white;
+}
+#member-select-all:checked {
+  border: 1px solid #ee963f;
+  background-color: #ee963f;
+  border-color: #ee963f;
+}
+.member-row-checkbox {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  background-color: white;
+}
+.member-row-checkbox:checked {
+  border: 1px solid #ee963f;
+  background-color: #ee963f;
+  border-color: #ee963f;
 }
 </style>

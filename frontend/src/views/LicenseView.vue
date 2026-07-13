@@ -1748,8 +1748,9 @@ async function LicenseUpdateOne() {
   }
 }
 
+useLegacyCss('/css/page/license.css')
+
 onMounted(() => {
-  useLegacyCss('/css/page/license.css')
   loadLicenses(1)
   // 點擊外部隱藏產品下拉選單 (原 click.hideProductDrop)
   document.addEventListener('click', closeProductDropdown)
