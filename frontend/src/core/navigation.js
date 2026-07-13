@@ -31,9 +31,22 @@ export function changePage(page, options) {
     console.error('[navigation] Unknown page: ' + page)
     return
   }
-  const query = options && options.params ? options.params : undefined
-  if (_router) _router.push({ path: route, query })
-  else window.location.hash = '#' + route
+  const query = options && options.params ? { ...options.params } : {}
+  if (_router) {
+    // 原版 change_page 是整頁重載；SPA 若目標與當前 path+query 完全相同，
+    // Vue Router 不會觸發任何變化 (例：已在 dashboard 又點側欄另一家公司、產品相同)。
+    // 加上遞增參數讓 fullPath 改變，配合 App.vue 的 :key 強制頁面重新掛載。
+    const cur = _router.currentRoute.value
+    const sameQuery =
+      JSON.stringify(Object.assign({}, cur.query, { _r: undefined })) ===
+      JSON.stringify(Object.assign({}, query, { _r: undefined }))
+    if (cur.path === route && sameQuery) {
+      query._r = Date.now()
+    }
+    _router.push({ path: route, query })
+  } else {
+    window.location.hash = '#' + route
+  }
 }
 
 export function navigateToLogin() {

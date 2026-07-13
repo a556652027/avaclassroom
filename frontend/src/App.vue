@@ -13,7 +13,9 @@
     </div>
   </div>
 
-  <router-view />
+  <!-- 以 fullPath 為 key：任何換頁 (含 query 變化) 都重新掛載頁面元件，
+       比照舊版 change_page 整頁重載的行為 (例：側欄切換公司後 dashboard 重新抓資料) -->
+  <router-view :key="$route.fullPath" />
 </template>
 
 <script setup>
