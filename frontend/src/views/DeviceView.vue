@@ -151,6 +151,7 @@
         </div>
         <div>
           <table class="frame-table">
+            <tbody>
             <tr>
               <td colspan="10"></td>
               <td colspan="1">
@@ -266,6 +267,7 @@
                 <input v-model="updateForm.note00" type="text" :placeholder="t('common.note00_hint')" />
               </td>
             </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -277,6 +279,7 @@
         </div>
         <div>
           <table class="frame-table">
+            <tbody>
             <tr>
               <td colspan="1">
                 <div>{{ historyDeviceCid }}</div>
@@ -335,6 +338,7 @@
                 />
               </td>
             </tr>
+            </tbody>
           </table>
         </div>
       </div>

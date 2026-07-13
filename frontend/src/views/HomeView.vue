@@ -7,15 +7,17 @@
       <!-- 首頁內容 -->
       <div>
         <table class="frame-table">
-          <tr>
-            <td colspan="12">-</td>
-          </tr>
-          <tr>
-            <td colspan="12">
-              <h1>歡迎使用後台管理系統</h1>
-              <p>這裡顯示主要的頁面內容。</p>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td colspan="12">-</td>
+            </tr>
+            <tr>
+              <td colspan="12">
+                <h1>歡迎使用後台管理系統</h1>
+                <p>這裡顯示主要的頁面內容。</p>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
