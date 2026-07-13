@@ -595,7 +595,6 @@ import { runExportJob } from '@/services/exportJob'
 import { PRODUCT_DICTIONARY, getProductName } from '@/core/products'
 import {
   LicenseData,
-  CsRequestLicenseSelectAllCount,
   CsRequestLicenseGetStatistics,
   CsRequestLicenseSelectAllRecords,
   CsRequestLicenseSelectOneRecordByCID,
@@ -706,11 +705,36 @@ const statusOptionLabel = computed(() => {
 
 let requestController = null
 
+// 原 LicenseSelectAll 的搜尋條件組合 (Type 16/18 的分號組合字串)
 function getConditionTarget() {
-  const ownerCid = window.sessionStorage.getItem('member_cid') || window.Cyberspace?.Client?.getUsername() || ''
+  const userTier = window.sessionStorage.getItem('tier')
+  const isDistributor = userTier === '3'
+  const member_cid = window.sessionStorage.getItem('member_cid') || ''
+  const group_cid =
+    window.sessionStorage.getItem('select_group_cid') || window.sessionStorage.getItem('group_cid') || ''
+  const product_type = window.sessionStorage.getItem('product_type') || ''
+
+  if (isDistributor) {
+    // 經銷商: 查詢旗下所有 Agent (%%)，不使用訂購人名稱過濾 (Type 16)
+    return {
+      condition_type: '16',
+      condition_value: `%%;${group_cid.trim()};1;${product_type.trim()}`,
+    }
+  }
+  // 管理員: 依 Member ID 查詢，支援訂購人名稱模糊搜尋 (Type 18)
   return {
-    condition_type: window._k_search_condition_type_by_agent_cid__and__owner_cid__and__record_state__and__product_type || '16',
-    condition_value: ownerCid,
+    condition_type: '18',
+    condition_value: `${member_cid.trim()};${group_cid.trim()};1;${product_type.trim()};${customerName.value.trim()}`,
+  }
+}
+
+// 原 LicenseSelectAll 的日期參數 (空值預設 1900-01-01 ~ 2999-12-31，固定帶時間)
+function getSearchTimeRange() {
+  const target_b_date = (beginTime.value || '1900-01-01').replace(/\//g, '-')
+  const target_e_date = (endTime.value || '2999-12-31').replace(/\//g, '-')
+  return {
+    b_time: target_b_date + ' 00:00:00',
+    e_time: target_e_date + ' 23:59:59',
   }
 }
 
@@ -919,7 +943,8 @@ function showToast(message) {
 }
 
 function exportAllLicenses() {
-  const condition_value = getConditionTarget().condition_value
+  const { condition_type, condition_value } = getConditionTarget()
+  const { b_time, e_time } = getSearchTimeRange()
   const statusFilterValue = statusFilter.value === 'active' ? '1' : statusFilter.value === 'expired' ? '0' : 'all'
 
   runExportJob({
@@ -927,11 +952,11 @@ function exportAllLicenses() {
     startExport: (controller) =>
       apiCall(
         CsRequestLicenseExportStart,
-        getConditionTarget().condition_type,
+        condition_type,
         condition_value,
-        beginTime.value || '',
-        endTime.value || '',
-        customerName.value || '',
+        b_time,
+        e_time,
+        customerName.value.trim() || '',
         sortField.value,
         sortOrder.value,
         statusFilterValue,
@@ -1318,29 +1343,30 @@ async function loadLicenses(page = 1) {
 
   try {
     const { condition_type, condition_value } = getConditionTarget()
+    const { b_time, e_time } = getSearchTimeRange()
     loadStatistics(condition_type, condition_value)
-    const countResult = await apiCall(CsRequestLicenseSelectAllCount, condition_type, condition_value, beginTime.value || '', endTime.value || '', requestController)
-    totalRecords.value = Number(countResult.count || 0)
 
-    if (totalRecords.value <= 0) {
-      rows.value = []
-      return
-    }
-
+    // 原 LicenseSelectAll：直接取列表，總筆數用回傳的 total_records (後端分頁)
     const result = await apiCall(
       CsRequestLicenseSelectAllRecords,
       condition_type,
       condition_value,
-      beginTime.value || '',
-      endTime.value || '',
+      b_time,
+      e_time,
       (page - 1) * rowsPerPage.value,
       rowsPerPage.value,
-      customerName.value,
+      customerName.value.trim(),
       sortField.value,
       sortOrder.value,
       statusFilter.value,
       requestController,
     )
+
+    totalRecords.value = parseInt(result.total_records) || 0
+    if (totalRecords.value <= 0) {
+      rows.value = []
+      return
+    }
 
     const records = result.records || {}
     const recordCount = records.license_cid ? records.license_cid.length : 0
