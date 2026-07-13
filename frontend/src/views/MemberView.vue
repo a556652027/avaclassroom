@@ -91,10 +91,115 @@
         <TablePagination :total-records="totalRecords" :rows-per-page="rowsPerPage" :current-page="currentPage" @change="(page) => loadMembers(page)" />
       </div>
 
+      <!-- 新增帳號 Modal (原 member-add-modal，樣式與 www/member.html 一致) -->
+      <div v-if="addModalVisible" class="member-modal">
+        <div class="member-modal-content">
+          <div style="display: flex; justify-content: space-between; padding: 1rem 2rem 0rem 2rem">
+            <div style="display: flex; gap: 1rem">
+              <img src="/assets/images/add new_button.svg" alt="" />
+              <div class="member-modal-header">
+                <h2>{{ t('member.title_insert_member') || '新增帳號' }}</h2>
+              </div>
+            </div>
+            <span class="member-modal-close" @click="closeAddModal">&times;</span>
+          </div>
+
+          <div class="member-modal-body">
+            <form @submit.prevent="submitAddMember">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="member_insert-member_cid">{{ t('member.member_cid') || '用戶名稱' }}</label>
+                  <input
+                    id="member_insert-member_cid"
+                    v-model="addForm.member_cid"
+                    type="text"
+                    :placeholder="t('member.member_cid_hint') || '例如：user01'"
+                    maxlength="128"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="member_insert-email">{{ t('member.email') || '電子郵件' }}</label>
+                  <input
+                    id="member_insert-email"
+                    v-model="addForm.email"
+                    type="email"
+                    :placeholder="t('member.email_hint') || '例如：user@example.com'"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="position: relative">
+                  <label for="member_insert-password">{{ t('member.password') || '密碼' }}</label>
+                  <input
+                    id="member_insert-password"
+                    v-model="addForm.password"
+                    :type="showAddPassword ? 'text' : 'password'"
+                    :placeholder="t('member.password_hint') || '至少 8 個字元'"
+                    maxlength="128"
+                    required
+                  />
+                  <span
+                    style="position: absolute; right: 15px; top: 55%; transform: translateY(-10%); cursor: pointer"
+                    @click="showAddPassword = !showAddPassword"
+                  >
+                    <img
+                      :src="showAddPassword ? '/assets/images/passwordeyeopen.svg' : '/assets/images/passwordeyeclose.svg'"
+                      alt="Toggle Password Visibility"
+                    />
+                  </span>
+                </div>
+                <div class="form-group" style="position: relative">
+                  <label for="member_insert-password_confirm">{{ t('member.password_comfirm') || '再次輸入密碼' }}</label>
+                  <input
+                    id="member_insert-password_confirm"
+                    v-model="addForm.password_confirm"
+                    :type="showAddPasswordConfirm ? 'text' : 'password'"
+                    :placeholder="t('member.password_hint') || '至少 8 個字元'"
+                    maxlength="128"
+                    required
+                  />
+                  <span
+                    style="position: absolute; right: 15px; top: 55%; transform: translateY(-10%); cursor: pointer"
+                    @click="showAddPasswordConfirm = !showAddPasswordConfirm"
+                  >
+                    <img
+                      :src="showAddPasswordConfirm ? '/assets/images/passwordeyeopen.svg' : '/assets/images/passwordeyeclose.svg'"
+                      alt="Toggle Password Visibility"
+                    />
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="member_insert-group_cid">{{ t('member.group_cid') || '組織' }}</label>
+                  <select id="member_insert-group_cid" v-model="addForm.group_cid" style="background-color: #f9fafb; width: 100%">
+                    <option value="">-- 請選擇組織 --</option>
+                    <option v-for="opt in groupOptions" :key="opt.cid" :value="opt.cid">{{ opt.label }}</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="member-modal-footer">
+            <button type="button" class="modal-cancel-btn" style="padding: 4px 61px" @click="closeAddModal">
+              {{ t('common.cancel') || '取消' }}
+            </button>
+            <button type="button" class="modal-ok-btn" style="padding: 4px 61px; cursor: pointer" @click="submitAddMember">
+              {{ t('common.ok') || '新增並寄送郵件給用戶' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 編輯會員 Modal -->
       <div v-if="modalVisible" class="modal-overlay" style="display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.45); justify-content: center; align-items: center; z-index: 1100">
         <div style="background: #fff; width: min(760px, 92vw); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2)">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem">
-            <h2 style="margin: 0">{{ mode === 'add' ? (t('common.add') || '新增') : (t('common.update') || '編輯') }}</h2>
+            <h2 style="margin: 0">{{ t('common.update') || '編輯' }}</h2>
             <button type="button" class="link_text" @click="closeModal">✕</button>
           </div>
           <div style="display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 1rem">
@@ -215,6 +320,7 @@ import {
   CsRequestMemberUpdateOneRecordByMemberCID,
   CsRequestMemberSendEMail,
 } from '@/api/member'
+import { CsRequestGroupSelectAllRecordsByCondition } from '@/api/organization'
 
 const rows = ref([])
 const totalRecords = ref(0)
@@ -229,6 +335,19 @@ const mode = ref('edit')
 const deleteModalVisible = ref(false)
 const deleteModalMessage = ref('')
 const deleteModalItems = ref([])
+
+// 新增帳號 Modal (原 member-add-modal)
+const addModalVisible = ref(false)
+const showAddPassword = ref(false)
+const showAddPasswordConfirm = ref(false)
+const groupOptions = ref([])
+const addForm = reactive({
+  member_cid: '',
+  email: '',
+  password: '',
+  password_confirm: '',
+  group_cid: '',
+})
 
 const createMemberForm = () => ({
   ...MemberData,
@@ -360,10 +479,100 @@ function closeModal() {
   resetForm()
 }
 
+// 原 LoadGroupCidOptions：載入使用者能管理的所有組織清單並填寫下拉選單
+async function loadGroupOptions() {
+  const owner_cid =
+    window.sessionStorage.getItem('member_cid') || window.Cyberspace?.Client?.getUsername() || ''
+  try {
+    const result = await apiCall(CsRequestGroupSelectAllRecordsByCondition, '2', owner_cid, 0, 1000, requestController)
+    if (result && result.records && result.records.group_cid) {
+      const groupCids = result.records.group_cid
+      const groupNames = result.records.group_name || []
+      groupOptions.value = groupCids.map((cid, i) => ({
+        cid,
+        label: `${groupNames[i] || cid} (${cid})`,
+      }))
+    } else {
+      console.warn('[LoadGroupCidOptions] No group records returned or empty list.')
+    }
+  } catch (e) {
+    console.error('[LoadGroupCidOptions] Failed to load group options:', e)
+  }
+}
+
 function openAddModal() {
-  mode.value = 'add'
-  resetForm()
-  modalVisible.value = true
+  addForm.member_cid = ''
+  addForm.email = ''
+  addForm.password = ''
+  addForm.password_confirm = ''
+  showAddPassword.value = false
+  showAddPasswordConfirm.value = false
+  // 自動預選當前 sessionStorage 中選定的 group_cid (原 LoadGroupCidOptions)
+  addForm.group_cid =
+    window.sessionStorage.getItem('select_group_cid') || window.sessionStorage.getItem('group_cid') || ''
+  if (!groupOptions.value.length) loadGroupOptions()
+  addModalVisible.value = true
+}
+
+function closeAddModal() {
+  addModalVisible.value = false
+}
+
+// 原 MemberInsertOne (驗證與資料流程逐步保留)
+async function submitAddMember() {
+  if (!addForm.member_cid.trim() || !addForm.email.trim() || !addForm.password) {
+    alert(t('warring.input_error') || '請完整填寫必填欄位')
+    return
+  }
+
+  // [新增] 密碼一致性驗證，防堵使用者輸入錯誤的密碼
+  if (addForm.password !== addForm.password_confirm) {
+    alert('密碼與確認密碼不符')
+    return
+  }
+
+  const member_data = Object.create(MemberData)
+  member_data.member_cid = addForm.member_cid
+  member_data.password = addForm.password
+  member_data.member_name = ''
+
+  // 優先讀取表單欄位，若無則降級讀取 Session 狀態，並加入強制防呆阻擋
+  member_data.group_cid =
+    addForm.group_cid.trim() ||
+    window.sessionStorage.getItem('select_group_cid') ||
+    window.sessionStorage.getItem('group_cid') ||
+    ''
+  if (!member_data.group_cid) {
+    alert(t('warring.no_group_cid') || '請先選擇隸屬的組織 (Company)！')
+    return
+  }
+
+  member_data.gender = ''
+  member_data.phone_cell = ''
+  member_data.phone_home = ''
+  member_data.phone_work = ''
+  member_data.email = addForm.email
+  member_data.address = ''
+  member_data.city = ''
+  member_data.country = ''
+  member_data.note00 = ''
+  // [資料修復] 填補後端嚴格要求的欄位預設值，避免 API 拋出參數錯誤
+  member_data.birthday = '1991-01-01'
+  member_data.avatar_url = ''
+
+  VisibleLoaderElement(true)
+  try {
+    const parent_cid =
+      window.sessionStorage.getItem('member_cid') || window.Cyberspace?.Client?.getUsername() || ''
+    await apiCall(CsRequestMemberInsertOneRecordByParentCID, parent_cid, member_data, requestController)
+    alert(t('common.success') || '成功')
+    closeAddModal()
+    await loadMembers(currentPage.value)
+  } catch (e) {
+    if (e.message !== 'Handled Server Error') alert('request error')
+  } finally {
+    VisibleLoaderElement(false)
+  }
 }
 
 async function openEditModal(memberCid) {
@@ -517,5 +726,128 @@ onBeforeUnmount(() => {
 }
 .member-delete-modal-confirm:hover {
   background: #ee963f;
+}
+
+/* ===== 新增帳號 Modal (原 www/member.html 的 .modal 系列樣式，改用 member- 前綴避免衝突) ===== */
+.member-modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.member-modal-content {
+  background-color: #fefefe;
+  margin: 0;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+.member-modal-header {
+  background-color: #ffffff;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.member-modal-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+.member-modal-close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+.member-modal-close:hover,
+.member-modal-close:focus {
+  color: #000;
+}
+.member-modal-body {
+  padding: 1rem 1rem;
+}
+.member-modal-footer {
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.member-modal .form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.member-modal .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.member-modal .form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+.member-modal .form-group input,
+.member-modal .form-group select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.member-modal .form-group input:focus,
+.member-modal .form-group select:focus {
+  border-color: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 79, 124, 0.1);
+}
+.member-modal input::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+.modal-cancel-btn {
+  background-color: #ffffff;
+  border: 1px solid #e5e8ea;
+  padding: 4px 61px;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 48px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.modal-cancel-btn:hover {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
+}
+.modal-ok-btn {
+  background-color: #214f7c !important;
+  border-radius: 10px;
+  border: none;
+  color: #ffffff;
+  height: 48px;
+  transition: background-color 0.2s ease;
+}
+.modal-ok-btn:hover {
+  background-color: #ee963f !important;
+}
+/* 原 www/member.html：新增帳戶按鈕 hover 變橘 */
+#member_list-button-open_modal {
+  transition: background-color 0.2s ease;
+}
+#member_list-button-open_modal:hover {
+  background-color: #ee963f !important;
 }
 </style>
