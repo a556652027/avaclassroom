@@ -174,6 +174,8 @@ async function show() {
 
 function hide() {
   visible.value = false
+  // 通知頁面 Modal 已關閉 (profile 頁需導回 dashboard，原 navigateToDashboard)
+  emitter.emit('profile-modal:hidden')
 }
 
 // 原 UpdateProfileOne

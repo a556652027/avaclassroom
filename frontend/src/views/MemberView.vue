@@ -57,30 +57,43 @@
           <thead>
             <tr>
               <th style="width: 5%"></th>
-              <th style="width: 5%"></th>
-              <th>{{ t('common.member_cid') || '會員編號' }}</th>
-              <th>{{ t('common.email') || 'Email' }}</th>
-              <th>{{ t('common.password') || '現在密碼' }}</th>
-              <th style="width: 110px"></th>
+              <th style="cursor: pointer" @click="sortMemberTable('member_cid')">
+                {{ t('member.member_cid') || '用戶名稱' }}
+                <img id="sort-member_cid" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('member_cid')" />
+              </th>
+              <th style="cursor: pointer" @click="sortMemberTable('email')">
+                {{ t('member.email') || '電子郵件' }}
+                <img id="sort-email" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('email')" />
+              </th>
+              <th style="cursor: pointer" @click="sortMemberTable('password')">
+                {{ t('common.password') || '密碼' }}
+                <img id="sort-password" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('password')" />
+              </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in rows" :key="row.member_cid" :style="row.checked ? { backgroundColor: '#edf2fb' } : {}">
+            <tr v-for="row in sortedRows" :key="row.member_cid" :style="row.record_state === '0' ? { backgroundColor: '#d6d6d6ff' } : {}">
               <td>
-                <input v-model="row.checked" type="checkbox" class="member-row-checkbox" />
+                <input v-model="row.checked" type="checkbox" class="member-row-checkbox" style="margin-left: 1rem; cursor: pointer" />
               </td>
               <td>
-                <button type="button" class="link_text" @click="sendWelcomeEmail(row.member_cid)">
-                  <img src="/assets/images/mail.svg" alt="寄信" style="width: 18px; height: 18px" />
-                </button>
+                <button type="button" class="link_text" @click="openEditModal(row.member_cid)">{{ row.member_cid }}</button>
               </td>
-              <td>{{ row.member_cid }}</td>
               <td>{{ row.email }}</td>
-              <td>{{ row.password ? '*******' : '*******' }}</td>
+              <td>********</td>
               <td>
-                <button type="button" class="link_text" @click="openEditModal(row.member_cid)">
-                  {{ t('common.update') || '編輯' }}
-                </button>
+                <div style="display: flex; align-items: center; justify-content: flex-start">
+                  <div
+                    class="member-mail-button"
+                    style="cursor: pointer"
+                    @click="sendWelcomeEmail(row.member_cid)"
+                    @mouseover="$event.currentTarget.style.backgroundColor = '#EE963F'"
+                    @mouseout="$event.currentTarget.style.backgroundColor = '#214F7C'"
+                  >
+                    <img src="/assets/images/mail.svg" alt="" style="pointer-events: none" />
+                  </div>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -195,73 +208,137 @@
         </div>
       </div>
 
-      <!-- 編輯會員 Modal -->
-      <div v-if="modalVisible" class="modal-overlay" style="display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.45); justify-content: center; align-items: center; z-index: 1100">
-        <div style="background: #fff; width: min(760px, 92vw); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2)">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem">
-            <h2 style="margin: 0">{{ t('common.update') || '編輯' }}</h2>
-            <button type="button" class="link_text" @click="closeModal">✕</button>
+      <!-- 編輯會員 Modal (原 member-edit-modal，樣式與 www/member.html 一致) -->
+      <div v-if="modalVisible" class="member-modal">
+        <div class="member-modal-content" style="max-width: 800px">
+          <div style="display: flex; justify-content: space-between; padding: 1rem 2rem 0rem 2rem">
+            <div style="display: flex; gap: 1rem; align-items: center">
+              <img src="/assets/images/edit.svg" alt="" style="width: 24px; height: 24px" />
+              <div class="member-modal-header">
+                <h2>{{ t('member.title_update_member') || '會員編輯' }}</h2>
+              </div>
+            </div>
+            <span class="member-modal-close" @click="closeModal">&times;</span>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 1rem">
-            <div>
-              <label>{{ t('common.member_cid') || '會員編號' }}</label>
-              <input v-model="memberForm.member_cid" class="org-input" :disabled="mode === 'edit'" />
-            </div>
-            <div>
-              <label>{{ t('common.password') || '密碼' }}</label>
-              <input v-model="memberForm.password" type="password" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.member_name') || '姓名' }}</label>
-              <input v-model="memberForm.member_name" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.group_cid') || '群組' }}</label>
-              <input v-model="memberForm.group_cid" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.email') || 'Email' }}</label>
-              <input v-model="memberForm.email" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.phone_cell') || '手機' }}</label>
-              <input v-model="memberForm.phone_cell" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.gender') || '性別' }}</label>
-              <input v-model="memberForm.gender" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.birthday') || '生日' }}</label>
-              <input v-model="memberForm.birthday" type="date" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.country') || '國家' }}</label>
-              <input v-model="memberForm.country" class="org-input" />
-            </div>
-            <div>
-              <label>{{ t('common.city') || '城市' }}</label>
-              <input v-model="memberForm.city" class="org-input" />
-            </div>
-            <div style="grid-column: 1 / -1">
-              <label>{{ t('common.address') || '地址' }}</label>
-              <input v-model="memberForm.address" class="org-input" />
-            </div>
-            <div style="grid-column: 1 / -1">
-              <label>{{ t('common.note00') || '備註' }}</label>
-              <textarea v-model="memberForm.note00" class="org-input" style="height: 90px; resize: vertical"></textarea>
-            </div>
-            <div>
-              <label>{{ t('common.record_state') || '狀態' }}</label>
-              <select v-model="memberForm.record_state" class="org-input">
-                <option value="1">{{ t('common.open') || '啟用' }}</option>
-                <option value="0">{{ t('common.close') || '停用' }}</option>
-              </select>
+
+          <div class="member-modal-body">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem">
+              <!-- 基本資訊區塊 -->
+              <div>
+                <h3 style="color: #374151; margin-bottom: 1rem; font-size: 18px; font-weight: 600">
+                  {{ t('member.basic_info') || '基本資訊' }}
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem">
+                  <!-- 會員編號 -->
+                  <div style="display: flex; flex-direction: column">
+                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                      {{ t('member.member_cid') || '用戶名稱' }}
+                    </label>
+                    <input
+                      v-model="memberForm.member_cid"
+                      type="text"
+                      :placeholder="t('member.member_cid_hint')"
+                      disabled
+                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f9fafb"
+                    />
+                  </div>
+                  <!-- 電子郵件 -->
+                  <div style="display: flex; flex-direction: column">
+                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                      {{ t('member.email') || '電子郵件' }}
+                    </label>
+                    <input
+                      v-model="memberForm.email"
+                      type="email"
+                      :placeholder="t('member.email_hint')"
+                      required
+                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                    />
+                  </div>
+                  <!-- 組織 -->
+                  <div style="display: flex; flex-direction: column; grid-column: span 3">
+                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                      {{ t('member.group_cid') || '組織' }}
+                    </label>
+                    <select
+                      v-model="memberForm.group_cid"
+                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #ffffff"
+                    >
+                      <option value="">-- 請選擇組織 --</option>
+                      <option v-for="opt in groupOptions" :key="opt.cid" :value="opt.cid">{{ opt.label }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 現在密碼 -->
+              <div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+                  <div style="display: flex; flex-direction: column; position: relative">
+                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                      {{ t('member.password') || '現在密碼' }}
+                    </label>
+                    <input
+                      v-model="memberForm.password"
+                      :type="showEditPassword ? 'text' : 'password'"
+                      :placeholder="t('member.password_hint')"
+                      required
+                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                    />
+                    <span
+                      style="position: absolute; right: 15px; top: 55%; cursor: pointer"
+                      @click="showEditPassword = !showEditPassword"
+                    >
+                      <img :src="showEditPassword ? '/assets/images/passwordeyeopen.svg' : '/assets/images/passwordeyeclose.svg'" alt="Toggle Password Visibility" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 新密碼 / 確認新密碼 -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+                <div style="display: flex; flex-direction: column; position: relative">
+                  <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    {{ t('member.new_password') || '輸入新密碼' }}
+                  </label>
+                  <input
+                    v-model="editNewPassword"
+                    :type="showEditNewPassword ? 'text' : 'password'"
+                    :placeholder="t('member.new_password_hint')"
+                    style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                  />
+                  <span
+                    style="position: absolute; right: 15px; top: 55%; cursor: pointer"
+                    @click="showEditNewPassword = !showEditNewPassword"
+                  >
+                    <img :src="showEditNewPassword ? '/assets/images/passwordeyeopen.svg' : '/assets/images/passwordeyeclose.svg'" alt="Toggle Password Visibility" />
+                  </span>
+                </div>
+                <div style="display: flex; flex-direction: column; position: relative">
+                  <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    {{ t('member.new_password_comfirm') || '再次輸入新密碼' }}
+                  </label>
+                  <input
+                    v-model="editConfirmPassword"
+                    :type="showEditConfirmPassword ? 'text' : 'password'"
+                    :placeholder="t('member.new_password_comfirm_hint')"
+                    style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                  />
+                  <span
+                    style="position: absolute; right: 15px; top: 55%; cursor: pointer"
+                    @click="showEditConfirmPassword = !showEditConfirmPassword"
+                  >
+                    <img :src="showEditConfirmPassword ? '/assets/images/passwordeyeopen.svg' : '/assets/images/passwordeyeclose.svg'" alt="Toggle Password Visibility" />
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem">
-            <button type="button" class="image_button_default" @click="closeModal">{{ t('common.cancel') || '取消' }}</button>
-            <button type="button" class="image_button_default" style="background: #214f7c; color: #fff" @click="saveMember">
+          <div class="member-modal-footer">
+            <button type="button" class="modal-cancel-btn" style="padding: 4px 61px" @click="closeModal">
+              {{ t('common.cancel') || '取消' }}
+            </button>
+            <button type="button" class="modal-ok-btn" style="padding: 4px 61px; cursor: pointer" @click="saveMember">
               {{ t('common.save') || '儲存' }}
             </button>
           </div>
@@ -305,7 +382,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TablePagination from '@/components/TablePagination.vue'
 import { t } from '@/locales'
@@ -331,10 +408,61 @@ const selectAll = ref(false)
 const modalVisible = ref(false)
 const mode = ref('edit')
 
+// 列表排序 (原 sortMemberTable / updateSortIcons)
+const memberSortField = ref('')
+const memberSortOrder = ref('asc')
+
+// 啟用的帳號在前、停用在後 (原 renderTable 的 record_state 排序)，再套用欄位排序
+const sortedRows = computed(() => {
+  let result = [...rows.value].sort((a, b) => {
+    const stateA = a.record_state === '0' ? 1 : 0
+    const stateB = b.record_state === '0' ? 1 : 0
+    return stateA - stateB
+  })
+  if (memberSortField.value) {
+    const field = memberSortField.value
+    result.sort((a, b) => {
+      const aValue = field === 'password' ? '********' : String(a[field] || '')
+      const bValue = field === 'password' ? '********' : String(b[field] || '')
+      if (aValue < bValue) return memberSortOrder.value === 'asc' ? -1 : 1
+      if (aValue > bValue) return memberSortOrder.value === 'asc' ? 1 : -1
+      return 0
+    })
+  }
+  return result
+})
+
+function sortMemberTable(field) {
+  if (memberSortField.value === field) {
+    memberSortOrder.value = memberSortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    memberSortField.value = field
+    memberSortOrder.value = 'asc'
+  }
+}
+
+function memberSortIconStyle(field) {
+  const active = memberSortField.value === field
+  return {
+    width: '1rem',
+    height: '1rem',
+    opacity: active ? '1' : '0.5',
+    transition: 'all 0.3s',
+    transform: active && memberSortOrder.value === 'desc' ? 'rotate(180deg)' : 'rotate(0deg)',
+  }
+}
+
 // 刪除確認 Modal (原 delete-confirmation-modal)
 const deleteModalVisible = ref(false)
 const deleteModalMessage = ref('')
 const deleteModalItems = ref([])
+
+// 編輯 Modal 的新密碼欄位與眼睛切換 (原 member_update-new_password 等)
+const editNewPassword = ref('')
+const editConfirmPassword = ref('')
+const showEditPassword = ref(false)
+const showEditNewPassword = ref(false)
+const showEditConfirmPassword = ref(false)
 
 // 新增帳號 Modal (原 member-add-modal)
 const addModalVisible = ref(false)
@@ -578,6 +706,12 @@ async function submitAddMember() {
 async function openEditModal(memberCid) {
   mode.value = 'edit'
   resetForm()
+  editNewPassword.value = ''
+  editConfirmPassword.value = ''
+  showEditPassword.value = false
+  showEditNewPassword.value = false
+  showEditConfirmPassword.value = false
+  if (!groupOptions.value.length) loadGroupOptions()
   VisibleLoaderElement(true)
   try {
     const result = await apiCall(CsRequestMemberSelectOneRecordByMemberCID, memberCid, requestController)
@@ -655,20 +789,27 @@ async function loadMembers(page = 1) {
   }
 }
 
+// 原 MemberUpdateOne (新密碼一致性驗證邏輯保留)
 async function saveMember() {
   if (!memberForm.member_cid.trim()) {
     alert('請輸入會員編號')
     return
   }
 
+  // 處理密碼更新邏輯 (原 member_update-new_password / confirm_password)
+  const newPassword = editNewPassword.value
+  const confirmPassword = editConfirmPassword.value
+  if (newPassword && newPassword !== confirmPassword) {
+    alert('新密碼與確認密碼不符')
+    return
+  } else if (newPassword && newPassword === confirmPassword) {
+    memberForm.password = newPassword
+  }
+
   VisibleLoaderElement(true)
   try {
-    const parentCid = window.sessionStorage.getItem('member_cid') || window.Cyberspace?.Client?.getUsername() || ''
-    if (mode.value === 'add') {
-      await apiCall(CsRequestMemberInsertOneRecordByParentCID, parentCid, memberForm, requestController)
-    } else {
-      await apiCall(CsRequestMemberUpdateOneRecordByMemberCID, memberForm, requestController)
-    }
+    await apiCall(CsRequestMemberUpdateOneRecordByMemberCID, memberForm, requestController)
+    alert(t('common.success') || '成功')
     closeModal()
     await loadMembers(currentPage.value)
   } catch (e) {

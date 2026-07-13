@@ -1,49 +1,133 @@
 <template>
   <AppLayout>
     <div class="page">
-      <div class="page-caption" style="margin-bottom: 1rem">
-        <h1>{{ t('sidebarnav.permission') }}</h1>
+      <div class="page-caption">
+        <h1>{{ t('permission.title') || t('sidebarnav.permission') }}</h1>
       </div>
-
-      <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap">
-        <button v-for="preset in presets" :key="preset.code" type="button" class="image_button_default" :style="permissionCode === preset.code ? { background: '#214f7c', color: '#fff' } : {}" @click="selectPreset(preset.code)">
-          {{ preset.label }}
-        </button>
-      </div>
-
-      <div style="display: grid; gap: 1rem; max-width: 920px">
-        <div style="background: #fff; border: 1px solid #e5e8ea; border-radius: 12px; padding: 1rem">
-          <h3 style="margin-top: 0">{{ t('permission.module_access') || '模組權限' }}</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 0.75rem">
-            <label v-for="field in moduleFields" :key="field.key" style="display: flex; align-items: center; gap: 0.5rem">
-              <input v-model="form[field.key]" type="checkbox" />
-              <span>{{ field.label }}</span>
-            </label>
-          </div>
-        </div>
-
-        <div style="background: #fff; border: 1px solid #e5e8ea; border-radius: 12px; padding: 1rem">
-          <h3 style="margin-top: 0">{{ t('permission.own_scope') || '自有資料權限' }}</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 0.75rem">
-            <label v-for="field in scopeFields" :key="field.key" style="display: flex; align-items: center; gap: 0.5rem">
-              <input v-model="form[field.key]" type="checkbox" />
-              <span>{{ field.label }}</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 1.25rem">
-        <button type="button" class="image_button_default" style="background: #214f7c; color: #fff" @click="savePermission">
-          {{ t('common.save') || '儲存' }}
-        </button>
+      <!-- 角色切換與確定按鈕 (原 permission.html frame-table 排版) -->
+      <div>
+        <table class="frame-table">
+          <tbody>
+            <tr>
+              <td colspan="8"></td>
+              <!-- 間隔用的 td -->
+              <td colspan="1">
+                <button
+                  id="permission-button-gotopage_admin"
+                  class="image_button_default"
+                  :disabled="permissionCode === 1"
+                  @click="selectPreset(1)"
+                >
+                  <i class="iconfont">&#xe7A7;&nbsp;</i>
+                  {{ t('role.1') || '系統管理員' }}
+                </button>
+              </td>
+              <td colspan="1">
+                <button
+                  id="permission-button-gotopage_agent"
+                  class="image_button_default"
+                  :disabled="permissionCode === 2"
+                  @click="selectPreset(2)"
+                >
+                  <i class="iconfont">&#xe7A7;&nbsp;</i>
+                  {{ t('role.2') || '代理員' }}
+                </button>
+              </td>
+              <td colspan="1">
+                <button
+                  id="permission-button-gotopage_manager"
+                  class="image_button_default"
+                  :disabled="permissionCode === 3"
+                  @click="selectPreset(3)"
+                >
+                  <i class="iconfont">&#xe7A7;&nbsp;</i>
+                  {{ t('role.3') || '群組管理員' }}
+                </button>
+              </td>
+              <td colspan="1">
+                <button
+                  id="permission-button-gotopage_user"
+                  class="image_button_default"
+                  :disabled="permissionCode === 4"
+                  @click="selectPreset(4)"
+                >
+                  <i class="iconfont">&#xe7A7;&nbsp;</i>
+                  {{ t('role.4') || '使用者' }}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="1">
+                <div id="permission-role"></div>
+              </td>
+              <td colspan="10"></td>
+              <!-- 間隔用的 td -->
+              <td colspan="1">
+                <button id="permission-button-update_ok" class="image_button_default" @click="savePermission">
+                  <i class="iconfont">&#xe786;&nbsp;</i>
+                  {{ t('common.ok') || '確定' }}
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="12">
+                <!-- 操作設定 -->
+                <div class="block">
+                  <p>{{ t('permission.label_setting_operation') || '操作設定' }}</p>
+                  <table class="frame-table">
+                    <tbody>
+                      <tr>
+                        <template v-for="field in operateFields" :key="field.key">
+                          <td colspan="1">
+                            <input :id="'permission-' + field.key" v-model="form[field.key]" type="checkbox" />
+                          </td>
+                          <td colspan="1">
+                            <label class="label-style-default" :for="'permission-' + field.key">
+                              {{ t('permission.' + field.key) || field.key }}
+                            </label>
+                          </td>
+                        </template>
+                        <td colspan="2"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 各模組設定 -->
+                <div v-for="mod in modules" :key="mod.key" class="block">
+                  <p>{{ t('permission.label_setting_' + mod.key) || mod.key }}</p>
+                  <table class="frame-table">
+                    <tbody>
+                      <tr>
+                        <template v-for="action in ['select', 'insert', 'update']" :key="action">
+                          <td colspan="1">
+                            <input
+                              :id="'permission-is_' + action + '_own_' + mod.key"
+                              v-model="form['is_' + action + '_own_' + mod.key]"
+                              type="checkbox"
+                            />
+                          </td>
+                          <td colspan="3">
+                            <label class="label-style-default" :for="'permission-is_' + action + '_own_' + mod.key">
+                              {{ t('permission.is_' + action + '_own_' + mod.key) || 'is_' + action + '_own_' + mod.key }}
+                            </label>
+                          </td>
+                        </template>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </AppLayout>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+// 原 views/app.view.permission.js (角色切換 GotoPageUpdate01~04 + PermissionSelectOne/UpdateOne)
+import { onMounted, reactive, ref } from 'vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { t } from '@/locales'
 import { VisibleLoaderElement } from '@/core/loader'
@@ -75,37 +159,20 @@ const form = reactive({
   is_update_own_analytics: false,
 })
 
-const presets = [
-  { code: 1, label: 'Admin' },
-  { code: 2, label: 'Agent' },
-  { code: 3, label: 'Manager' },
-  { code: 4, label: 'User' },
+const operateFields = [
+  { key: 'is_operate_member' },
+  { key: 'is_operate_organization' },
+  { key: 'is_operate_license' },
+  { key: 'is_operate_device' },
+  { key: 'is_operate_analytics' },
 ]
 
-const moduleFields = [
-  { key: 'is_operate_member', label: '管理會員' },
-  { key: 'is_operate_organization', label: '管理組織' },
-  { key: 'is_operate_license', label: '管理授權' },
-  { key: 'is_operate_device', label: '管理設備' },
-  { key: 'is_operate_analytics', label: '管理分析' },
-]
-
-const scopeFields = [
-  { key: 'is_select_own_member', label: '查詢會員' },
-  { key: 'is_insert_own_member', label: '新增會員' },
-  { key: 'is_update_own_member', label: '更新會員' },
-  { key: 'is_select_own_organization', label: '查詢組織' },
-  { key: 'is_insert_own_organization', label: '新增組織' },
-  { key: 'is_update_own_organization', label: '更新組織' },
-  { key: 'is_select_own_license', label: '查詢授權' },
-  { key: 'is_insert_own_license', label: '新增授權' },
-  { key: 'is_update_own_license', label: '更新授權' },
-  { key: 'is_select_own_device', label: '查詢設備' },
-  { key: 'is_insert_own_device', label: '新增設備' },
-  { key: 'is_update_own_device', label: '更新設備' },
-  { key: 'is_select_own_analytics', label: '查詢分析' },
-  { key: 'is_insert_own_analytics', label: '新增分析' },
-  { key: 'is_update_own_analytics', label: '更新分析' },
+const modules = [
+  { key: 'member' },
+  { key: 'organization' },
+  { key: 'license' },
+  { key: 'device' },
+  { key: 'analytics' },
 ]
 
 function selectPreset(code) {
@@ -142,7 +209,7 @@ async function savePermission() {
   try {
     const payload = { ...form }
     await apiCall(CsRequestPermissionUpdateOne, permissionCode.value, payload)
-    alert('儲存成功')
+    alert(t('common.success') || '成功')
   } catch (e) {
     if (e.message !== 'Handled Server Error') alert('request error')
   } finally {
@@ -154,3 +221,10 @@ onMounted(() => {
   loadPermission()
 })
 </script>
+
+<style>
+/* 標籤設定的區塊間隔 (原 permission.html 的 label 檢查表排版依 layout.style.utility.css .block) */
+#permission-role {
+  min-height: 1px;
+}
+</style>

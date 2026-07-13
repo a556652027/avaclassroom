@@ -15,8 +15,10 @@
             class="image_button_default"
             style="background-color: #214f7c; width: 218px; height: 48px; border-radius: 10px; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px;"
             @click="openAddModal"
+            @mouseenter="insertBtnHover = true"
+            @mouseleave="insertBtnHover = false"
           >
-            <img id="license_insert_button_icon" src="/assets/images/Group 607.svg" alt="" style="width: 20px; height: 20px" />
+            <img id="license_insert_button_icon" :src="insertBtnHover ? '/assets/images/information_button_orange.png' : '/assets/images/Group 607.svg'" alt="" style="width: 20px; height: 20px" />
             <p style="margin-bottom: 3px">{{ t('common.add') || '新增訂單' }}</p>
           </button>
         </div>
@@ -54,14 +56,14 @@
           <label for="license-select-all" style="display: flex; align-items: center; font-size: 14px; color: #374151; cursor: pointer; margin-right: 8px;">
             {{ t('common.select_all') || '全選' }}
           </label>
-          <button type="button" id="license-edit-button" class="edit-button" @click="openEditSelected">
-            <img id="license-edit-icon" src="/assets/images/edit.svg" alt="編輯" style="width: 24px; height: 24px; object-fit: contain" />
+          <button type="button" id="license-edit-button" class="edit-button" @click="openEditSelected" @mouseenter="editBtnHover = true" @mouseleave="editBtnHover = false">
+            <img id="license-edit-icon" :src="editBtnHover ? '/assets/images/edit_button_change.png' : '/assets/images/edit.svg'" alt="編輯" style="width: 24px; height: 24px; object-fit: contain" />
           </button>
-          <button type="button" id="license-download-button" class="edit-button" @click="downloadSelectedLicenses">
-            <img id="license-download-icon" src="/assets/images/download.svg" alt="下載" style="width: 20px; height: 20px; object-fit: contain" />
+          <button type="button" id="license-download-button" class="edit-button" @click="downloadSelectedLicenses" @mouseenter="downloadBtnHover = true" @mouseleave="downloadBtnHover = false">
+            <img id="license-download-icon" :src="downloadBtnHover ? '/assets/images/dowload_button_change.png' : '/assets/images/download.svg'" alt="下載" style="width: 20px; height: 20px; object-fit: contain" />
           </button>
-          <button type="button" id="license-download-all-button" class="edit-button" title="匯出全部" @click="exportAllLicenses">
-            <img id="license-download-all-icon" src="/assets/images/download_all_light_blue.svg" alt="匯出全部" style="width: 20px; height: 20px; object-fit: contain" />
+          <button type="button" id="license-download-all-button" class="edit-button" title="匯出全部" @click="exportAllLicenses" @mouseenter="downloadAllBtnHover = true" @mouseleave="downloadAllBtnHover = false">
+            <img id="license-download-all-icon" :src="downloadAllBtnHover ? '/assets/images/download_all_white.svg' : '/assets/images/download_all_light_blue.svg'" alt="匯出全部" style="width: 20px; height: 20px; object-fit: contain" />
           </button>
           <button type="button" id="license-delete-button" class="edit-button-trash" @click="deleteSelectedLicenses">
             <img src="/assets/images/trash.svg" alt="刪除" style="width: 20px; height: 20px; object-fit: contain" />
@@ -185,69 +187,361 @@
         <TablePagination :total-records="totalRecords" :rows-per-page="rowsPerPage" :current-page="currentPage" @change="(page) => loadLicenses(page)" />
       </div>
 
-      <div v-if="modalVisible" class="modal-overlay" style="display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.45); justify-content: center; align-items: center; z-index: 1100">
-        <div style="background: #fff; width: min(860px, 94vw); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2)">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem">
-            <h2 style="margin: 0">{{ mode === 'add' ? (t('common.add') || '新增') : (t('common.update') || '編輯') }}</h2>
-            <button type="button" class="link_text" @click="closeModal">✕</button>
+      <!-- 新增訂單 Modal (原 license-insert-modal，樣式與 www/license.html 一致) -->
+      <div
+        v-if="insertModalVisible"
+        style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center"
+      >
+        <div style="display: flex; flex-direction: column; background: white; box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2); padding: 30px; width: 90%; max-width: 800px; border-radius: 15px; max-height: 90vh; overflow-y: auto">
+          <div style="display: flex; justify-content: space-between">
+            <div style="display: flex; align-items: center">
+              <img src="/assets/images/add new_button.svg" alt="" />
+              <span style="color: #000000; font-size: 24px; margin-left: 8px; font-weight: 900">
+                {{ t('common.insert') || '新增' }}
+              </span>
+            </div>
+            <img src="/assets/images/X.svg" alt="" style="cursor: pointer" @click="closeInsertModal" />
           </div>
-          <div style="display: grid; grid-template-columns: repeat(2, minmax(220px, 1fr)); gap: 1rem">
-            <div>
-              <label>{{ t('common.license_cid') || '授權編號' }}</label>
-              <input v-model="licenseForm.license_cid" class="org-input" :disabled="mode === 'edit'" />
+
+          <div style="display: flex; gap: 2rem; flex-wrap: wrap">
+            <!-- 顯示隸屬組織（代理商 ID），設為唯讀以供確認 -->
+            <div style="display: flex; flex-direction: column">
+              <label for="license_insert-owner_cid" style="color: #898c94; margin-top: 1rem">{{ t('common.owner_cid') }}</label>
+              <input
+                id="license_insert-owner_cid"
+                v-model="insertForm.owner_cid"
+                type="text"
+                readonly
+                style="padding: 8px; margin-top: 0.5rem; width: 200px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f3f4f6; color: #6b7280; cursor: not-allowed"
+              />
             </div>
-            <div>
-              <label>{{ t('common.owner_cid') || '擁有者' }}</label>
-              <input v-model="licenseForm.owner_cid" class="org-input" />
+
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label for="license_insert-product_type" style="color: #898c94; margin-top: 1rem">{{ t('common.product_type') }}</label>
+              <div style="position: relative; margin-top: 0.5rem; width: 100%; display: flex">
+                <input
+                  id="license_insert-product_type"
+                  v-model="insertForm.product_type"
+                  type="text"
+                  autocomplete="off"
+                  style="padding: 8px; border: 1px solid #e5e8ea; border-right: none; border-radius: 6px 0 0 6px; outline: none; flex: 1; font-size: 14px; min-width: 0"
+                />
+                <button
+                  type="button"
+                  style="border: 1px solid #e5e8ea; border-left: none; background: #fff; border-radius: 0 6px 6px 0; padding: 0 10px; cursor: pointer"
+                  @click.stop="productDropdownOpen = !productDropdownOpen"
+                >▼</button>
+                <ul
+                  v-show="productDropdownOpen"
+                  style="position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border-radius: 6px; z-index: 1000; list-style: none; padding: 0; margin: 4px 0 0 0; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)"
+                >
+                  <li
+                    v-for="p in productOptions"
+                    :key="p.type"
+                    class="custom-dropdown-item"
+                    style="padding: 12px; cursor: pointer; font-size: 14px; color: rgba(0, 0, 0, 0.7); transition: background-color 0.2s"
+                    @click.stop="selectInsertProduct(p.type)"
+                  >
+                    {{ p.name }} ({{ p.type }})
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div>
-              <label>{{ t('common.agent_cid') || '代理商' }}</label>
-              <input v-model="licenseForm.agent_cid" class="org-input" />
+
+            <!-- 學校名稱 (avaclassroom 限定，含 datalist 聯想) -->
+            <div v-if="insertIsClassroom" style="display: flex; flex-direction: column; width: 200px">
+              <label for="license_insert-customer_name" style="color: #898c94; margin-top: 1rem">
+                {{ t('common_order_info.customer_name') || '學校名稱' }}
+              </label>
+              <input
+                id="license_insert-customer_name"
+                v-model="insertForm.customer_name"
+                type="text"
+                list="insert_school_datalist"
+                autocomplete="off"
+                :placeholder="t('common_order_info.customer_name_placeholder') || '請輸入或選擇學校...'"
+                required
+                style="padding: 8px; margin-top: 0.5rem; width: 200px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; box-sizing: border-box"
+              />
+              <datalist id="insert_school_datalist">
+                <option v-for="s in schoolOptions" :key="s" :value="s"></option>
+              </datalist>
             </div>
-            <div>
-              <label>{{ t('common.product_type') || '產品型態' }}</label>
-              <input v-model="licenseForm.product_type" class="org-input" />
+          </div>
+
+          <!-- 教學組長帳號設定 (avaclassroom 限定) -->
+          <div
+            v-if="insertIsClassroom"
+            style="padding: 15px; background-color: #f8fafc; border: 1px dashed #e2e8f0; border-radius: 8px; margin-top: 1rem"
+          >
+            <div style="font-weight: bold; color: #1e293b; margin-bottom: 10px">{{ t('license.teacher_account_settings') }}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem">
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 200px">
+                <label style="color: #64748b; font-size: 13px; margin-bottom: 4px">{{ t('license.teacher_name') }}</label>
+                <input v-model="teacherForm.name" type="text" :placeholder="t('license.teacher_name_placeholder')" style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background: #fff" />
+              </div>
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 200px">
+                <label style="color: #64748b; font-size: 13px; margin-bottom: 4px">{{ t('license.teacher_email') }}</label>
+                <input v-model="teacherForm.email" type="email" :placeholder="t('license.teacher_email_placeholder')" style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background: #fff" />
+              </div>
             </div>
-            <div>
-              <label>{{ t('common.license_begin_time') || '開始日期' }}</label>
-              <input v-model="licenseForm.license_begin_time" type="date" class="org-input" />
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 10px">
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 200px">
+                <label style="color: #64748b; font-size: 13px; margin-bottom: 4px">{{ t('license.teacher_password') }}</label>
+                <input v-model="teacherForm.password" type="password" :placeholder="t('license.teacher_password_placeholder')" style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background: #fff" />
+              </div>
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 200px">
+                <label style="color: #64748b; font-size: 13px; margin-bottom: 4px">{{ t('license.teacher_password_confirm') }}</label>
+                <input v-model="teacherForm.password_confirm" type="password" :placeholder="t('license.teacher_password_confirm_placeholder')" style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background: #fff" />
+              </div>
             </div>
-            <div>
-              <label>{{ t('common.license_days') || '天數' }}</label>
-              <input v-model="licenseForm.license_days" class="org-input" />
+          </div>
+
+          <div style="display: flex; gap: 2rem">
+            <div style="display: flex; flex-direction: column; width: 200px; margin-top: 1rem">
+              <label style="color: #898c94" for="license_insert-license_begin_time">{{ t('license.license_begin_time') }}</label>
+              <input
+                id="license_insert-license_begin_time"
+                v-model="insertForm.license_begin_time"
+                type="date"
+                required
+                style="padding: 8px; margin-top: 0.5rem; width: 200px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; box-sizing: border-box"
+              />
             </div>
-            <div>
-              <label>{{ t('common.license_count') || '數量' }}</label>
-              <input v-model="licenseForm.license_count" class="org-input" />
+            <div style="display: flex; flex-direction: column; margin-top: 1rem; width: 200px">
+              <label for="license_insert-license_days" style="color: #898c94">{{ t('license.license_days') }}</label>
+              <input
+                id="license_insert-license_days"
+                v-model="insertForm.license_days"
+                type="number"
+                required
+                style="padding: 8px; margin-top: 0.5rem; width: 200px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; box-sizing: border-box"
+              />
             </div>
-            <div>
-              <label>{{ t('common.sale_amount') || '售價' }}</label>
-              <input v-model="licenseForm.sale_amount" class="org-input" />
+          </div>
+
+          <div style="display: flex; flex-direction: column">
+            <label for="license_insert-license_count" style="color: #898c94; margin-top: 1rem">{{ t('license.license_count') }}</label>
+            <input
+              id="license_insert-license_count"
+              v-model="insertForm.license_count"
+              type="number"
+              required
+              style="padding: 8px; margin-top: 0.5rem; width: 200px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; box-sizing: border-box"
+            />
+          </div>
+
+          <div style="display: flex; flex-direction: column">
+            <label for="license_insert-note00" style="color: #898c94; margin-top: 1rem">{{ t('common.note00') }}</label>
+            <textarea
+              id="license_insert-note00"
+              v-model="insertForm.note00"
+              style="height: 80px; margin-top: 0.5rem; border: 1px solid #e5e8ea; border-radius: 6px; outline: none"
+            ></textarea>
+          </div>
+
+          <!-- 附件上傳 (原 dropzone / EnableDragFile) -->
+          <div style="padding-top: 1rem">
+            <span style="color: #898c94">{{ t('common.upload') }}</span>
+            <div
+              class="dropzone"
+              :class="{ highlight: insertDragHighlight }"
+              @click="triggerInsertFilePick"
+              @dragenter.prevent.stop="insertDragHighlight = true"
+              @dragover.prevent.stop="insertDragHighlight = true"
+              @dragleave.prevent.stop="insertDragHighlight = false"
+              @drop.prevent.stop="onInsertDrop"
+            >
+              <img src="/assets/images/上傳.svg" alt="" style="margin-bottom: 4px" />
+              <strong style="font-size: 14px; margin-bottom: 2px">{{ t('common.drop_files_here') }}</strong>
+              <u style="font-size: 14px">{{ t('common.choose_files') }}</u>
+              <div class="dz-list" style="margin-top: 8px; width: 100%">
+                <div
+                  v-for="(f, i) in insertFiles"
+                  :key="f.name + f.size"
+                  style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; margin-bottom: 6px; background-color: #e6f1fd; border-radius: 6px; border: 1px solid #9caec7"
+                >
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1">
+                    <img src="/assets/images/list_information.svg" alt="" style="width: 16px; height: 16px" />
+                    <span style="font-size: 14px; color: #404040; font-weight: 500">{{ f.name }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <span style="font-size: 12px; color: #6b7280">{{ humanSize(f.size) }}</span>
+                    <span style="cursor: pointer; font-weight: bold; color: #ff0000; margin-left: 10px; padding: 5px" @click.stop="insertFiles.splice(i, 1)">x</span>
+                  </div>
+                </div>
+              </div>
+              <input ref="insertFileInput" type="file" multiple hidden @change="onInsertFilePick" />
             </div>
-            <div>
-              <label>{{ t('common.customer_name') || '客戶名稱' }}</label>
-              <input v-model="licenseForm.customer_name" class="org-input" />
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem">
+            <button
+              type="button"
+              id="license_insert-button-cancel"
+              style="width: 130px; height: 48px; background-color: #ffffff; border: 1px solid #e5e8ea; border-radius: 10px; cursor: pointer"
+              @click="closeInsertModal"
+            >
+              {{ t('common.cancel') }}
+            </button>
+            <button
+              type="button"
+              id="license_insert-button-ok"
+              style="width: 130px; height: 48px; background-color: #214f7c; border-radius: 10px; border: none; color: #ffffff; cursor: pointer"
+              @click="LicenseInsertOne"
+            >
+              {{ t('common.save') }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 編輯訂單 Modal (原 license-update-modal，樣式與 www/license.html 一致) -->
+      <div
+        v-if="updateModalVisible"
+        style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center"
+      >
+        <div style="display: flex; flex-direction: column; background: white; border-radius: 15px; padding: 30px; box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2); width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto">
+          <div style="display: flex; justify-content: space-between">
+            <div style="display: flex; align-items: center">
+              <div style="margin-right: 10px">
+                <img src="/assets/images/Group 1053.svg" alt="" />
+              </div>
+              <h1 style="margin-top: 3px; font-size: 24px; margin-bottom: 0.5rem">
+                {{ t('license.edit_title') || '編輯訂單資訊' }}
+              </h1>
             </div>
-            <div>
-              <label>{{ t('common.customer_email') || '客戶Email' }}</label>
-              <input v-model="licenseForm.customer_email" class="org-input" />
+            <img src="/assets/images/X.svg" alt="" style="cursor: pointer" @click="closeUpdateModal" />
+          </div>
+
+          <div style="display: flex; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap">
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.license_cid') || '訂單編號' }}</label>
+              <input v-model="updateFormL.license_cid" type="text" disabled style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f5f5f5" />
             </div>
-            <div>
-              <label>{{ t('common.record_state') || '狀態' }}</label>
-              <select v-model="licenseForm.record_state" class="org-input">
-                <option value="1">{{ t('common.open') || '啟用' }}</option>
-                <option value="0">{{ t('common.close') || '停用' }}</option>
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.create_time') || t('common.create_time') }}</label>
+              <input v-model="updateFormL.create_time" type="date" disabled style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f5f5f5" />
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap">
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.agent_cid') || t('common.agent_cid') }}</label>
+              <input v-model="updateFormL.agent_cid" type="text" disabled style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f5f5f5" />
+            </div>
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.owner_cid') || t('common.owner_cid') }}</label>
+              <input v-model="updateFormL.owner_cid" type="text" disabled style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f5f5f5" />
+            </div>
+            <div style="display: flex; flex-direction: column; width: 200px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.record_state') || t('common.record_state') }}</label>
+              <select v-model="updateFormL.record_state" style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none">
+                <option value="1">{{ t('common.open') }}</option>
+                <option value="0">{{ t('common.close') }}</option>
               </select>
             </div>
-            <div style="grid-column: 1 / -1">
-              <label>{{ t('common.note00') || '備註' }}</label>
-              <textarea v-model="licenseForm.note00" class="org-input" style="height: 90px; resize: vertical"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap">
+            <div style="display: flex; flex-direction: column; width: 300px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.license_Key') || t('common.license_Key') }}</label>
+              <input v-model="updateFormL.license_key" type="text" disabled style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none; background-color: #f5f5f5" />
+            </div>
+            <div style="display: flex; flex-direction: column; width: 300px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.license_begin_time') }}</label>
+              <input v-model="updateFormL.license_begin_time" type="date" required style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none" />
             </div>
           </div>
-          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem">
-            <button type="button" class="image_button_default" @click="closeModal">{{ t('common.cancel') || '取消' }}</button>
-            <button type="button" class="image_button_default" style="background: #214f7c; color: #fff" @click="saveLicense">
-              {{ t('common.save') || '儲存' }}
+
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem">
+            <div style="display: flex; flex-direction: column; width: 300px">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.license_days') }}</label>
+              <input v-model="updateFormL.license_days" type="number" required style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none" />
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; width: 300px; margin-bottom: 1rem">
+            <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.license_count') }}</label>
+            <input v-model="updateFormL.license_count" type="number" required style="padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none" />
+          </div>
+
+          <div style="display: flex; margin-bottom: 1rem">
+            <div style="display: flex; flex-direction: column; width: 100%">
+              <label style="color: #898c94; margin-bottom: 0.5rem">{{ t('license.note00') || t('common.note00') }}</label>
+              <textarea
+                v-model="updateFormL.note00"
+                :placeholder="t('common.note00_hint')"
+                style="height: 80px; padding: 8px; border: 1px solid #e5e8ea; border-radius: 6px; outline: none"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 附件 (原 dropzone-update：既有附件 + 重新上傳) -->
+          <div style="padding-top: 1rem">
+            <span style="color: #898c94">{{ t('common.upload') }}</span>
+            <div
+              class="dropzone"
+              :class="{ highlight: updateDragHighlight }"
+              @click="triggerUpdateFilePick"
+              @dragenter.prevent.stop="updateDragHighlight = true"
+              @dragover.prevent.stop="updateDragHighlight = true"
+              @dragleave.prevent.stop="updateDragHighlight = false"
+              @drop.prevent.stop="onUpdateDrop"
+            >
+              <img src="/assets/images/上傳.svg" alt="" style="margin-bottom: 4px" />
+              <u style="font-size: 14px">{{ t('license.reupload_hint') || '移除舊檔案並重新上傳' }}</u>
+              <!-- 既有附件 -->
+              <div v-if="existingAttachmentPaths.length" class="dz-list" style="margin-top: 8px; width: 100%; padding-bottom: 12px; border-bottom: 1px solid #e5e8ea">
+                <div
+                  v-for="(path, i) in existingAttachmentPaths"
+                  :key="path"
+                  style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; margin-bottom: 6px; background-color: #e6f1fd; border-radius: 6px; border: 1px solid #92bfff"
+                >
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1">
+                    <img src="/assets/images/list_information.svg" alt="" style="width: 16px; height: 16px" />
+                    <span style="font-size: 14px; color: #404040">{{ path.split('/').pop() }}</span>
+                  </div>
+                  <span style="cursor: pointer; font-weight: bold; color: #ff0000; margin-left: 10px" @click.stop="existingAttachmentPaths.splice(i, 1)">x</span>
+                </div>
+              </div>
+              <!-- 新選擇的檔案 -->
+              <div class="dz-list" style="margin-top: 8px; width: 100%">
+                <div
+                  v-for="(f, i) in updateFiles"
+                  :key="f.name + f.size"
+                  style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; margin-bottom: 6px; background-color: #e6f1fd; border-radius: 6px; border: 1px solid #9caec7"
+                >
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1">
+                    <img src="/assets/images/list_information.svg" alt="" style="width: 16px; height: 16px" />
+                    <span style="font-size: 14px; color: #404040; font-weight: 500">{{ f.name }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <span style="font-size: 12px; color: #6b7280">{{ humanSize(f.size) }}</span>
+                    <span style="cursor: pointer; font-weight: bold; color: #ff0000; margin-left: 10px; padding: 5px" @click.stop="updateFiles.splice(i, 1)">x</span>
+                  </div>
+                </div>
+              </div>
+              <input ref="updateFileInput" type="file" multiple hidden @change="onUpdateFilePick" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem">
+            <button
+              type="button"
+              id="license_update-button-cancel"
+              style="width: 130px; height: 48px; background-color: #ffffff; border: 1px solid #e5e8ea; border-radius: 10px; cursor: pointer; font-size: 14px"
+              @click="closeUpdateModal"
+            >
+              {{ t('common.cancel') }}
+            </button>
+            <button
+              type="button"
+              id="license_update-button-ok"
+              style="width: 130px; height: 48px; background-color: #214f7c; border-radius: 10px; border: none; color: #ffffff; cursor: pointer; font-size: 14px"
+              @click="LicenseUpdateOne"
+            >
+              {{ t('common.save') }}
             </button>
           </div>
         </div>
@@ -298,6 +592,7 @@ import { VisibleLoaderElement } from '@/core/loader'
 import { apiCall } from '@/core/util'
 import { useLegacyCss } from '@/composables/useLegacyCss'
 import { runExportJob } from '@/services/exportJob'
+import { PRODUCT_DICTIONARY, getProductName } from '@/core/products'
 import {
   LicenseData,
   CsRequestLicenseSelectAllCount,
@@ -321,10 +616,63 @@ const endTime = ref('')
 const statusFilter = ref('all')
 const sortField = ref('create_time')
 const sortOrder = ref('desc')
-const modalVisible = ref(false)
-const mode = ref('add')
 const selectAll = ref(false)
 const statusDropdownOpen = ref(false)
+
+// 工具列按鈕 hover 換圖 (原 hoverButtons 設定)
+const insertBtnHover = ref(false)
+const editBtnHover = ref(false)
+const downloadBtnHover = ref(false)
+const downloadAllBtnHover = ref(false)
+
+// ===== 新增訂單 Modal (原 license-insert-modal) =====
+const insertModalVisible = ref(false)
+const productDropdownOpen = ref(false)
+const productOptions = ref([])
+const schoolOptions = ref([])
+const insertFiles = ref([])
+const insertDragHighlight = ref(false)
+const insertFileInput = ref(null)
+const teacherForm = reactive({ name: '', email: '', password: '', password_confirm: '' })
+const insertForm = reactive({
+  owner_cid: '',
+  product_type: '',
+  customer_name: '',
+  license_begin_time: '',
+  license_days: '',
+  license_count: '',
+  note00: '',
+})
+const insertIsClassroom = computed(() => insertForm.product_type === 'avaclassroom')
+
+// ===== 編輯訂單 Modal (原 license-update-modal) =====
+const updateModalVisible = ref(false)
+const updateFiles = ref([])
+const updateDragHighlight = ref(false)
+const updateFileInput = ref(null)
+const existingAttachmentPaths = ref([])
+const updateFormL = reactive({
+  license_cid: '',
+  create_time: '',
+  agent_cid: '',
+  owner_cid: '',
+  record_state: '1',
+  license_key: '',
+  license_begin_time: '',
+  license_days: '',
+  license_count: '',
+  sale_amount: '',
+  country: '',
+  customer_name: '',
+  customer_gender: '',
+  customer_birthday: '',
+  customer_phone: '',
+  customer_postalcode: '',
+  customer_address: '',
+  customer_email: '',
+  note00: '',
+  product_type: '',
+})
 
 // 統計卡 (原 updateDashboardStats 的顯示狀態)
 const totalCount = ref(0)
@@ -356,30 +704,6 @@ const statusOptionLabel = computed(() => {
   return option ? option.label : t('license.filter_all') || '全部'
 })
 
-const createLicenseForm = () => ({
-  ...LicenseData,
-  license_cid: '',
-  product_type: '1',
-  create_time: '',
-  record_state: '1',
-  owner_cid: window.sessionStorage.getItem('member_cid') || window.Cyberspace?.Client?.getUsername() || '',
-  agent_cid: '',
-  license_begin_time: '',
-  license_days: '',
-  license_count: '',
-  sale_amount: '',
-  country: '',
-  customer_name: '',
-  customer_gender: '',
-  customer_birthday: '',
-  customer_phone: '',
-  customer_postalcode: '',
-  customer_address: '',
-  customer_email: '',
-  note00: '',
-})
-
-const licenseForm = reactive(createLicenseForm())
 let requestController = null
 
 function getConditionTarget() {
@@ -430,10 +754,6 @@ function sortIconStyle(field) {
     opacity: active ? 1 : 0.5,
     transform: active && sortOrder.value === 'desc' ? 'rotate(180deg)' : 'rotate(0deg)',
   }
-}
-
-function resetForm() {
-  Object.assign(licenseForm, createLicenseForm())
 }
 
 function toggleSelectAll() {
@@ -747,32 +1067,127 @@ async function confirmDeleteLicenses() {
   await loadLicenses(currentPage.value)
 }
 
-function closeModal() {
-  modalVisible.value = false
-  resetForm()
+// ===== 附件選擇 (原 EnableDragFile：50MB/檔、上限 50 檔、去重) =====
+function humanSize(n) {
+  const u = ['B', 'KB', 'MB', 'GB', 'TB']
+  let i = 0
+  while (n >= 1024 && i < u.length - 1) {
+    n /= 1024
+    i++
+  }
+  return n.toFixed(1) + ' ' + u[i]
 }
 
+function addPickedFiles(target, newList) {
+  const files = Array.from(newList || []).filter((f) => f.size <= 50 * 1024 * 1024)
+  const unique = files.filter(
+    (nf) => !target.value.some((ef) => ef.name === nf.name && ef.size === nf.size && ef.lastModified === nf.lastModified),
+  )
+  if (!unique.length && files.length) console.error('[uploader:error]', '選擇的檔案已存在。')
+  let combined = target.value.concat(unique)
+  if (combined.length > 50) {
+    console.error('[uploader:error]', '最多 50 個檔案')
+    combined = combined.slice(0, 50)
+  }
+  target.value = combined
+}
+
+function triggerInsertFilePick() {
+  insertFileInput.value?.click()
+}
+function onInsertFilePick(e) {
+  addPickedFiles(insertFiles, e.target.files)
+  e.target.value = ''
+}
+function onInsertDrop(e) {
+  insertDragHighlight.value = false
+  addPickedFiles(insertFiles, e.dataTransfer?.files)
+}
+function triggerUpdateFilePick() {
+  updateFileInput.value?.click()
+}
+function onUpdateFilePick(e) {
+  addPickedFiles(updateFiles, e.target.files)
+  e.target.value = ''
+  // 原邏輯：加入新檔案時清除既有附件
+  if (updateFiles.value.length > 0) existingAttachmentPaths.value = []
+}
+function onUpdateDrop(e) {
+  updateDragHighlight.value = false
+  addPickedFiles(updateFiles, e.dataTransfer?.files)
+  if (updateFiles.value.length > 0) existingAttachmentPaths.value = []
+}
+
+function closeProductDropdown() {
+  productDropdownOpen.value = false
+}
+
+function selectInsertProduct(pType) {
+  insertForm.product_type = pType
+  productDropdownOpen.value = false
+}
+
+// ===== 新增訂單 Modal (原 GotoPageLicenseInsertOne) =====
 function openAddModal() {
-  mode.value = 'add'
-  resetForm()
-  modalVisible.value = true
+  // 設定今天日期
+  insertForm.license_begin_time = new Date().toLocaleDateString('sv-SE')
+  // 確保 owner_cid 與 sessionStorage 中最新的 group_cid 快取同步
+  insertForm.owner_cid = window.sessionStorage.getItem('group_cid') || ''
+  insertForm.customer_name = ''
+  insertForm.license_days = ''
+  insertForm.license_count = ''
+  insertForm.note00 = ''
+  insertFiles.value = []
+  Object.assign(teacherForm, { name: '', email: '', password: '', password_confirm: '' })
+
+  // 動態載入產品選單與預設值
+  insertForm.product_type = window.sessionStorage.getItem('product_type') || 'avacast'
+  try {
+    const allKeys = Object.keys(PRODUCT_DICTIONARY)
+    const ownedProductsStr = window.sessionStorage.getItem('owned_products')
+    if (ownedProductsStr) {
+      for (const op of JSON.parse(ownedProductsStr)) {
+        if (!allKeys.includes(op)) allKeys.push(op)
+      }
+    }
+    productOptions.value = allKeys.map((pType) => ({ type: pType, name: getProductName(pType) }))
+  } catch (e) {
+    console.error('Error parsing owned_products for dropdown', e)
+  }
+
+  // datalist 聯想選項：從目前列表資料提取不重複的學校
+  const schools = []
+  rows.value.forEach((row) => {
+    const name = String(row.customer_name || '').trim()
+    if (name && !schools.includes(name)) schools.push(name)
+  })
+  schoolOptions.value = schools
+
+  insertModalVisible.value = true
 }
 
+function closeInsertModal() {
+  insertModalVisible.value = false
+  productDropdownOpen.value = false
+}
+
+// ===== 編輯訂單 Modal (原 LicenseSelectOne + GotoPageLicenseUpdateOne) =====
 async function openEditModal(licenseCid) {
-  mode.value = 'edit'
-  resetForm()
+  updateFiles.value = []
+  existingAttachmentPaths.value = []
   VisibleLoaderElement(true)
   try {
-    const result = await apiCall(CsRequestLicenseSelectOneRecordByCID, licenseCid, requestController)
-    const record = result.records || {}
+    const json_object = await apiCall(CsRequestLicenseSelectOneRecordByCID, licenseCid, requestController)
+    const record = json_object.records || {}
     const first = (key) => (record[key] ? record[key][0] || '' : '')
-    Object.assign(licenseForm, {
+
+    Object.assign(updateFormL, {
       license_cid: first('license_cid'),
-      product_type: first('product_type'),
-      create_time: first('create_time'),
-      record_state: first('record_state') || '1',
+      create_time: first('create_time') ? first('create_time').split(' ')[0] : '',
+      agent_cid: window.sessionStorage.getItem('member_cid') || '',
       owner_cid: first('owner_cid'),
-      agent_cid: first('agent_cid'),
+      record_state: first('record_state') || '1',
+      license_key: first('license_key'),
       license_begin_time: first('license_begin_time') ? first('license_begin_time').split(' ')[0] : '',
       license_days: first('license_days'),
       license_count: first('license_count'),
@@ -780,19 +1195,43 @@ async function openEditModal(licenseCid) {
       country: first('country'),
       customer_name: first('customer_name'),
       customer_gender: first('customer_gender'),
-      customer_birthday: first('customer_birthday') ? first('customer_birthday').split(' ')[0] : '',
+      customer_birthday: first('customer_birthday'),
       customer_phone: first('customer_phone'),
       customer_postalcode: first('customer_postalcode'),
       customer_address: first('customer_address'),
       customer_email: first('customer_email'),
       note00: first('note00'),
+      product_type: first('product_type') || window.sessionStorage.getItem('product_type') || '',
     })
-    modalVisible.value = true
+
+    // 處理附件資料 (attachments 每個元素都是 JSON 字串，含路徑陣列)
+    if (record.attachments && record.attachments.length > 0) {
+      const allPaths = []
+      for (let i = 0; i < record.attachments.length; i++) {
+        const attachmentStr = record.attachments[i]
+        if (attachmentStr && attachmentStr.trim() !== '') {
+          try {
+            const parsed = JSON.parse(attachmentStr)
+            if (Array.isArray(parsed)) allPaths.push(...parsed)
+            else if (typeof parsed === 'string') allPaths.push(parsed)
+          } catch (parseError) {
+            console.warn(`無法解析第 ${i} 個附件:`, attachmentStr, parseError)
+          }
+        }
+      }
+      existingAttachmentPaths.value = allPaths
+    }
+
+    updateModalVisible.value = true
   } catch (e) {
     if (e.message !== 'Handled Server Error') alert('request error')
   } finally {
     VisibleLoaderElement(false)
   }
+}
+
+function closeUpdateModal() {
+  updateModalVisible.value = false
 }
 
 // 原 getQuarterStartDate：回傳該季度的第一天
@@ -925,15 +1364,382 @@ async function loadLicenses(page = 1) {
   }
 }
 
-async function saveLicense() {
+// 原 LicenseInsertOne：送欄位 + 檔案；avaclassroom 產品含教學組長自動註冊流程
+async function LicenseInsertOne() {
+  const license_data = Object.create(LicenseData)
+  license_data.owner_cid = insertForm.owner_cid
+  license_data.agent_cid = window.sessionStorage.getItem('member_cid')
+  license_data.record_state = 1
+  license_data.license_begin_time = insertForm.license_begin_time
+  license_data.product_type = insertForm.product_type || 'avacast'
+  license_data.license_days = insertForm.license_days
+  license_data.license_count = insertForm.license_count
+  license_data.sale_amount = ''
+  license_data.country = ''
+  license_data.customer_name = insertForm.customer_name
+  license_data.customer_gender = ''
+  license_data.customer_birthday = ''
+  license_data.customer_phone = ''
+  license_data.customer_postalcode = ''
+  license_data.customer_address = ''
+  license_data.customer_email = ''
+  license_data.note00 = insertForm.note00
+
+  // --- [Ava Classroom 教學組長自動註冊流程] ---
+  if (license_data.product_type === 'avaclassroom') {
+    const teacher_name = teacherForm.name.trim()
+    const teacher_email = teacherForm.email.trim()
+    const teacher_password = teacherForm.password.trim()
+    const teacher_password_confirm = teacherForm.password_confirm.trim()
+
+    // 步驟 A：輸入欄位驗證
+    if (!teacher_name || !teacher_email || !teacher_password || !teacher_password_confirm) {
+      alert(t('license.error_empty_teacher'))
+      return
+    }
+    if (teacher_email.indexOf('@') === -1) {
+      alert(t('license.error_invalid_email'))
+      return
+    }
+    if (teacher_password !== teacher_password_confirm) {
+      alert(t('license.error_password_mismatch'))
+      return
+    }
+
+    VisibleLoaderElement(true)
+
+    // 步驟 B：尋找 parent_cid (該組織下具有 tier 3 權限的代理商帳號)
+    const userTier = window.sessionStorage.getItem('tier')
+    let parent_cid = ''
+
+    try {
+      if (userTier === '3') {
+        parent_cid = window.sessionStorage.getItem('member_cid')
+      } else if (userTier === '1' || userTier === '2') {
+        const target_group_cid = (license_data.owner_cid || '').trim()
+
+        if (target_group_cid.startsWith('sch_')) {
+          // 若傳入的是現有學校群組，直接查該群組取得其上層代理商管理員 (owner_cid)
+          await new Promise((resolve) => {
+            window.Cyberspace.Client.SendRequest(
+              '/ava_system/group/select_one_record',
+              { group_cid: target_group_cid },
+              (ok, res) => {
+                if (ok) {
+                  try {
+                    const groupJson = JSON.parse(res)
+                    if ((groupJson.errno == 1 || groupJson.errno == 0) && groupJson.records) {
+                      const owner = Array.isArray(groupJson.records.owner_cid)
+                        ? groupJson.records.owner_cid[0]
+                        : groupJson.records.owner_cid || ''
+                      if (owner) parent_cid = owner.trim()
+                    }
+                  } catch (e) {
+                    console.error('Failed to parse school group owner:', e)
+                  }
+                }
+                resolve()
+              },
+            )
+          })
+        }
+
+        if (!parent_cid) {
+          const memberList = await new Promise((resolve, reject) => {
+            window.Cyberspace.Client.SendRequest(
+              '/ava_system/member/select_all_records',
+              { condition_type: 5, condition_value: target_group_cid, search_name: '', offset: 0, row_count: 100 },
+              (ok, result) => {
+                if (!ok) {
+                  reject(new Error('網路連線錯誤，無法查詢組織下的成員帳號。'))
+                  return
+                }
+                try {
+                  const json = JSON.parse(result)
+                  if (json.errno == 1 || json.errno == 0) {
+                    const m_cids = (json.records && json.records.member_cid) || json.member_cid
+                    resolve(Array.isArray(m_cids) ? m_cids : m_cids ? [m_cids] : [])
+                  } else {
+                    reject(new Error('後端錯誤代碼: ' + json.errno))
+                  }
+                } catch (e) {
+                  reject(new Error('解析組織成員回應失敗。'))
+                }
+              },
+            )
+          })
+
+          if (memberList.length === 0) throw new Error('該組織旗下沒有任何成員帳號！')
+
+          // select_all_records 會抹除 tier 欄位，須逐一查詢 select_one_record 篩出 tier === "3"
+          const details = await Promise.all(
+            memberList.map(
+              (cid) =>
+                new Promise((resolve) => {
+                  window.Cyberspace.Client.SendRequest('/ava_system/member/select_one_record', { member_cid: cid }, (ok, res) => {
+                    if (ok) {
+                      try {
+                        const detailJson = JSON.parse(res)
+                        if (detailJson.errno == 1 || detailJson.errno == 0) {
+                          resolve({ cid, detail: detailJson })
+                          return
+                        }
+                      } catch (e) {}
+                    }
+                    resolve({ cid, detail: null })
+                  })
+                }),
+            ),
+          )
+
+          for (const item of details) {
+            if (item.detail && item.detail.records) {
+              const records = item.detail.records
+              const m_tier = Array.isArray(records.tier) ? records.tier[0] : records.tier || ''
+              if (String(m_tier) === '3') {
+                parent_cid = item.cid
+                break
+              }
+            }
+          }
+        }
+
+        if (!parent_cid) throw new Error('該隸屬組織尚未建立代理商管理員，無法建立教學組長帳號！')
+      } else {
+        throw new Error('您的帳號權限不足以建立教學組長！')
+      }
+
+      if (!parent_cid) throw new Error('找不到上層代理商帳號，無法建立教學組長帳號！')
+
+      // 步驟 B-2：檢查或建立學校群組
+      const school_name = (license_data.customer_name || '').trim()
+      if (!school_name) throw new Error('學校名稱（客戶名稱）不得為空！')
+
+      let school_group_cid = ''
+
+      // 查該代理商旗下所有 group，檢查有無同名群組
+      await new Promise((resolveGroup, rejectGroup) => {
+        window.Cyberspace.Client.SendRequest(
+          '/ava_system/group/select_all_records',
+          { condition_type: '2', condition_value: parent_cid, offset: 0, row_count: 100 },
+          (ok, result) => {
+            if (!ok) {
+              rejectGroup(new Error('網路連線錯誤，無法查詢已存在的學校群組。'))
+              return
+            }
+            try {
+              const json = JSON.parse(result)
+              if (json.errno == 1 || json.errno == 0) {
+                if (json.records) {
+                  const names = json.records.group_name || []
+                  const cids = json.records.group_cid || []
+                  const nameList = Array.isArray(names) ? names : names ? [names] : []
+                  const cidList = Array.isArray(cids) ? cids : cids ? [cids] : []
+                  for (let i = 0; i < nameList.length; i++) {
+                    if (String(nameList[i]).trim() === school_name) {
+                      school_group_cid = String(cidList[i]).trim()
+                      break
+                    }
+                  }
+                }
+                resolveGroup()
+              } else {
+                rejectGroup(new Error('查詢已存在群組失敗，後端錯誤碼: ' + json.errno))
+              }
+            } catch (e) {
+              rejectGroup(new Error('解析群組查詢回應失敗。'))
+            }
+          },
+        )
+      })
+
+      // 若同名群組不存在，自動新建
+      if (!school_group_cid) {
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+        const random_suffix = Math.random().toString(36).substring(2, 6)
+        school_group_cid = `sch_${parent_cid}_${today}_${random_suffix}`
+
+        await new Promise((resolveInsert, rejectInsert) => {
+          window.Cyberspace.Client.SendRequest(
+            '/ava_system/group/insert_one_record',
+            {
+              group_cid: school_group_cid,
+              group_name: school_name,
+              group_type: 0,
+              owner_cid: parent_cid,
+              record_state: 1,
+              contact: teacher_name || license_data.customer_name || '',
+              group_ubn: '',
+              contact_phone_01: license_data.customer_phone || '',
+              contact_email_01: teacher_email || license_data.customer_email || '',
+              city: '',
+              country: license_data.country || '',
+              address: license_data.customer_address || '',
+              billing_addr: license_data.customer_address || '',
+            },
+            (ok, result) => {
+              if (!ok) {
+                rejectInsert(new Error('網路連線錯誤，無法建立新的學校群組。'))
+                return
+              }
+              try {
+                const json = JSON.parse(result)
+                if (json.errno == 1 || json.errno == 0) resolveInsert()
+                else rejectInsert(new Error('建立新學校群組失敗，後端錯誤碼: ' + json.errno))
+              } catch (e) {
+                rejectInsert(new Error('解析建立群組回應失敗。'))
+              }
+            },
+          )
+        })
+      }
+
+      // 後續流程的群組關聯改為學校 group_cid；訂單代理人設為代理商代表帳號
+      license_data.owner_cid = school_group_cid
+      if (parent_cid) license_data.agent_cid = parent_cid
+
+      // 步驟 C：建立教學組長帳號 (Tier 4)
+      await new Promise((resolve, reject) => {
+        window.Cyberspace.Client.SendRequest(
+          '/ava_system/member/insert_one_record',
+          {
+            parent_cid: parent_cid,
+            member_cid: teacher_email,
+            password: teacher_password,
+            member_name: teacher_name,
+            group_cid: license_data.owner_cid,
+            phone_cell: '',
+            phone_home: '',
+            phone_work: '',
+            email: teacher_email,
+            address: '',
+            city: '',
+            country: '',
+            gender: '',
+            birthday: '1991-01-01',
+            note00: '',
+            avatar_url: '',
+          },
+          (ok, result) => {
+            if (!ok) {
+              reject(new Error('網路連線錯誤，註冊教學組長帳號失敗。'))
+              return
+            }
+            try {
+              const json = JSON.parse(result)
+              if (json.errno == 1 || json.errno == 0) {
+                resolve()
+              } else if (json.errno == -1059) {
+                // 帳號已存在：復原 record_state=1 並更新密碼
+                window.Cyberspace.Client.SendRequest(
+                  '/ava_system/member/update_one_record',
+                  {
+                    member_cid: teacher_email,
+                    password: teacher_password,
+                    member_name: teacher_name,
+                    record_state: 1,
+                    group_cid: license_data.owner_cid,
+                    email: teacher_email,
+                    birthday: '1991-01-01',
+                    phone_cell: '', phone_home: '', phone_work: '',
+                    address: '', city: '', country: '', gender: '',
+                    note00: '', avatar_url: '',
+                  },
+                  () => resolve(),
+                )
+              } else {
+                reject(new Error('後端錯誤代碼: ' + json.errno))
+              }
+            } catch (e) {
+              reject(new Error('解析註冊回應失敗。'))
+            }
+          },
+        )
+      })
+
+      // 步驟 D：關聯 Email 到訂購人 Email 欄位中
+      license_data.customer_email = teacher_email
+    } catch (err) {
+      alert((t('license.error_create_failed') || '建立教學組長帳號失敗：') + err.message)
+      VisibleLoaderElement(false)
+      return
+    }
+  }
+
+  // 組 payload：沒有檔案就不放 files[]
+  const files = insertFiles.value.slice()
+  const payload = Object.assign({}, license_data)
+  if (files.length > 0) payload['files[]'] = files
+
   VisibleLoaderElement(true)
   try {
-    if (mode.value === 'add') {
-      await apiCall(CsRequestLicenseInsertOneRecord, licenseForm, requestController)
-    } else {
-      await apiCall(CsRequestLicenseUpdateOneRecord, licenseForm, requestController)
-    }
-    closeModal()
+    await apiCall(CsRequestLicenseInsertOneRecord, payload)
+    insertFiles.value = []
+    insertModalVisible.value = false
+
+    alert(t('common.success'))
+
+    // 強制將剛新增的產品寫入快取，避免後端資料庫延遲導致抓到舊資料
+    try {
+      const addedProduct = license_data.product_type
+      const currentOwnedStr = window.sessionStorage.getItem('owned_products')
+      let currentOwned = []
+      if (currentOwnedStr) currentOwned = JSON.parse(currentOwnedStr)
+      if (!currentOwned.includes(addedProduct)) {
+        currentOwned.push(addedProduct)
+        window.sessionStorage.setItem('owned_products', JSON.stringify(currentOwned))
+      }
+    } catch (e) {}
+
+    window.sessionStorage.setItem('product_type', license_data.product_type)
+    await loadLicenses(1)
+  } catch (e) {
+    if (e.message !== 'Handled Server Error') alert('request error')
+  } finally {
+    VisibleLoaderElement(false)
+  }
+}
+
+// 原 LicenseUpdateOne：欄位 + 新檔案 + 既有附件路徑合併送出
+async function LicenseUpdateOne() {
+  const license_data = Object.create(LicenseData)
+  license_data.product_type = updateFormL.product_type || window.sessionStorage.getItem('product_type')
+  license_data.license_cid = updateFormL.license_cid
+  license_data.record_state = updateFormL.record_state
+  license_data.owner_cid = updateFormL.owner_cid
+  license_data.license_begin_time = updateFormL.license_begin_time
+  license_data.license_days = updateFormL.license_days || new Date().toLocaleDateString('sv-SE')
+  license_data.license_count = updateFormL.license_count
+  license_data.sale_amount = updateFormL.sale_amount
+  license_data.country = updateFormL.country
+  license_data.customer_name = updateFormL.customer_name
+  license_data.customer_gender = updateFormL.customer_gender
+  license_data.customer_birthday = updateFormL.customer_birthday
+  license_data.customer_phone = updateFormL.customer_phone
+  license_data.customer_postalcode = updateFormL.customer_postalcode
+  license_data.customer_address = updateFormL.customer_address
+  license_data.customer_email = updateFormL.customer_email
+  license_data.note00 = updateFormL.note00
+
+  const files = updateFiles.value.slice()
+  const existingPaths = existingAttachmentPaths.value.slice()
+
+  // 合併舊附件路徑 + 新檔案名稱
+  const allAttachmentInfo = [...existingPaths]
+  files.forEach((file) => {
+    allAttachmentInfo.push({ type: 'new_file', name: file.name, size: file.size })
+  })
+
+  const payload = Object.assign({}, license_data)
+  if (files.length > 0) payload['files[]'] = files
+  if (allAttachmentInfo.length > 0) payload['existing_attachments'] = JSON.stringify(allAttachmentInfo)
+
+  VisibleLoaderElement(true)
+  try {
+    await apiCall(CsRequestLicenseUpdateOneRecord, payload)
+    updateFiles.value = []
+    alert(t('common.success'))
+    updateModalVisible.value = false
     await loadLicenses(currentPage.value)
   } catch (e) {
     if (e.message !== 'Handled Server Error') alert('request error')
@@ -945,10 +1751,13 @@ async function saveLicense() {
 onMounted(() => {
   useLegacyCss('/css/page/license.css')
   loadLicenses(1)
+  // 點擊外部隱藏產品下拉選單 (原 click.hideProductDrop)
+  document.addEventListener('click', closeProductDropdown)
 })
 
 onBeforeUnmount(() => {
   requestController?.abort()
+  document.removeEventListener('click', closeProductDropdown)
 })
 </script>
 
@@ -983,5 +1792,52 @@ onBeforeUnmount(() => {
 /* 原 license_list-customer_name-clear 的 hover 變色 */
 .license-customer-clear:hover {
   color: #666 !important;
+}
+
+/* ===== 附件 dropzone (原 lib.html.js EnableDragFile 注入的樣式) ===== */
+.dropzone {
+  border: 2px dashed #3b82f6;
+  border-radius: 12px;
+  padding: 24px;
+  min-height: 140px;
+  background: #f8fafc;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+.dropzone.highlight {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+.dz-list {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* 產品下拉選項 hover (原 custom-dropdown-item inline handler) */
+.custom-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Modal 按鈕 hover (原 license.html style 區塊) */
+#license_insert-button-cancel,
+#license_insert-button-ok,
+#license_update-button-cancel,
+#license_update-button-ok {
+  transition: background-color 0.2s ease;
+}
+#license_insert-button-cancel:hover,
+#license_update-button-cancel:hover {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
+}
+#license_insert-button-ok:hover,
+#license_update-button-ok:hover {
+  background-color: #ee963f !important;
 }
 </style>
