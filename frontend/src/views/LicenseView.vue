@@ -27,20 +27,20 @@
             <div>
               <p style="font-size: 14px; line-height: 20px; margin-bottom: 0.5rem;">{{ t('license.total_licensed_count') || '授權總數' }}</p>
               <div style="display: flex; align-items: center; gap: 1rem;">
-                <p id="license-total-count" style="font-weight: 600; font-size: 24px">0</p>
-                <div id="license-total-growth-rate" style="display: flex; align-items: center; gap: 0.5rem;">
-                  <span id="license-total-growth-percentage" style="font-size: 14px">0%</span>
-                  <img id="license-total-growth-icon" src="/assets/images/up.svg" alt="" style="width: 16px; height: 16px" />
+                <p id="license-total-count" style="font-weight: 600; font-size: 24px">{{ totalCount.toLocaleString() }}</p>
+                <div v-show="totalGrowthVisible" id="license-total-growth-rate" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span id="license-total-growth-percentage" style="font-size: 14px">{{ totalGrowthText }}</span>
+                  <img id="license-total-growth-icon" :src="totalGrowthUp ? '/assets/images/up.svg' : '/assets/images/down.svg'" alt="" style="width: 16px; height: 16px" />
                 </div>
               </div>
             </div>
             <div>
               <p style="font-size: 14px; line-height: 20px; margin-bottom: 0.5rem;">{{ t('license.new_this_quarter') || '本季新增' }}</p>
               <div style="display: flex; align-items: center; gap: 1rem;">
-                <p id="license-quarterly-count" style="font-weight: 600; font-size: 24px; margin-right: 1rem;">0</p>
-                <div id="license-quarterly-growth-rate" style="display: flex; align-items: center; gap: 0.5rem;">
-                  <span id="license-quarterly-growth-percentage" style="font-size: 14px">0%</span>
-                  <img id="license-quarterly-growth-icon" src="/assets/images/up.svg" alt="" style="width: 16px; height: 16px" />
+                <p id="license-quarterly-count" style="font-weight: 600; font-size: 24px; margin-right: 1rem;">{{ quarterlyCount.toLocaleString() }}</p>
+                <div v-show="quarterlyGrowthVisible" id="license-quarterly-growth-rate" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span id="license-quarterly-growth-percentage" style="font-size: 14px">{{ quarterlyGrowthText }}</span>
+                  <img id="license-quarterly-growth-icon" :src="quarterlyGrowthUp ? '/assets/images/up.svg' : '/assets/images/down.svg'" alt="" style="width: 16px; height: 16px" />
                 </div>
               </div>
             </div>
@@ -69,6 +69,30 @@
         </div>
 
         <div class="responsive-toolbar-group" style="align-items: flex-end">
+          <!-- 原 license_list-customer_name-container：訂購人名稱搜尋欄位 (僅 avaclassroom 產品顯示) -->
+          <div v-if="showCustomerSearch" style="display: flex; flex-direction: column; margin-right: 12px">
+            <label for="license_list-customer_name" style="font-size: 12px; color: #666; margin-bottom: 2px">
+              {{ t('common_order_info.customer_name') || '訂購人名稱' }}
+            </label>
+            <div style="position: relative; display: flex; align-items: center">
+              <input
+                id="license_list-customer_name"
+                v-model="customerName"
+                type="text"
+                :placeholder="(t('common.search') || '搜尋') + '...'"
+                style="padding: 6px 26px 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; height: 38px; box-sizing: border-box; width: 150px"
+                @keyup.enter="loadLicenses(1)"
+              />
+              <span
+                v-show="customerName"
+                class="license-customer-clear"
+                style="position: absolute; right: 8px; cursor: pointer; color: #aaa; font-size: 12px; user-select: none; font-weight: bold; transition: color 0.2s"
+                @click="clearCustomerName(); loadLicenses(1)"
+              >
+                ✕
+              </span>
+            </div>
+          </div>
           <div style="display: flex; flex-direction: column">
             <label for="license_list-begin_time" style="font-size: 12px; color: #666; margin-bottom: 2px;">
               {{ t('license.search_date_start') || '開始日期' }}
@@ -228,6 +252,39 @@
           </div>
         </div>
       </div>
+
+      <!-- 作廢確認 Modal (原 delete-confirmation-modal) -->
+      <div
+        v-if="deleteModalVisible"
+        style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1200; justify-content: center; align-items: center"
+      >
+        <div style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1)">
+          <div style="display: flex; align-items: center; padding-bottom: 16px">
+            <div style="width: 40px; height: 40px; justify-content: center; align-items: center; display: flex">
+              <img src="/assets/images/device_delete.svg" alt="" />
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #111827">
+                {{ t('common.delete') || '刪除' }}
+              </h3>
+            </div>
+          </div>
+          <div style="margin-bottom: 24px">
+            <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.5; white-space: pre-line">{{ deleteModalMessage }}</p>
+            <div style="margin-top: 12px; max-height: 200px; overflow-y: auto; background: #f9fafb; border-radius: 6px; padding: 12px">
+              <div v-for="(item, idx) in deleteModalItems" :key="idx" style="padding: 4px 0">{{ item }}</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; justify-content: flex-end">
+            <button class="delete-modal-cancel" @click="deleteModalVisible = false">
+              {{ t('common.cancel') || '取消' }}
+            </button>
+            <button class="delete-modal-confirm" @click="confirmDeleteLicenses">
+              {{ t('common.update') || '確定' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -244,6 +301,7 @@ import { runExportJob } from '@/services/exportJob'
 import {
   LicenseData,
   CsRequestLicenseSelectAllCount,
+  CsRequestLicenseGetStatistics,
   CsRequestLicenseSelectAllRecords,
   CsRequestLicenseSelectOneRecordByCID,
   CsRequestLicenseInsertOneRecord,
@@ -267,6 +325,27 @@ const modalVisible = ref(false)
 const mode = ref('add')
 const selectAll = ref(false)
 const statusDropdownOpen = ref(false)
+
+// 統計卡 (原 updateDashboardStats 的顯示狀態)
+const totalCount = ref(0)
+const totalGrowthVisible = ref(false)
+const totalGrowthText = ref('0%')
+const totalGrowthUp = ref(true)
+const quarterlyCount = ref(0)
+const quarterlyGrowthVisible = ref(false)
+const quarterlyGrowthText = ref('0%')
+const quarterlyGrowthUp = ref(true)
+
+// 原 license_list-customer_name-container 僅在 avaclassroom 產品顯示
+const showCustomerSearch =
+  (window.sessionStorage.getItem('product_type') ||
+    window.sessionStorage.getItem('default_product') ||
+    '') === 'avaclassroom'
+
+// 刪除(作廢)確認 Modal (原 delete-confirmation-modal)
+const deleteModalVisible = ref(false)
+const deleteModalMessage = ref('')
+const deleteModalItems = ref([])
 const statusOptions = [
   { value: 'all', label: t('license.filter_all') || '全部' },
   { value: 'active', label: t('license.filter_active') || '啟用' },
@@ -385,13 +464,138 @@ function openEditSelected() {
   openEditModal(selected.license_cid)
 }
 
-function downloadSelectedLicenses() {
+// 原 downloadSelectedAttachments：逐筆取回選中訂單並生成整合 Excel (並行上限 3)
+async function downloadSelectedLicenses() {
   const selected = rows.value.filter((row) => row.checked)
   if (!selected.length) {
-    alert(t('common.select_one_record') || '請先選擇一筆資料')
+    alert('請選擇要匯出的項目')
     return
   }
-  alert(t('common.not_implemented') || '功能尚未實作')
+
+  const licenseCids = selected.map((row) => row.license_cid)
+  VisibleLoaderElement(true)
+
+  const fetchOrder = async (licenseCid) => {
+    try {
+      const json_object = await apiCall(CsRequestLicenseSelectOneRecordByCID, licenseCid)
+      if (json_object.records) {
+        json_object.records._license_cid = licenseCid
+        return json_object.records
+      }
+      return null
+    } catch (e) {
+      console.error(`解析訂單 ${licenseCid} 失敗:`, e)
+      return null
+    }
+  }
+
+  // 限制並行請求數量 (原 promiseAllLimit, CONCURRENCY_LIMIT = 3)
+  const CONCURRENCY_LIMIT = 3
+  const results = new Array(licenseCids.length)
+  let index = 0
+  const next = () => {
+    if (index >= licenseCids.length) return Promise.resolve()
+    const currentIndex = index++
+    return fetchOrder(licenseCids[currentIndex]).then((res) => {
+      results[currentIndex] = res
+      return next()
+    })
+  }
+  const chains = []
+  for (let i = 0; i < Math.min(CONCURRENCY_LIMIT, licenseCids.length); i++) chains.push(next())
+
+  try {
+    await Promise.all(chains)
+    VisibleLoaderElement(false)
+    const allOrders = results.filter((r) => r !== null)
+
+    if (allOrders.length > 0) {
+      await generateOrdersExcel(allOrders)
+      if (allOrders.length === licenseCids.length) {
+        showToast(`已成功匯出 ${allOrders.length} 筆訂單資料`)
+      } else {
+        alert(
+          `匯出完成，但有部分資料讀取失敗。\n預計: ${licenseCids.length} 筆\n成功: ${allOrders.length} 筆\n失敗: ${licenseCids.length - allOrders.length} 筆`,
+        )
+      }
+    } else {
+      alert('無法獲取訂單資料')
+    }
+  } catch (err) {
+    VisibleLoaderElement(false)
+    console.error('匯出過程發生錯誤:', err)
+    alert('匯出失敗，請稍後再試')
+  }
+}
+
+// 原 generateOrdersExcel (欄位/欄寬/檔名格式不變，改用打包內建 exceljs)
+async function generateOrdersExcel(ordersList) {
+  const { default: ExcelJS } = await import('exceljs')
+  const { default: saveAs } = await import('file-saver')
+
+  const headers = ['訂單編號', '建立時間', '授權開始時間', '授權天數', '授權數量', '授權金鑰', '備註', '附件清單']
+  const workbook = new ExcelJS.Workbook()
+  const worksheet = workbook.addWorksheet('訂單列表')
+  worksheet.addRow(headers)
+
+  ordersList.forEach((order) => {
+    let attachmentNames = ''
+    if (order.attachments && order.attachments.length > 0) {
+      const names = []
+      order.attachments.forEach((attStr) => {
+        try {
+          if (attStr && attStr.trim()) {
+            const parsed = JSON.parse(attStr)
+            if (Array.isArray(parsed)) {
+              parsed.forEach((p) => names.push(p.split('/').pop()))
+            } else if (typeof parsed === 'string') {
+              names.push(parsed.split('/').pop())
+            }
+          }
+        } catch (e) {}
+      })
+      attachmentNames = names.join(', ')
+    }
+
+    worksheet.addRow([
+      order._license_cid || '',
+      order.create_time ? order.create_time[0] : '',
+      order.license_begin_time ? order.license_begin_time[0] : '',
+      order.license_days ? order.license_days[0] : '',
+      order.license_count ? order.license_count[0] : '',
+      order.license_key ? order.license_key[0] : '',
+      order.note00 ? order.note00[0] : '',
+      attachmentNames,
+    ])
+  })
+
+  const widths = [20, 20, 15, 10, 10, 30, 30, 50]
+  worksheet.columns.forEach((col, i) => {
+    col.width = widths[i]
+  })
+
+  const date = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  const fileName = `訂單匯出_${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}.xlsx`
+
+  const buffer = await workbook.xlsx.writeBuffer()
+  saveAs(new Blob([buffer]), fileName)
+}
+
+// 原 showToast：自動消失的提示訊息
+function showToast(message) {
+  const toast = document.createElement('div')
+  toast.textContent = message
+  toast.style.cssText =
+    'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px 40px; border-radius: 8px; z-index: 10000; font-size: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);'
+  document.body.appendChild(toast)
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.5s ease'
+    toast.style.opacity = '0'
+    setTimeout(() => {
+      if (document.body.contains(toast)) document.body.removeChild(toast)
+    }, 500)
+  }, 3000)
 }
 
 function exportAllLicenses() {
@@ -420,8 +624,127 @@ function exportAllLicenses() {
   })
 }
 
+// 原 closeSelectedRecords：作廢選中訂單 (BAC 越權攔截 + 確認 Modal)
 function deleteSelectedLicenses() {
-  alert(t('common.not_implemented') || '功能尚未實作')
+  // [資安防護 - BAC 越權攔截] 預設拒絕：Tier >= 3 (如經銷商) 禁止作廢授權
+  const tier = parseInt(window.sessionStorage.getItem('tier'), 10)
+  if (isNaN(tier) || tier >= 3) {
+    alert(t('common.deny') || '權限不足，無法執行此操作。')
+    return
+  }
+
+  const selected = rows.value.filter((row) => row.checked)
+  if (!selected.length) {
+    alert('請選擇要關閉的項目')
+    return
+  }
+
+  const hasClassroom = selected.some((row) => row.product_type === 'avaclassroom')
+  const template = hasClassroom
+    ? t('license.msg_confirm_delete_classroom') ||
+      '確定要關閉這 {{count}} 筆紀錄嗎？\n⚠️ 警告：這包含 Classroom 產品訂單，關閉後該學校群組與教學主任帳號也將一併停用！'
+    : t('license.msg_confirm_delete') || '確定要關閉這 {{count}} 筆紀錄嗎？'
+
+  deleteModalMessage.value = template.replace('{{count}}', selected.length)
+  deleteModalItems.value = selected.map((row) => row.create_time || `ID: ${row.license_cid}`)
+  deleteModalVisible.value = true
+}
+
+// 原 executeCloseLogic：逐筆取回 → record_state='0' → 更新 (並行上限 3)
+async function confirmDeleteLicenses() {
+  deleteModalVisible.value = false
+  const selected = rows.value.filter((row) => row.checked)
+  if (!selected.length) return
+
+  VisibleLoaderElement(true)
+  let successCount = 0
+  let errorCount = 0
+  const disabledSchools = []
+
+  const processItem = async (row) => {
+    const licenseCid = row.license_cid
+    try {
+      const json_object = await apiCall(CsRequestLicenseSelectOneRecordByCID, licenseCid)
+      const record = json_object.records
+      if (!record || !record.license_cid) throw new Error('Record empty')
+
+      const license_data = Object.create(LicenseData)
+      const copyFields = [
+        'license_cid',
+        'owner_cid',
+        'license_key',
+        'license_begin_time',
+        'license_days',
+        'license_count',
+        'sale_amount',
+        'country',
+        'customer_name',
+        'customer_gender',
+        'customer_birthday',
+        'customer_phone',
+        'customer_postalcode',
+        'customer_address',
+        'customer_email',
+        'note00',
+        'product_type',
+      ]
+      copyFields.forEach((field) => {
+        if (field === 'license_begin_time') {
+          license_data[field] = record[field] ? record[field][0].split(' ')[0] : ''
+        } else {
+          license_data[field] = record[field] ? record[field][0] : ''
+        }
+        if (['license_days', 'license_count', 'sale_amount'].includes(field) && !license_data[field]) {
+          license_data[field] = '0'
+        }
+      })
+      license_data.record_state = '0'
+
+      await apiCall(CsRequestLicenseUpdateOneRecord, license_data)
+
+      // [聯動刪除] avaclassroom 訂單作廢時，一併停用自動生成的學校群組 (sch_ 開頭)
+      if (
+        license_data.product_type === 'avaclassroom' &&
+        license_data.owner_cid &&
+        license_data.owner_cid.startsWith('sch_')
+      ) {
+        try {
+          await new Promise((resolveGroup) => {
+            if (window.Cyberspace?.Client?.SendRequest) {
+              window.Cyberspace.Client.SendRequest(
+                '/ava_system/group/update_one_record',
+                { group_cid: license_data.owner_cid, record_state: 0 },
+                (ok) => {
+                  if (ok) disabledSchools.push(license_data.owner_cid)
+                  resolveGroup()
+                },
+              )
+            } else {
+              resolveGroup()
+            }
+          })
+        } catch (groupErr) {
+          console.error('[closeSelectedRecords] Failed to disable related school group:', groupErr)
+        }
+      }
+
+      successCount++
+    } catch (e) {
+      console.error(`[closeSelectedRecords] Error processing ${licenseCid}:`, e)
+      errorCount++
+    }
+  }
+
+  // 並行上限 3 (原 CONCURRENCY_LIMIT)
+  const CONCURRENCY_LIMIT = 3
+  for (let i = 0; i < selected.length; i += CONCURRENCY_LIMIT) {
+    await Promise.all(selected.slice(i, i + CONCURRENCY_LIMIT).map((row) => processItem(row)))
+  }
+
+  VisibleLoaderElement(false)
+  alert(`作業完成。成功 ${successCount} 筆，失敗 ${errorCount} 筆。`)
+  selectAll.value = false
+  await loadLicenses(currentPage.value)
 }
 
 function closeModal() {
@@ -472,6 +795,82 @@ async function openEditModal(licenseCid) {
   }
 }
 
+// 原 getQuarterStartDate：回傳該季度的第一天
+function getQuarterStartDate(date) {
+  const currentDate = new Date(date)
+  const quarterStartMonth = Math.floor(currentDate.getMonth() / 3) * 3
+  return new Date(currentDate.getFullYear(), quarterStartMonth, 1)
+}
+
+// 原 updateDashboardStats：後端統計數字 → 前端計算 YoY 與 QoQ
+function updateDashboardStats(stats) {
+  if (!stats) return
+  const activeToday = parseInt(stats.active_today?.[0]) || 0
+  const activeLastYear = parseInt(stats.active_last_year?.[0]) || 0
+  const curQAdded = parseInt(stats.current_quarter_added?.[0]) || 0
+  const lastQAdded = parseInt(stats.last_quarter_added?.[0]) || 0
+
+  totalCount.value = activeToday
+  if (activeLastYear === 0) {
+    totalGrowthVisible.value = false
+  } else {
+    const growthRate = ((activeToday - activeLastYear) / activeLastYear) * 100
+    totalGrowthText.value = `${growthRate >= 0 ? '+' : '-'}${Math.abs(growthRate).toFixed(1)}%`
+    totalGrowthUp.value = growthRate >= 0
+    totalGrowthVisible.value = true
+  }
+
+  quarterlyCount.value = curQAdded
+  if (lastQAdded === 0) {
+    quarterlyGrowthText.value = curQAdded > 0 ? '+∞%' : '0%'
+    quarterlyGrowthUp.value = true
+    quarterlyGrowthVisible.value = true
+  } else {
+    const growthRate = ((curQAdded - lastQAdded) / lastQAdded) * 100
+    quarterlyGrowthText.value = `${growthRate >= 0 ? '+' : '-'}${Math.abs(growthRate).toFixed(1)}%`
+    quarterlyGrowthUp.value = growthRate >= 0
+    quarterlyGrowthVisible.value = true
+  }
+}
+
+// 統計 API 在背景獨立完成，不卡住列表渲染 (原 statsPromise)
+function loadStatistics(condition_type, condition_value) {
+  const todayDateObj = new Date()
+  const today_date = todayDateObj.toISOString().split('T')[0]
+  const lastYearObj = new Date()
+  lastYearObj.setFullYear(lastYearObj.getFullYear() - 1)
+  const last_year_date = lastYearObj.toISOString().split('T')[0]
+
+  const curQStart = getQuarterStartDate(todayDateObj)
+  const cur_q_begin = curQStart.toISOString().split('T')[0] + ' 00:00:00'
+  const cur_q_end = today_date + ' 23:59:59'
+
+  const lastQEndObj = new Date(curQStart)
+  lastQEndObj.setDate(lastQEndObj.getDate() - 1)
+  const lastQStart = getQuarterStartDate(lastQEndObj)
+  const last_q_begin = lastQStart.toISOString().split('T')[0] + ' 00:00:00'
+  const last_q_end = lastQEndObj.toISOString().split('T')[0] + ' 23:59:59'
+
+  apiCall(
+    CsRequestLicenseGetStatistics,
+    condition_type,
+    condition_value,
+    today_date,
+    last_year_date,
+    cur_q_begin,
+    cur_q_end,
+    last_q_begin,
+    last_q_end,
+    requestController,
+  )
+    .then((statsResult) => {
+      if (statsResult && statsResult.records) updateDashboardStats(statsResult.records)
+    })
+    .catch((e) => {
+      if (e.name !== 'AbortError') console.error('Stats API Error:', e)
+    })
+}
+
 async function loadLicenses(page = 1) {
   if (requestController) requestController.abort()
   requestController = new AbortController()
@@ -480,6 +879,7 @@ async function loadLicenses(page = 1) {
 
   try {
     const { condition_type, condition_value } = getConditionTarget()
+    loadStatistics(condition_type, condition_value)
     const countResult = await apiCall(CsRequestLicenseSelectAllCount, condition_type, condition_value, beginTime.value || '', endTime.value || '', requestController)
     totalRecords.value = Number(countResult.count || 0)
 
@@ -514,6 +914,7 @@ async function loadLicenses(page = 1) {
       license_days: records.license_days?.[index] || '',
       license_count: records.license_count?.[index] || '',
       record_state: records.record_state?.[index] || '1',
+      product_type: records.product_type?.[index] || '',
       note00: records.note00?.[index] || '',
       checked: false,
     }))
@@ -550,3 +951,37 @@ onBeforeUnmount(() => {
   requestController?.abort()
 })
 </script>
+
+<style>
+/* 作廢確認 Modal 按鈕 (與 DeviceView 的 delete-modal 樣式一致，避免未載入 Device 頁時缺樣式) */
+.delete-modal-cancel {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.delete-modal-cancel:hover {
+  background: #f3f4f6;
+}
+.delete-modal-confirm {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(33, 79, 124, 1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.delete-modal-confirm:hover {
+  background: #ee963f;
+}
+/* 原 license_list-customer_name-clear 的 hover 變色 */
+.license-customer-clear:hover {
+  color: #666 !important;
+}
+</style>

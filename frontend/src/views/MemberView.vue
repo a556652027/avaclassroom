@@ -162,6 +162,39 @@
           </div>
         </div>
       </div>
+
+      <!-- 刪除確認 Modal (原 delete-confirmation-modal) -->
+      <div
+        v-if="deleteModalVisible"
+        style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1200; justify-content: center; align-items: center"
+      >
+        <div style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1)">
+          <div style="display: flex; align-items: center; padding-bottom: 16px">
+            <div style="width: 40px; height: 40px; justify-content: center; align-items: center; display: flex">
+              <img src="/assets/images/device_delete.svg" alt="" />
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #111827">
+                {{ t('common.delete') || '刪除' }}
+              </h3>
+            </div>
+          </div>
+          <div style="margin-bottom: 24px">
+            <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.5">{{ deleteModalMessage }}</p>
+            <div style="margin-top: 12px; max-height: 200px; overflow-y: auto; background: #f9fafb; border-radius: 6px; padding: 12px">
+              <div v-for="cid in deleteModalItems" :key="cid" style="padding: 4px 0">{{ cid }}</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; justify-content: flex-end">
+            <button class="member-delete-modal-cancel" @click="deleteModalVisible = false">
+              {{ t('common.cancel') || '取消' }}
+            </button>
+            <button class="member-delete-modal-confirm" @click="confirmDeleteMembers">
+              {{ t('common.update') || '確定' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </AppLayout>
 </template>
@@ -191,6 +224,11 @@ const searchKeyword = ref('')
 const selectAll = ref(false)
 const modalVisible = ref(false)
 const mode = ref('edit')
+
+// 刪除確認 Modal (原 delete-confirmation-modal)
+const deleteModalVisible = ref(false)
+const deleteModalMessage = ref('')
+const deleteModalItems = ref([])
 
 const createMemberForm = () => ({
   ...MemberData,
@@ -245,13 +283,76 @@ function openEditSelected() {
   openEditModal(selected.member_cid)
 }
 
+// 原 closeSelectedMembers：刪除(停用)選中會員 (BAC 越權攔截 + 確認 Modal)
 function deleteSelectedMembers() {
-  const selected = rows.value.filter((row) => row.checked)
-  if (!selected.length) {
-    alert(t('common.select_one_record') || '請先選擇一筆資料')
+  // [資安防護 - BAC 越權攔截] 預設拒絕：Tier >= 3 (如經銷商) 禁止刪除會員
+  const tier = parseInt(window.sessionStorage.getItem('tier'), 10)
+  if (isNaN(tier) || tier >= 3) {
+    alert(t('common.deny') || '權限不足，無法執行此操作。')
     return
   }
-  alert(t('common.not_implemented') || '功能尚未實作')
+
+  const selected = rows.value.filter((row) => row.checked)
+  if (!selected.length) {
+    alert('請選擇要刪除的項目')
+    return
+  }
+
+  deleteModalMessage.value = `您確定要刪除這 ${selected.length} 位會員嗎？`
+  deleteModalItems.value = selected.map((row) => row.member_cid)
+  deleteModalVisible.value = true
+}
+
+// 原 executeCloseMemberLogic：逐筆取回 → record_state='0' → 更新 (並行上限 3)
+async function confirmDeleteMembers() {
+  deleteModalVisible.value = false
+  const selected = rows.value.filter((row) => row.checked)
+  if (!selected.length) return
+
+  VisibleLoaderElement(true)
+  let successCount = 0
+  let errorCount = 0
+
+  const processMember = async (row) => {
+    const memberCid = row.member_cid
+    try {
+      const json_object = await apiCall(CsRequestMemberSelectOneRecordByMemberCID, memberCid)
+      const record = json_object.records
+      if (!record || !record.member_cid || record.member_cid.length === 0) {
+        console.error(`[closeMember] Fetched data for member_cid: ${memberCid} is empty or invalid.`)
+        errorCount++
+        return
+      }
+
+      const member_data = Object.create(MemberData)
+      Object.keys(member_data).forEach((key) => {
+        if (record[key] && record[key][0] !== undefined) {
+          member_data[key] = record[key][0]
+        }
+      })
+      member_data.record_state = '0'
+      member_data.member_cid = memberCid
+
+      await apiCall(CsRequestMemberUpdateOneRecordByMemberCID, member_data)
+      successCount++
+    } catch (e) {
+      console.error(`[closeMember] Error processing member_cid: ${memberCid}.`, e)
+      errorCount++
+    }
+  }
+
+  // 並行上限 3 (原 CONCURRENCY_LIMIT)
+  const CONCURRENCY_LIMIT = 3
+  try {
+    for (let i = 0; i < selected.length; i += CONCURRENCY_LIMIT) {
+      await Promise.all(selected.slice(i, i + CONCURRENCY_LIMIT).map((row) => processMember(row)))
+    }
+  } finally {
+    VisibleLoaderElement(false)
+    alert(`作業完成。成功 ${successCount} 筆，失敗 ${errorCount} 筆。`)
+    selectAll.value = false
+    await loadMembers(currentPage.value)
+  }
 }
 
 function closeModal() {
@@ -388,3 +489,33 @@ onBeforeUnmount(() => {
   requestController?.abort()
 })
 </script>
+
+<style>
+/* 刪除確認 Modal 按鈕 (與 DeviceView 的 delete-modal 樣式一致) */
+.member-delete-modal-cancel {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.member-delete-modal-cancel:hover {
+  background: #f3f4f6;
+}
+.member-delete-modal-confirm {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(33, 79, 124, 1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.member-delete-modal-confirm:hover {
+  background: #ee963f;
+}
+</style>
