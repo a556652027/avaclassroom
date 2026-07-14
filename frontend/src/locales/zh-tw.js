@@ -78,6 +78,8 @@ export default {
     open: "開啟",
     close: "關閉",
     export: "匯出",
+    download: "下載",
+    export_all: "匯出全部",
     create_time: "創建日",
     Order_Date: "下單日",
     search_member_cid: "帳號",

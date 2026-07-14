@@ -55,6 +55,8 @@
   color: #475569;
 }
 
+/* 工具列按鈕 tooltip 樣式移至全域 layout.style.utility.css (.toolbar-tooltip)，與 Device 頁共用 */
+
 /* 產品下拉選項 hover (原 custom-dropdown-item inline handler) */
 .custom-dropdown-item:hover {
   background-color: #f8f9fa;

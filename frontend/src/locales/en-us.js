@@ -79,6 +79,8 @@ export default {
     open: "Open",
     close: "Close",
     export: "Export",
+    download: "Download",
+    export_all: "Export All",
     create_time: "Order Date",
     search_member_cid: "Account",
     search_begin_time: "Start Time",

@@ -21,7 +21,8 @@
             <button
               id="device-download-button"
               type="button"
-              class="device-round-btn"
+              class="device-round-btn toolbar-tooltip"
+              :data-tooltip="t('common.download') || '下載'"
               style="border: 1px solid #92bfff"
               @click="downloadSelectedDevicesExcel"
               @mouseenter="downloadHover = true"
@@ -36,9 +37,9 @@
             <button
               id="device-download-all-button"
               type="button"
-              class="device-round-btn"
+              class="device-round-btn toolbar-tooltip"
+              :data-tooltip="t('common.export_all') || '匯出全部'"
               style="border: 1px solid #92bfff"
-              title="匯出全部"
               @click="downloadAllDevices"
               @mouseenter="downloadAllHover = true"
               @mouseleave="downloadAllHover = false"
@@ -53,7 +54,8 @@
               v-if="!isDistributor"
               id="device_list-button-delete"
               type="button"
-              class="device-round-btn"
+              class="device-round-btn toolbar-tooltip tooltip-danger"
+              :data-tooltip="t('common.delete') || '刪除'"
               style="border: 1px solid #de6565; margin-right: 12px"
               @click="DeleteSelectedDevices"
             >

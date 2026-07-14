@@ -59,13 +59,13 @@
           <button type="button" id="license-edit-button" class="edit-button" @click="openEditSelected" @mouseenter="editBtnHover = true" @mouseleave="editBtnHover = false">
             <img id="license-edit-icon" :src="editBtnHover ? '/assets/images/edit_button_change.png' : '/assets/images/edit.svg'" alt="編輯" style="width: 24px; height: 24px; object-fit: contain" />
           </button>
-          <button type="button" id="license-download-button" class="edit-button" @click="downloadSelectedLicenses" @mouseenter="downloadBtnHover = true" @mouseleave="downloadBtnHover = false">
+          <button type="button" id="license-download-button" class="edit-button toolbar-tooltip" :data-tooltip="t('common.download') || '下載'" @click="downloadSelectedLicenses" @mouseenter="downloadBtnHover = true" @mouseleave="downloadBtnHover = false">
             <img id="license-download-icon" :src="downloadBtnHover ? '/assets/images/dowload_button_change.png' : '/assets/images/download.svg'" alt="下載" style="width: 20px; height: 20px; object-fit: contain" />
           </button>
-          <button type="button" id="license-download-all-button" class="edit-button" title="匯出全部" @click="exportAllLicenses" @mouseenter="downloadAllBtnHover = true" @mouseleave="downloadAllBtnHover = false">
+          <button type="button" id="license-download-all-button" class="edit-button toolbar-tooltip" :data-tooltip="t('common.export_all') || '匯出全部'" @click="exportAllLicenses" @mouseenter="downloadAllBtnHover = true" @mouseleave="downloadAllBtnHover = false">
             <img id="license-download-all-icon" :src="downloadAllBtnHover ? '/assets/images/download_all_white.svg' : '/assets/images/download_all_light_blue.svg'" alt="匯出全部" style="width: 20px; height: 20px; object-fit: contain" />
           </button>
-          <button type="button" id="license-delete-button" class="edit-button-trash" @click="deleteSelectedLicenses">
+          <button type="button" id="license-delete-button" class="edit-button-trash toolbar-tooltip tooltip-danger" :data-tooltip="t('common.delete') || '刪除'" @click="deleteSelectedLicenses">
             <img src="/assets/images/trash.svg" alt="刪除" style="width: 20px; height: 20px; object-fit: contain" />
           </button>
         </div>

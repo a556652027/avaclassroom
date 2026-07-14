@@ -230,6 +230,65 @@ body {
   color: white;
 }
 
+/* ===== 工具列按鈕 tooltip (下載/匯出全部/刪除，License 與 Device 頁共用) ===== */
+.toolbar-tooltip {
+  position: relative;
+}
+/* 氣泡本體 */
+.toolbar-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: linear-gradient(135deg, #2c5a8a 0%, #214f7c 100%);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(33, 79, 124, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  z-index: 1100;
+}
+/* 小三角箭頭 */
+.toolbar-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border: 6px solid transparent;
+  border-top-color: #214f7c;
+  border-bottom-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  z-index: 1100;
+}
+.toolbar-tooltip:hover::after,
+.toolbar-tooltip:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.15s;
+}
+/* 刪除按鈕為紅色系，tooltip 配色一致 */
+.toolbar-tooltip.tooltip-danger::after {
+  background: linear-gradient(135deg, #e57373 0%, #de6565 100%);
+  box-shadow: 0 4px 12px rgba(222, 101, 101, 0.35);
+}
+.toolbar-tooltip.tooltip-danger::before {
+  border-top-color: #de6565;
+}
+
 .search-box {
   margin-left: 12px;
   display: flex;
