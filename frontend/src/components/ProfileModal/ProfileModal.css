@@ -1,0 +1,109 @@
+/* 原 app.component.profile.modal.html 的 <style> */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 0;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+.modal-header {
+  background-color: #ffffff;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+.close:hover,
+.close:focus {
+  color: #000;
+}
+.modal-body {
+  padding: 1rem 2rem;
+}
+.modal-footer {
+  padding-right: 2rem;
+  padding-bottom: 1rem;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.modal-cancel-btn {
+  background-color: #ffffff;
+  border: 1px solid #e5e8ea;
+  padding: 4px 61px;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 48px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.modal-cancel-btn:hover {
+  background-color: #f5f5f5 !important;
+  color: #333 !important;
+}
+.modal-ok-btn {
+  background-color: #214f7c !important;
+  border-radius: 10px;
+  border: none;
+  color: #ffffff;
+  height: 48px;
+  transition: background-color 0.2s ease;
+}
+.modal-ok-btn:hover {
+  background-color: #ee963f !important;
+}
+/* 表單欄位共用樣式 (原 inline style 抽出) */
+.pf-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #898c94;
+  margin-bottom: 8px;
+}
+.pf-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e5e8ea;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  height: 38px;
+  color: #000;
+  outline: none;
+}
+.pf-eye {
+  position: absolute;
+  right: 15px;
+  top: 55%;
+  transform: translateY(-10%);
+  cursor: pointer;
+}

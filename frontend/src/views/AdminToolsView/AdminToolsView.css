@@ -1,0 +1,43 @@
+/* 原 admin_tools.html 的頁面樣式 */
+.admin-tools-page {
+  background-color: #f5f7fa;
+  font-family: 'Inter', sans-serif;
+}
+.admin-tools-page .test-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.admin-tools-page .form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.admin-tools-page .form-group label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #404040;
+}
+.admin-tools-page .form-group input {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.admin-tools-page .btn-submit {
+  background-color: #214f7c;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+.admin-tools-page .btn-submit:hover {
+  background-color: #ee963f;
+}

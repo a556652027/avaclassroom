@@ -1,0 +1,124 @@
+/* 原 device.html 的頁面樣式 */
+.device-page input::placeholder,
+.device-page textarea::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+#device-download-button:hover,
+#device-download-all-button:hover,
+#device_revoked-button-restore:hover {
+  background-color: #92bfff !important;
+}
+#device_list-button-delete:hover {
+  background-color: #ffe6e6 !important;
+  border-color: #c94a4a !important;
+}
+.device-round-btn {
+  border-radius: 9999px;
+  width: 56px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 12px;
+  background: white;
+}
+.device-date-input {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 38px;
+  box-sizing: border-box;
+}
+.sort-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+#selectAll,
+.row-checkbox,
+.row-checkbox-revoked,
+#selectAllRevoked {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  background-color: white;
+}
+#selectAll,
+#selectAllRevoked {
+  margin-right: 0.5rem;
+}
+#selectAll:checked,
+.row-checkbox:checked,
+.row-checkbox-revoked:checked,
+#selectAllRevoked:checked {
+  border: 1px solid #ee963f;
+  background-color: #ee963f;
+  border-color: #ee963f;
+}
+.delete-modal-cancel {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.delete-modal-cancel:hover {
+  background: #f3f4f6;
+}
+.delete-modal-confirm {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(33, 79, 124, 1);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.delete-modal-confirm:hover {
+  background: #ee963f;
+}
+/* 手機版 RWD 調整 */
+@media screen and (max-width: 767px) {
+  .responsive-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    height: auto !important;
+    padding: 10px !important;
+  }
+  .responsive-toolbar-group {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+  .responsive-toolbar-group:last-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    margin-top: 1rem;
+  }
+  .responsive-toolbar-group:last-child > div,
+  .responsive-toolbar-group:last-child > button,
+  .search-box {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0.2rem !important;
+    box-sizing: border-box;
+  }
+  #device_list-button-date_search {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .page-icon-container {
+    display: none !important;
+  }
+}

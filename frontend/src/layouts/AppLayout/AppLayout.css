@@ -1,0 +1,15 @@
+/* 原 dashboard.html 等頁的外框結構: navbar 60px + 左側欄 + 內容 */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+}
+.app-shell-body {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+.app-shell-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}

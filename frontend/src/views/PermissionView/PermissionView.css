@@ -1,0 +1,4 @@
+/* 標籤設定的區塊間隔 (原 permission.html 的 label 檢查表排版依 layout.style.utility.css .block) */
+#permission-role {
+  min-height: 1px;
+}

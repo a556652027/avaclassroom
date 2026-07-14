@@ -1,0 +1,30 @@
+/* 原 navbar-custom-style 注入樣式: Navbar 高度 60px */
+.custom-topnav {
+  height: 60px !important;
+  min-height: 60px !important;
+}
+.topnav-logo-container {
+  height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding-left: 20px !important;
+}
+.topnav-content {
+  height: 60px !important;
+}
+.topnav-user-menu {
+  height: 60px !important;
+  width: 60px !important;
+}
+.topnav-link {
+  height: 60px !important;
+}
+.topnav-logo-desktop,
+.topnav-logo-mobile {
+  max-height: 36px;
+  width: auto !important;
+}
+nav.custom-topnav .custom-topnav-usermenu-dropdown {
+  top: 65px !important;
+}

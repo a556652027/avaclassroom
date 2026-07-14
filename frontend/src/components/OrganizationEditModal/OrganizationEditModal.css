@@ -1,0 +1,59 @@
+.org-edit-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+.org-edit-field {
+  display: flex;
+  flex-direction: column;
+}
+.org-edit-input {
+  border: 1px solid #e5e8ea;
+  outline: none;
+  height: 38px;
+  padding: 8px;
+  border-radius: 10px;
+}
+.org-edit-delete-btn {
+  width: 130px;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid #de6565;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #de6565;
+  transition: all 0.3s ease;
+}
+.org-edit-delete-btn:hover {
+  background-color: #de6565;
+  color: #ffffff;
+}
+.org-edit-cancel-btn {
+  width: 130px;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid #e5e8ea;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.org-edit-cancel-btn:hover {
+  background-color: #e5e8ea;
+  color: #404040;
+}
+.org-edit-save-btn {
+  width: 130px;
+  height: 48px;
+  background-color: #214f7c;
+  border-radius: 10px;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+}
+.org-edit-save-btn:hover {
+  background-color: #ee963f;
+  color: #ffffff;
+}

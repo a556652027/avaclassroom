@@ -1,0 +1,37 @@
+.dash-date-input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 140px;
+  outline: none;
+  height: 44px;
+  box-sizing: border-box;
+}
+.dash-date-search-btn {
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dash-export-btn {
+  width: 56px;
+  height: 30px;
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background-color: #92bfff;
+  color: white;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  z-index: 10;
+  transition: all 0.2s ease;
+}

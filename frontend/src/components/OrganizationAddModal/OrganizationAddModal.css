@@ -1,0 +1,40 @@
+/* 原 organization-add.html 的 placeholder 樣式 */
+.org-add-modal input::placeholder,
+.org-add-modal textarea::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+.org-add-modal .org-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.org-add-modal .org-field {
+  display: flex;
+  flex-direction: column;
+}
+.org-add-modal .org-input {
+  border: 1px solid #e5e8ea;
+  outline: none;
+  height: 38px;
+  padding: 8px;
+  border-radius: 10px;
+}
+.org-add-modal textarea.org-input {
+  height: 80px;
+}
+#organization_insert-same_as_company_addr {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e8ea;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+}
+#organization_insert-same_as_company_addr:checked {
+  background-color: #ff8c00;
+  border-color: #ff8c00;
+}

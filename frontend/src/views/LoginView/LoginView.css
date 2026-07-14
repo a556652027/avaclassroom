@@ -1,0 +1,133 @@
+/* 原 login.html 的頁面樣式 */
+#login_username::placeholder,
+#login_password::placeholder {
+  color: #d1d5db !important;
+}
+#remember_me {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  border-radius: 0.125rem;
+  appearance: none;
+  border: 1px solid #d9dde3;
+  cursor: pointer;
+}
+#remember_me:checked {
+  background-color: #ee963f;
+}
+#login_username:focus,
+#login_password:focus {
+  outline: none;
+}
+#login_username,
+#login_password {
+  color: #333 !important;
+}
+#login_username:-webkit-autofill,
+#login_password:-webkit-autofill {
+  -webkit-text-fill-color: #333 !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+.login-button:hover {
+  background-color: #ee963f !important;
+  transition: background-color 0.2s ease;
+}
+.login-button {
+  transition: background-color 0.2s ease;
+}
+.login-layout {
+  background-color: #f1f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+  min-height: 100vh;
+  width: 100%;
+}
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+.login-white-box {
+  background-color: white;
+  width: 100%;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.login-brand {
+  margin-bottom: 5rem;
+}
+.login-brand p {
+  font-size: 50px;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #214f7c;
+}
+.login-input {
+  font-size: 14px;
+  width: 100%;
+  border-radius: 23px;
+  padding: 14px;
+  border: 1px solid #d9dde3;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+.login-submit {
+  width: 100%;
+  background-color: #214f7c;
+  color: white;
+  padding: 0.5rem 0;
+  border-radius: 23px;
+  height: 48px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  margin-top: 15px;
+}
+.login-cancel {
+  width: 100%;
+  background-color: #ffffff;
+  color: #898c94;
+  padding: 0.5rem 0;
+  border-radius: 23px;
+  height: 48px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid #d9dde3;
+  margin-top: 10px;
+}
+.lang-option {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+@media (max-width: 850px) {
+  .login-layout {
+    flex-direction: column-reverse;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+  .login-brand {
+    margin-bottom: 0;
+    text-align: center;
+  }
+  .login-brand p {
+    font-size: 36px !important;
+  }
+  .login-brand img {
+    max-width: 80%;
+    height: auto;
+  }
+}

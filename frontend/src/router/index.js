@@ -15,20 +15,20 @@ const routes = [
       return '/login'
     },
   },
-  { path: '/login', name: 'login', component: () => import('@/views/LoginView.vue'), meta: { public: true } },
-  { path: '/logout', name: 'logout', component: () => import('@/views/LogoutView.vue'), meta: { public: true } },
-  { path: '/reset-password', name: 'reset-password', component: () => import('@/views/ResetPasswordView.vue'), meta: { public: true } },
-  { path: '/home', name: 'home', component: () => import('@/views/HomeView.vue') },
-  { path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardView.vue') },
+  { path: '/login', name: 'login', component: () => import('@/views/LoginView/LoginView.vue'), meta: { public: true } },
+  { path: '/logout', name: 'logout', component: () => import('@/views/LogoutView/LogoutView.vue'), meta: { public: true } },
+  { path: '/reset-password', name: 'reset-password', component: () => import('@/views/ResetPasswordView/ResetPasswordView.vue'), meta: { public: true } },
+  { path: '/home', name: 'home', component: () => import('@/views/HomeView/HomeView.vue') },
+  { path: '/dashboard', name: 'dashboard', component: () => import('@/views/DashboardView/DashboardView.vue') },
   // list_dashboard.html 與 dashboard.html 共用同一份 view 邏輯，直接重用
-  { path: '/list-dashboard', name: 'list-dashboard', component: () => import('@/views/DashboardView.vue') },
-  { path: '/device', name: 'device', component: () => import('@/views/DeviceView.vue') },
-  { path: '/member', name: 'member', component: () => import('@/views/MemberView.vue') },
-  { path: '/organization', name: 'organization', component: () => import('@/views/OrganizationView.vue') },
-  { path: '/license', name: 'license', component: () => import('@/views/LicenseView.vue') },
-  { path: '/permission', name: 'permission', component: () => import('@/views/PermissionView.vue') },
-  { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView.vue') },
-  { path: '/admin-tools', name: 'admin-tools', component: () => import('@/views/AdminToolsView.vue') },
+  { path: '/list-dashboard', name: 'list-dashboard', component: () => import('@/views/DashboardView/DashboardView.vue') },
+  { path: '/device', name: 'device', component: () => import('@/views/DeviceView/DeviceView.vue') },
+  { path: '/member', name: 'member', component: () => import('@/views/MemberView/MemberView.vue') },
+  { path: '/organization', name: 'organization', component: () => import('@/views/OrganizationView/OrganizationView.vue') },
+  { path: '/license', name: 'license', component: () => import('@/views/LicenseView/LicenseView.vue') },
+  { path: '/permission', name: 'permission', component: () => import('@/views/PermissionView/PermissionView.vue') },
+  { path: '/profile', name: 'profile', component: () => import('@/views/ProfileView/ProfileView.vue') },
+  { path: '/admin-tools', name: 'admin-tools', component: () => import('@/views/AdminToolsView/AdminToolsView.vue') },
 ]
 
 const router = createRouter({
