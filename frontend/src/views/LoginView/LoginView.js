@@ -1,6 +1,6 @@
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { t, localeData } from '@/locales'
+import { t, localeData, currentLang } from '@/locales'
 import { changePage } from '@/core/navigation'
 import { VisibleLoaderElement } from '@/core/loader'
 import { TablesiToTableii } from '@/core/util'
@@ -23,6 +23,40 @@ const langOpen = ref(false)
 const resetUsername = ref('')
 const resetEmail = ref('')
 
+// ---------- 登入流程狀態機 ----------
+// idle → loading → success → (card fade out) → router.push
+const loginState = ref('idle') // 'idle' | 'loading' | 'success'
+const cardLeaving = ref(false)
+const isBusy = computed(() => loginState.value !== 'idle')
+const resetState = ref('idle') // 重設密碼頁的送出狀態
+
+// 帳密錯誤走 inline error (密碼欄下方 + shake)
+const loginError = ref('')
+const shakeError = ref(false)
+function showLoginError(msg) {
+  loginError.value = msg
+  shakeError.value = true
+  setTimeout(() => {
+    shakeError.value = false
+  }, 300)
+}
+// 重新輸入時清除錯誤狀態
+watch([username, password], () => {
+  if (loginError.value) loginError.value = ''
+})
+
+// 非帳密錯誤 (網路/伺服器) 走右上角 Toast，3 秒自動消失、可堆疊
+const toasts = ref([])
+let _toastSeq = 0
+function showToast(type, text) {
+  const id = ++_toastSeq
+  toasts.value.push({ id, type, text })
+  setTimeout(() => dismissToast(id), 3000)
+}
+function dismissToast(id) {
+  toasts.value = toasts.value.filter((item) => item.id !== id)
+}
+
 // 原 changeLanguage: 記錄語言並重新載入
 function changeLanguage(lang) {
   console.log('切換語言到: ' + lang)
@@ -42,7 +76,6 @@ function fetchTier2Organizations(user, callback) {
   CsRequestGroupSelectAllRecordsByCondition('owner_cid', user, 0, 999, function (ok, result) {
     if (!ok) {
       console.error('[方案 A] API 請求失敗')
-      VisibleLoaderElement(false)
       callback(null)
       return
     }
@@ -92,15 +125,21 @@ function fetchTier2Organizations(user, callback) {
       callback(null)
     } catch (e) {
       console.error('[方案 A] 解析或選擇第一家公司失敗:', e)
-      VisibleLoaderElement(false)
       callback(null)
     }
   })
 }
 
-// 原 SubmitLogin (流程逐步保留)
+// 原 SubmitLogin (session 寫入與 tier 分流邏輯逐步保留，
+// 互動改為狀態機：loading → success → card fade out → workspace overlay → 跳轉)
 function SubmitLogin() {
-  const login_username = username.value
+  if (isBusy.value) return
+
+  const login_username = username.value.trim()
+  if (!login_username || !password.value) {
+    showLoginError(t('login.error_required'))
+    return
+  }
 
   if (rememberMe.value) {
     window.localStorage.setItem('member_cid', login_username)
@@ -108,14 +147,14 @@ function SubmitLogin() {
     window.localStorage.removeItem('member_cid')
   }
 
-  // 開啟loading dialog
-  VisibleLoaderElement(true)
+  loginError.value = ''
+  loginState.value = 'loading'
 
   CsRequestLogin(login_username, password.value, function (ok, result) {
-    // 1. 優先檢查 API 連線狀態
+    // 1. 優先檢查 API 連線狀態 → 右上角 Toast，按鈕恢復可點
     if (!ok) {
-      VisibleLoaderElement(false)
-      alert('無法連接伺服器，請檢查網路連線。')
+      loginState.value = 'idle'
+      showToast('error', t('login.error_network'))
       return
     }
 
@@ -123,8 +162,9 @@ function SubmitLogin() {
       let json_object = JSON.parse(result)
 
       if (json_object.errno < 0) {
-        VisibleLoaderElement(false)
-        alert('帳號密碼錯誤!')
+        // 帳密錯誤 → inline error + 密碼欄 shake，按鈕恢復可點
+        loginState.value = 'idle'
+        showLoginError(t('login.error_credentials'))
         return
       }
 
@@ -185,82 +225,101 @@ function SubmitLogin() {
       const userTier = String(json_object.tier || json_object.level_uid)
       window.sessionStorage.setItem('tier', userTier)
 
-      if (userTier === '3') {
-        VisibleLoaderElement(false)
-        safeChangePage('dashboard.html', { product: defaultProduct })
-      } else if (userTier === '2') {
-        // [強化版方案 A] 攔截跳轉，自動選擇組織
-        fetchTier2Organizations(login_username, (selectedCid) => {
-          if (selectedCid) {
-            window.sessionStorage.setItem('select_group_cid', selectedCid)
-            window.sessionStorage.setItem('group_cid', selectedCid)
-
-            // [動態 Navbar 重繪] 取得使用者所選公司的真實產品權限
-            CsRequestGroupGetOwnedProducts(selectedCid, function (ok2, result2) {
-              VisibleLoaderElement(false)
-              if (ok2 && result2) {
-                try {
-                  const resJson = JSON.parse(result2)
-                  if (Number(resJson.errno) >= 0) {
-                    let rawProds2 =
-                      resJson.owned_products ||
-                      (resJson.records && resJson.records.owned_products)
-                    let prods = Array.isArray(rawProds2) ? rawProds2.flat(Infinity) : []
-                    window.sessionStorage.setItem('owned_products', JSON.stringify(prods))
-                    const finalDefaultProduct =
-                      resJson.default_product || (prods.length > 0 ? prods[0] : 'avacast')
-                    window.sessionStorage.setItem('default_product', finalDefaultProduct)
-                    safeChangePage('dashboard.html', { product: finalDefaultProduct })
-                    return
-                  }
-                } catch (e) {
-                  console.error('Parse err', e)
-                }
-              }
-              // [防呆] 發生錯誤時強制覆寫 Session，確保 Navbar 至少有基礎產品
-              console.warn('[Login] GetOwnedProducts API failed, using fallback.')
-              window.sessionStorage.setItem('owned_products', JSON.stringify(['avacast']))
-              window.sessionStorage.setItem('default_product', 'avacast')
-              safeChangePage('dashboard.html', { product: 'avacast' })
-            })
-            return
-          }
-          // 無論是否有選（點取消則用預設），都進入 dashboard
-          VisibleLoaderElement(false)
-          safeChangePage('dashboard.html', { product: defaultProduct })
-        })
-      } else {
-        // 預設跳轉，避免卡在登入頁
-        VisibleLoaderElement(false)
-        safeChangePage('dashboard.html', { product: defaultProduct })
-      }
+      // 登入成功：先讓使用者看到「✔ 登入成功」，卡片淡出後才開始跳轉
+      loginState.value = 'success'
+      setTimeout(() => {
+        cardLeaving.value = true
+        setTimeout(() => {
+          proceedAfterLogin(userTier, login_username, defaultProduct)
+        }, 300)
+      }, 650)
     } catch (e) {
-      // 捕獲所有未預期的錯誤，確保 Loader 關閉
+      // 捕獲所有未預期的錯誤，確保按鈕恢復可操作
       console.error('Login Process Error:', e)
-      VisibleLoaderElement(false)
-      alert('登入過程中發生錯誤，請稍後再試。')
+      loginState.value = 'idle'
+      showToast('error', t('login.error_unexpected'))
     }
   })
 }
 
-// 原 SubmitResetPassword
-function SubmitResetPassword() {
-  VisibleLoaderElement(true)
+// 登入成功動畫結束後的 tier 分流跳轉 (原本內嵌於 SubmitLogin，邏輯不變)
+function proceedAfterLogin(userTier, login_username, defaultProduct) {
+  if (userTier === '3') {
+    safeChangePage('dashboard.html', { product: defaultProduct })
+  } else if (userTier === '2') {
+    // [強化版方案 A] 攔截跳轉，自動選擇組織
+    fetchTier2Organizations(login_username, (selectedCid) => {
+      if (selectedCid) {
+        window.sessionStorage.setItem('select_group_cid', selectedCid)
+        window.sessionStorage.setItem('group_cid', selectedCid)
 
-  setTimeout(function () {
-    CsRequestResetPassword(resetUsername.value, resetEmail.value, function (ok, result) {
-      const json_object = JSON.parse(result)
-      VisibleLoaderElement(false)
-
-      if (json_object.errno > 0) {
-        alert(localeData.value.login['reset_password_check_emil'])
-      } else {
-        alert(localeData.value.login['reset_password_failure'])
+        // [動態 Navbar 重繪] 取得使用者所選公司的真實產品權限
+        CsRequestGroupGetOwnedProducts(selectedCid, function (ok2, result2) {
+          if (ok2 && result2) {
+            try {
+              const resJson = JSON.parse(result2)
+              if (Number(resJson.errno) >= 0) {
+                let rawProds2 =
+                  resJson.owned_products ||
+                  (resJson.records && resJson.records.owned_products)
+                let prods = Array.isArray(rawProds2) ? rawProds2.flat(Infinity) : []
+                window.sessionStorage.setItem('owned_products', JSON.stringify(prods))
+                const finalDefaultProduct =
+                  resJson.default_product || (prods.length > 0 ? prods[0] : 'avacast')
+                window.sessionStorage.setItem('default_product', finalDefaultProduct)
+                safeChangePage('dashboard.html', { product: finalDefaultProduct })
+                return
+              }
+            } catch (e) {
+              console.error('Parse err', e)
+            }
+          }
+          // [防呆] 發生錯誤時強制覆寫 Session，確保 Navbar 至少有基礎產品
+          console.warn('[Login] GetOwnedProducts API failed, using fallback.')
+          window.sessionStorage.setItem('owned_products', JSON.stringify(['avacast']))
+          window.sessionStorage.setItem('default_product', 'avacast')
+          safeChangePage('dashboard.html', { product: 'avacast' })
+        })
+        return
       }
-
-      page.value = 'login'
+      // 無論是否有選（點取消則用預設），都進入 dashboard
+      safeChangePage('dashboard.html', { product: defaultProduct })
     })
-  }, 500)
+  } else {
+    // 預設跳轉，避免卡在登入頁
+    safeChangePage('dashboard.html', { product: defaultProduct })
+  }
+}
+
+// 原 SubmitResetPassword (alert 改為 Toast，按鈕自帶 loading 狀態)
+function SubmitResetPassword() {
+  if (resetState.value === 'loading') return
+  if (!resetUsername.value.trim() || !resetEmail.value.trim()) {
+    showToast('warning', t('login.error_reset_required'))
+    return
+  }
+
+  resetState.value = 'loading'
+  CsRequestResetPassword(resetUsername.value, resetEmail.value, function (ok, result) {
+    resetState.value = 'idle'
+
+    if (!ok) {
+      showToast('error', t('login.error_network'))
+      return
+    }
+    try {
+      const json_object = JSON.parse(result)
+      if (json_object.errno > 0) {
+        showToast('success', localeData.value.login['reset_password_check_emil'])
+        page.value = 'login'
+      } else {
+        showToast('error', localeData.value.login['reset_password_failure'])
+      }
+    } catch (e) {
+      console.error('Reset Password Error:', e)
+      showToast('error', t('login.error_unexpected'))
+    }
+  })
 }
 
 function closeLangSelector() {
@@ -276,7 +335,7 @@ function mountInterFont() {
   link.id = INTER_FONT_ID
   link.rel = 'stylesheet'
   link.href =
-    'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'
+    'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap'
   document.head.appendChild(link)
 }
 function unmountInterFont() {
@@ -326,5 +385,15 @@ onBeforeUnmount(() => {
     mountInterFont,
     unmountInterFont,
     t,
+    currentLang,
+    // 登入流程狀態
+    loginState,
+    isBusy,
+    cardLeaving,
+    loginError,
+    shakeError,
+    resetState,
+    toasts,
+    dismissToast,
   }
 }
