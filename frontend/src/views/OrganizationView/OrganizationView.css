@@ -1,8 +1,27 @@
-/* 原 www/organization.html：調淺 Placeholder 顏色 */
+/* 原 www/organization.html：調淺 Placeholder 顏色 (改用 Token) */
 .organization-page input::placeholder,
 .organization-page textarea::placeholder {
-  color: #d1d5db !important;
+  color: var(--color-text-muted);
   opacity: 1;
+}
+/* 角色標籤 */
+.org-role-label {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 16px;
+}
+/* 搜尋輸入框 (與工具列 40px 控制項等高) */
+.org-search-input {
+  height: 40px;
+  margin-left: 8px;
+}
+/* 首欄操作圖示連結：主色 */
+.organization-page .link_text {
+  color: var(--color-primary-light);
+  cursor: pointer;
+}
+.organization-page .link_text:hover {
+  color: var(--color-primary);
 }
 /* 原 www/organization.html：手機版 RWD 調整 (Max Width 767px) */
 @media screen and (max-width: 767px) {

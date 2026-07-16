@@ -15,7 +15,7 @@
           <!-- 左邊 -->
           <div class="responsive-toolbar-group">
             <input id="selectAll" v-model="selectAll" type="checkbox" @change="toggleSelectAll" />
-            <label for="selectAll" style="display: flex; align-items: center; font-size: 14px; color: #374151; cursor: pointer; margin-right: 8px">{{
+            <label for="selectAll" class="toolbar-select-label">{{
               t('common.select_all')
             }}</label>
             <button
@@ -23,7 +23,6 @@
               type="button"
               class="device-round-btn toolbar-tooltip"
               :data-tooltip="t('common.download') || '下載'"
-              style="border: 1px solid #92bfff"
               @click="downloadSelectedDevicesExcel"
               @mouseenter="downloadHover = true"
               @mouseleave="downloadHover = false"
@@ -39,7 +38,6 @@
               type="button"
               class="device-round-btn toolbar-tooltip"
               :data-tooltip="t('common.export_all') || '匯出全部'"
-              style="border: 1px solid #92bfff"
               @click="downloadAllDevices"
               @mouseenter="downloadAllHover = true"
               @mouseleave="downloadAllHover = false"
@@ -54,40 +52,53 @@
               v-if="!isDistributor"
               id="device_list-button-delete"
               type="button"
-              class="device-round-btn toolbar-tooltip tooltip-danger"
+              class="edit-button-trash toolbar-tooltip tooltip-danger"
               :data-tooltip="t('common.delete') || '刪除'"
-              style="border: 1px solid #de6565; margin-right: 12px"
+              style="margin-right: 12px"
               @click="DeleteSelectedDevices"
             >
-              <img src="/assets/images/trash.svg" alt="刪除" />
+              <img src="/assets/images/trash.svg" alt="刪除" class="toolbar-icon" />
             </button>
             <a
               v-if="!isDistributor"
               href="javascript:void(0)"
-              style="color: #de6565; text-decoration: underline #de6565; cursor: pointer; display: flex; align-items: center"
+              class="device-revoked-link"
               @click="GotoPageRevokedDevices"
-              >{{ t('device.revoked_items') }}<img src="/assets/images/revoke_red.png" alt="" style="width: 20px; height: 20px" /></a>
+            >
+              <span>{{ t('device.revoked_items') }}</span>
+              <svg
+                class="revoked-link-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
           </div>
 
           <!-- 右邊 -->
           <div class="responsive-toolbar-group" style="align-items: flex-end">
-            <div style="display: flex; flex-direction: column">
-              <label style="font-size: 12px; color: #666; margin-bottom: 2px">{{ t('device.search_date_start') }}</label>
+            <div class="form-field">
+              <label>{{ t('device.search_date_start') }}</label>
               <input v-model="beginTime" type="date" class="device-date-input" title="選擇開始日期" />
             </div>
-            <div style="display: flex; flex-direction: column">
-              <label style="font-size: 12px; color: #666; margin-bottom: 2px">{{ t('device.search_date_end') }}</label>
+            <div class="form-field">
+              <label>{{ t('device.search_date_end') }}</label>
               <input v-model="endTime" type="date" class="device-date-input" title="選擇結束日期" />
             </div>
             <button
               id="device_list-button-date_search"
               type="button"
-              style="margin-left: 8px; height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid #ddd; background: #fff; cursor: pointer"
+              class="btn-secondary btn-sm"
               @click="onDateSearch"
             >
               {{ t('device.search_confirm') }}
             </button>
-            <div class="search-box" style="height: 38px">
+            <div class="search-box">
               <svg class="search-box-icon" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
@@ -125,7 +136,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="row in deviceRows" :key="row.device_cid" :style="row.record_state === '0' ? { backgroundColor: '#d6d6d6ff' } : {}">
+                <tr v-for="row in deviceRows" :key="row.device_cid" :class="{ 'row-muted': row.record_state === '0' }">
                   <td><input v-model="row.checked" type="checkbox" class="row-checkbox" /></td>
                   <td>{{ row.create_time }}</td>
                   <td>{{ row.spec04 }}</td>
@@ -360,14 +371,15 @@
         <div class="responsive-toolbar">
           <div class="responsive-toolbar-group">
             <input id="selectAllRevoked" v-model="selectAllRevoked" type="checkbox" @change="toggleSelectAllRevoked" />
-            <label for="selectAllRevoked" style="display: flex; align-items: center; font-size: 14px; color: #374151; cursor: pointer; margin-right: 8px">{{
+            <label for="selectAllRevoked" class="toolbar-select-label">{{
               t('common.select_all')
             }}</label>
             <button
               id="device_revoked-button-restore"
               type="button"
-              class="device-round-btn"
-              style="border: 1px solid #92bfff; margin-right: 12px"
+              class="device-round-btn toolbar-tooltip"
+              :data-tooltip="t('device.restore') || '恢復'"
+              style="margin-right: 12px"
               @click="RestoreSelectedDevices"
               @mouseenter="restoreHover = true"
               @mouseleave="restoreHover = false"
@@ -379,11 +391,21 @@
               />
             </button>
             <p
-              style="height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; text-decoration: underline; color: #92bfff"
+              class="device-back-link"
               @click="GotoPageSelectDeviceAll"
             >
-              <img src="/assets/images/revoke_back_blue.png" alt="" style="width: 20px; height: 20px" />
-              {{ t('device.back_to_list') }}
+              <svg
+                class="back-link-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+              <span>{{ t('device.back_to_list') }}</span>
             </p>
           </div>
 
@@ -425,7 +447,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="row in revokedRows" :key="row.device_cid" style="background-color: #d6d6d6ff">
+                <tr v-for="row in revokedRows" :key="row.device_cid" class="row-muted">
                   <td><input v-model="row.checked" type="checkbox" class="row-checkbox-revoked" /></td>
                   <td>{{ row.create_time }}</td>
                   <td>{{ row.spec04 }}</td>

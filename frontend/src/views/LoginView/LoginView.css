@@ -104,13 +104,13 @@
   flex-shrink: 0;
 }
 .toast-error .toast-icon {
-  color: #d64545;
+  color: var(--color-danger);
 }
 .toast-warning .toast-icon {
   color: #e0a23c;
 }
 .toast-success .toast-icon {
-  color: #2f9e63;
+  color: var(--color-success);
 }
 .toast-enter-active {
   transition:
@@ -149,12 +149,12 @@
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: #1f2d3d;
+  color: var(--color-text-primary);
 }
 .login-welcome p {
   margin: 6px 0 0;
   font-size: 14px;
-  color: #8b93a1;
+  color: var(--color-text-muted);
 }
 
 /* ---------- 表單 ---------- */
@@ -171,7 +171,7 @@
   flex-direction: column;
 }
 .login-field > label {
-  color: #5a6472;
+  color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -192,7 +192,7 @@
   transition: color 0.25s ease;
 }
 .login-input-wrap:focus-within .input-icon {
-  color: #3a76c2;
+  color: var(--color-primary-light);
 }
 .login-input {
   font-size: 14px;
@@ -210,7 +210,7 @@
 }
 .login-input:focus {
   outline: none;
-  border-color: #3a76c2;
+  border-color: var(--color-primary-light);
   box-shadow: 0 0 0 4px rgba(58, 118, 194, 0.12);
 }
 .login-input::placeholder {
@@ -227,14 +227,14 @@
 }
 /* 帳密錯誤：紅框 + 紅色 glow + 輕微 shake */
 .login-input-wrap.has-error .login-input {
-  border-color: #d64545;
+  border-color: var(--color-danger);
 }
 .login-input-wrap.has-error .login-input:focus {
-  border-color: #d64545;
+  border-color: var(--color-danger);
   box-shadow: 0 0 0 4px rgba(214, 69, 69, 0.12);
 }
 .login-input-wrap.has-error .input-icon {
-  color: #d64545;
+  color: var(--color-danger);
 }
 .login-input-wrap.is-shaking {
   animation: login-shake 0.24s ease;
@@ -265,7 +265,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #d64545;
+  color: var(--color-danger);
 }
 .field-error svg {
   width: 14px;
@@ -309,7 +309,7 @@
   align-items: center;
 }
 .remember-me label {
-  color: #5a6472;
+  color: var(--color-text-secondary);
   font-size: 14px;
   margin: 0;
   cursor: pointer;
@@ -328,8 +328,8 @@
     border-color 0.2s ease;
 }
 #remember_me:checked {
-  background-color: #214f7c;
-  border-color: #214f7c;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
   background-size: 10px;
   background-position: center;
@@ -339,7 +339,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: #3a76c2;
+  color: var(--color-primary-light);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -360,7 +360,7 @@
   opacity: 0;
 }
 .forgot-link:not(:disabled):hover {
-  color: #214f7c;
+  color: var(--color-primary);
 }
 .forgot-link:not(:disabled):hover .is-default {
   transform: translateY(-100%);
@@ -392,7 +392,7 @@
 /* ---------- 按鈕 ---------- */
 .login-submit {
   width: 100%;
-  background-color: #214f7c;
+  background-color: var(--color-primary);
   color: white;
   border-radius: 14px;
   height: 50px;
@@ -409,7 +409,7 @@
     box-shadow 0.2s ease;
 }
 .login-submit:not(:disabled):hover {
-  background-color: #2a5f96;
+  background-color: var(--color-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 14px 28px rgba(40, 90, 180, 0.24);
 }
@@ -422,10 +422,10 @@
   cursor: default;
 }
 .login-submit.is-loading {
-  background-color: #2a5f96;
+  background-color: var(--color-primary-hover);
 }
 .login-submit.is-success {
-  background-color: #2f9e63;
+  background-color: var(--color-success);
   box-shadow: 0 10px 24px rgba(47, 158, 99, 0.22);
 }
 .btn-inner {
@@ -469,7 +469,7 @@
 .login-cancel {
   width: 100%;
   background-color: #ffffff;
-  color: #5a6472;
+  color: var(--color-text-secondary);
   border-radius: 14px;
   height: 50px;
   font-size: 15px;
@@ -505,7 +505,7 @@
   border-radius: 999px;
   padding: 9px 18px;
   font-size: 14px;
-  color: #5a6472;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -564,19 +564,19 @@
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  color: #214f7c;
+  color: var(--color-primary);
 }
 .login-brand .brand-subtitle {
   margin: 20px 0 0;
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #3a76c2;
+  color: var(--color-primary-light);
 }
 .login-brand .brand-desc {
   margin: 6px 0 0;
   font-size: 14px;
-  color: #8b93a1;
+  color: var(--color-text-muted);
 }
 .brand-illustration {
   width: 375px;

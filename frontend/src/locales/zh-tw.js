@@ -46,7 +46,7 @@ export default {
     add_new_organization: "新增經銷商公司",
 
     //______上方side bar 選單______
-    dashboard: "Dashboard",
+    dashboard: "儀表板",
     license: "訂單資訊",
     device: "License",
     management: "用戶管理",
@@ -377,6 +377,7 @@ export default {
     search_confirm: "確定",
     revoked_items: "已撤銷的項目",
     revoked_device_title: "已撤銷的設備",
+    restore: "恢復",
     back_to_list: "返回項目列表",
     confirm_revoke_msg: "確定撤銷此項目嗎?",
     msg_data_not_loaded: "資料尚未載入，請稍後再試",

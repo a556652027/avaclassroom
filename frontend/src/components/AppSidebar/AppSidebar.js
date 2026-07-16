@@ -23,7 +23,6 @@ const route = useRoute()
 const userTier = window.sessionStorage.getItem('tier')
 const searchQuery = ref('')
 const expanded = ref(false)
-const addBtnHover = ref(false)
 
 // 列表上面顯示的欄位對照表與順序 (原 key_group_bar_list_info)
 const key_group_bar_list_info = ['group_name', 'group_cid']
@@ -389,7 +388,6 @@ onMounted(() => {
     userTier,
     searchQuery,
     expanded,
-    addBtnHover,
     key_group_bar_list_info,
     countries,
     currentProduct,

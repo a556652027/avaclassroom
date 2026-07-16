@@ -1,40 +1,57 @@
-/* 原 organization-add.html 的 placeholder 樣式 */
+/* 新增組織 Modal — 全站 UI 改版：改用設計 Token (styles/variables.css) */
 .org-add-modal input::placeholder,
 .org-add-modal textarea::placeholder {
-  color: #d1d5db !important;
+  color: var(--color-text-muted);
   opacity: 1;
+}
+.org-add-modal .page-caption h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
 }
 .org-add-modal .org-row {
   display: flex;
   gap: 1.5rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
 }
 .org-add-modal .org-field {
   display: flex;
   flex-direction: column;
 }
+.org-add-modal .org-field label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
 .org-add-modal .org-input {
-  border: 1px solid #e5e8ea;
+  border: 1px solid var(--color-border);
   outline: none;
-  height: 38px;
-  padding: 8px;
-  border-radius: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-input);
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.org-add-modal .org-input:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
 }
 .org-add-modal textarea.org-input {
   height: 80px;
+  padding: 10px 12px;
 }
+.org-addr-hint {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+/* 「同公司地址」checkbox：改用全站主色 accent-color (原橘色) */
 #organization_insert-same_as_company_addr {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   width: 16px;
   height: 16px;
-  border: 2px solid #e5e8ea;
-  border-radius: 3px;
   cursor: pointer;
-  position: relative;
-}
-#organization_insert-same_as_company_addr:checked {
-  background-color: #ff8c00;
-  border-color: #ff8c00;
 }

@@ -2,6 +2,11 @@
 .app-shell {
   display: flex;
   flex-direction: column;
+  font-family: var(--font-base);
+}
+/* 全站 UI 改版：內容區改為淺灰藍頁面底色，卡片才是純白 (覆寫 utility.css 的 .content 白底) */
+.app-shell-main .content {
+  background-color: var(--color-bg-page);
 }
 .app-shell-body {
   display: flex;

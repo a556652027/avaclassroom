@@ -1,7 +1,44 @@
-//  Dashboard 圖表繪製 (原 views/app.view.dashboard.js 的 Render* 函式，繪製邏輯與配色不變)
+//  Dashboard 圖表繪製 (原 views/app.view.dashboard.js 的 Render* 函式)
+//  全站 UI 改版：三張圖統一使用同一組藍色系色階，文字用次要文字色 (對應 styles/variables.css Token)
 import Chart from 'chart.js/auto'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { getLocalData } from '@/locales'
+
+// 與 CSS Token 對應的圖表配色 (Chart.js 需要具體色值，無法直接吃 CSS 變數)
+const CHART_COLORS = {
+  primary: '#3a76c2', // --color-primary-light
+  text: '#5a6472', // --color-text-secondary
+  textStrong: '#1f2d3d', // --color-text-primary
+  grid: 'rgba(90, 100, 114, 0.08)',
+}
+
+// 藍色系色階：由深到淺循環，長條/圓餅/折線共用
+const BLUE_SCALE = [
+  '#214f7c',
+  '#3a76c2',
+  '#6f9bd8',
+  '#92bfff',
+  '#2d6398',
+  '#5585b8',
+  '#7ea8d6',
+  '#b7d3f5',
+  '#456f9d',
+  '#6389ad',
+  '#88a9c9',
+  '#a9c7ec',
+]
+
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+// 全域預設：字體與文字色與全站 Token 一致
+Chart.defaults.font.family =
+  "'Inter', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif"
+Chart.defaults.color = CHART_COLORS.text
 
 // 匯出用的折線圖資料快取 (原 _g_line_chart_data / _g_line_chart_image_base64)
 export const lineChartExport = {
@@ -140,27 +177,12 @@ export function RenderDevice003PieChart(canvas, data) {
       }
     }
 
-    // 預定義圓餅圖顏色 - 基於三個主色的漸層配色
-    const pieColors = [
-      'rgba(146, 191, 255, 1)',
-      'rgba(151, 170, 194, 1)',
-      'rgba(33, 79, 124, 1)',
-      'rgba(139, 181, 235, 1)',
-      'rgba(149, 180, 224, 1)',
-      'rgba(92, 125, 159, 1)',
-      'rgba(142, 185, 245, 1)',
-      'rgba(156, 175, 204, 1)',
-      'rgba(43, 89, 134, 1)',
-      'rgba(135, 176, 225, 1)',
-      'rgba(67, 104, 149, 1)',
-      'rgba(148, 188, 235, 1)',
-    ]
-
+    // 圓餅圖顏色：與長條/折線共用同一組藍色系色階
     let colorIndex = 0
     for (let [key, value] of device_model_count) {
       labels.push(key)
       datasets_data.push(value)
-      datasets_background_color.push(pieColors[colorIndex % pieColors.length])
+      datasets_background_color.push(BLUE_SCALE[colorIndex % BLUE_SCALE.length])
       datasets_border_color.push('#ffffff')
       colorIndex++
     }
@@ -237,7 +259,8 @@ export function RenderDevice003PieChart(canvas, data) {
           display: true,
           text: getLocalData('dashboard.chart_platform_ratio'),
           padding: { top: 0, bottom: 20 },
-          font: { size: 18 },
+          font: { size: 18, weight: 'bold' },
+          color: CHART_COLORS.textStrong,
         },
         datalabels: { display: false },
       },
@@ -284,7 +307,7 @@ export function RenderDevice003BarChart(canvas, data) {
     {
       label: getLocalData('dashboard.chart_monthly_activation'),
       data: monthlyData,
-      backgroundColor: 'rgba(151, 170, 194, 1)',
+      backgroundColor: CHART_COLORS.primary,
       borderWidth: 0,
       borderRadius: 8,
       borderSkipped: false,
@@ -307,14 +330,24 @@ export function RenderDevice003BarChart(canvas, data) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        y: { beginAtZero: true, max: maxYValue },
+        y: {
+          beginAtZero: true,
+          max: maxYValue,
+          ticks: { color: CHART_COLORS.text },
+          grid: { color: CHART_COLORS.grid },
+        },
+        x: {
+          ticks: { color: CHART_COLORS.text },
+          grid: { display: false },
+        },
       },
       plugins: {
         legend: { display: false },
         title: {
           display: true,
           text: getLocalData('dashboard.chart_total_activation'),
-          font: { size: 16 },
+          font: { size: 16, weight: 'bold' },
+          color: CHART_COLORS.textStrong,
           align: 'start',
           position: 'top',
           padding: { top: 20, bottom: 20 },
@@ -371,36 +404,24 @@ export function RenderDevice003LineChart(canvas, data, isExportSource) {
     })
   })
 
-  // 基於指定配色的多色系
-  const lineColors = [
-    { line: 'rgba(151, 170, 194, 1)', fill: 'rgba(151, 170, 194, 0.1)' },
-    { line: 'rgba(146, 191, 255, 1)', fill: 'rgba(146, 191, 255, 0.1)' },
-    { line: 'rgba(238, 150, 63, 1)', fill: 'rgba(238, 150, 63, 0.1)' },
-    { line: 'rgba(151, 170, 194, 1)', fill: 'rgba(151, 170, 194, 0.1)' },
-    { line: 'rgba(165, 185, 210, 1)', fill: 'rgba(165, 185, 210, 0.1)' },
-    { line: 'rgba(160, 206, 255, 1)', fill: 'rgba(160, 206, 255, 0.1)' },
-    { line: 'rgba(245, 171, 93, 1)', fill: 'rgba(245, 171, 93, 0.1)' },
-    { line: 'rgba(137, 155, 179, 1)', fill: 'rgba(137, 155, 179, 0.1)' },
-    { line: 'rgba(132, 176, 235, 1)', fill: 'rgba(132, 176, 235, 0.1)' },
-    { line: 'rgba(225, 130, 45, 1)', fill: 'rgba(225, 130, 45, 0.1)' },
-    { line: 'rgba(179, 195, 220, 1)', fill: 'rgba(179, 195, 220, 0.1)' },
-    { line: 'rgba(251, 185, 115, 1)', fill: 'rgba(251, 185, 115, 0.1)' },
-  ]
-
-  const datasets = Object.keys(groupedData).map((spec, index) => ({
-    label: spec,
-    data: allMonths.map((month) => groupedData[spec][month]),
-    borderColor: lineColors[index % lineColors.length].line,
-    backgroundColor: lineColors[index % lineColors.length].fill,
-    borderWidth: 2,
-    fill: true,
-    tension: 0.4,
-    pointBorderWidth: 0,
-    pointRadius: 4,
-    pointHoverRadius: 6,
-    pointBackgroundColor: lineColors[index % lineColors.length].line,
-    normalized: true,
-  }))
+  // 折線配色：同一組藍色系色階，下方填充改為主色低透明度 (取代舊版灰/橘混色)
+  const datasets = Object.keys(groupedData).map((spec, index) => {
+    const color = BLUE_SCALE[index % BLUE_SCALE.length]
+    return {
+      label: spec,
+      data: allMonths.map((month) => groupedData[spec][month]),
+      borderColor: color,
+      backgroundColor: hexToRgba(color, 0.12),
+      borderWidth: 2,
+      fill: true,
+      tension: 0.4,
+      pointBorderWidth: 0,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      pointBackgroundColor: color,
+      normalized: true,
+    }
+  })
 
   const maxYValue = Math.ceil(Math.max(...datasets.flatMap((ds) => ds.data)) * 1.5)
 
@@ -417,7 +438,16 @@ export function RenderDevice003LineChart(canvas, data, isExportSource) {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        y: { beginAtZero: true, max: maxYValue },
+        y: {
+          beginAtZero: true,
+          max: maxYValue,
+          ticks: { color: CHART_COLORS.text },
+          grid: { color: CHART_COLORS.grid },
+        },
+        x: {
+          ticks: { color: CHART_COLORS.text },
+          grid: { display: false },
+        },
       },
       plugins: {
         legend: {
@@ -429,12 +459,14 @@ export function RenderDevice003LineChart(canvas, data, isExportSource) {
             boxHeight: 6,
             padding: 6,
             textAlign: 'right',
+            color: CHART_COLORS.text,
           },
         },
         title: {
           display: true,
           text: getLocalData('dashboard.chart_cumulative_activation'),
-          font: { size: 16 },
+          font: { size: 16, weight: 'bold' },
+          color: CHART_COLORS.textStrong,
           align: 'center',
           position: 'top',
           padding: { bottom: 20 },

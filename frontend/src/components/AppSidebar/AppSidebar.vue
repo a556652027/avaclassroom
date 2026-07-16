@@ -110,17 +110,15 @@
     </div>
 
     <!-- add company (經銷商 Tier 3 無權新增，隱藏) -->
+    <!-- 全站 UI 改版：改為 Secondary 按鈕層級 (主色外框+文字)，hover 換色交給 CSS -->
     <button
       v-if="userTier !== '3'"
       id="add-company-btn"
       class="add-company-btn"
-      @mouseenter="addBtnHover = true"
-      @mouseleave="addBtnHover = false"
-      :style="addBtnHover ? { backgroundColor: '#ee963f' } : {}"
       @click.prevent="emitter.emit('org-add-modal:show')"
     >
       <img
-        :src="addBtnHover ? '/assets/images/information_button_orange.png' : '/assets/images/Group 606.svg'"
+        src="/assets/images/Group 606.svg"
         alt="#"
         class="add-company-icon"
         style="width: 20px; height: 20px"
@@ -149,7 +147,6 @@ const {
   userTier,
   searchQuery,
   expanded,
-  addBtnHover,
   key_group_bar_list_info,
   countries,
   currentProduct,

@@ -63,12 +63,10 @@ function sortMemberTable(field) {
 }
 
 function memberSortIconStyle(field) {
+  // 尺寸/顏色交由全站 .sort-icon 樣式 (styles/ui.css)，此處只回傳排序狀態
   const active = memberSortField.value === field
   return {
-    width: '1rem',
-    height: '1rem',
-    opacity: active ? '1' : '0.5',
-    transition: 'all 0.3s',
+    opacity: active ? '1' : undefined,
     transform: active && memberSortOrder.value === 'desc' ? 'rotate(180deg)' : 'rotate(0deg)',
   }
 }

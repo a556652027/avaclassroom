@@ -1,4 +1,66 @@
-/* 原 sidebar-custom-style 注入樣式 */
+/* 原 sidebar-custom-style 注入樣式 + 全站 UI 改版覆寫 */
+
+/* 側欄：改用 Token 的極淡邊框 */
+#sidebar {
+  border-right: 1px solid var(--color-border);
+  font-family: var(--font-base);
+}
+
+/* 搜尋框：套用登入頁輸入框語言 (白底+淺框+focus 藍框光暈) */
+.search-container {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.search-container:hover {
+  background-color: var(--color-bg-card);
+  border-color: #c6d0dc;
+}
+.search-container:focus-within {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.search-container:focus-within .search-icon {
+  color: var(--color-primary-light);
+}
+.search-icon {
+  color: var(--color-text-muted);
+  transition: color 0.25s ease;
+}
+.search-input {
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* 新增經銷商公司：Secondary 按鈕層級 (主色外框+主色文字)，取代橘色 hover 塊 */
+.add-company-btn {
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-button);
+  color: var(--color-primary);
+  background-color: var(--color-bg-card);
+  font-family: var(--font-base);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.add-company-btn:hover {
+  background-color: var(--color-primary-soft);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+.add-company-text {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -6,8 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="format-detection" content="telephone=no" />
     <title>License Management System</title>
-    <!-- 注意：Inter 字體「只有」登入頁載入 (原 www 僅 login.html 有 Google Fonts link，
-         其他頁面的 font-family: Inter 實際都退回系統字體)。由 LoginView 動態掛載/卸載。 -->
+    <!-- 全站 UI 統一改版：Inter + Noto Sans TC 改為全域載入，
+         所有頁面共用同一套字體階層 (原本僅登入頁動態掛載 Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+    />
     <!-- 原 www 全域 CSS，依 Phase1/Phase2 的載入順序原封沿用 -->
     <link rel="stylesheet" href="/css/layout.style.utility.css" />
     <link rel="stylesheet" href="/css/layout.style.loader.css" />

@@ -6,6 +6,7 @@ import { getGroupDisplayName } from '@/core/title'
 import { changePage } from '@/core/navigation'
 import { DateAdd } from '@/core/time'
 import { runExportJob } from '@/services/exportJob'
+import { notify } from '@/services/notify'
 import {
   DeviceData,
   CsRequestDeviceSelectAllRecords,
@@ -147,20 +148,9 @@ function buildConditionValue(recordState) {
     : `${member_cid}; ${group_cid}; ${recordState}; ${product_type}; %%`
 }
 
-// 顯示自動消失的提示訊息 (原 showToast)
+// 顯示自動消失的提示訊息 (改用全站統一 Toast，類型依訊息語氣自動判斷)
 function showToast(message) {
-  const toast = document.createElement('div')
-  toast.textContent = message
-  toast.style.cssText =
-    'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px 40px; border-radius: 8px; z-index: 10000; font-size: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);'
-  document.body.appendChild(toast)
-  setTimeout(() => {
-    toast.style.transition = 'opacity 0.5s ease'
-    toast.style.opacity = '0'
-    setTimeout(() => {
-      if (document.body.contains(toast)) document.body.removeChild(toast)
-    }, 500)
-  }, 3000)
+  notify(message)
 }
 
 //_____________________________________________________________________________________

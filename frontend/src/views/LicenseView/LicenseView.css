@@ -1,43 +1,252 @@
-/* 作廢確認 Modal 按鈕 (與 DeviceView 的 delete-modal 樣式一致，避免未載入 Device 頁時缺樣式) */
-.delete-modal-cancel {
-  padding: 8px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: white;
-  color: #374151;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
+/* 訂單資訊頁樣式 — 全站 UI 改版：白卡片 + 細陰影 + 統一圓角 (Token 見 styles/variables.css) */
+
+/* ---------- 標題列 ---------- */
+.license-header-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
-.delete-modal-cancel:hover {
-  background: #f3f4f6;
+.license-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
 }
-.delete-modal-confirm {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  background: rgba(33, 79, 124, 1);
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
+.license-header-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
 }
-.delete-modal-confirm:hover {
-  background: #ee963f;
-}
-/* 原 license_list-customer_name-clear 的 hover 變色 */
-.license-customer-clear:hover {
-  color: #666 !important;
+.license-page .page-big-icon {
+  width: 122px;
+  height: auto;
+  margin-right: 1rem;
 }
 
-/* ===== 附件 dropzone (原 lib.html.js EnableDragFile 注入的樣式) ===== */
+/* 統計卡容器：獨立白卡並排 (卡片本體樣式見 ui.css .stat-card) */
+.stats-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: stretch;
+}
+.stat-growth-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 新增訂單按鈕 (Primary，寬度沿用原版) */
+.license-add-btn {
+  width: 218px;
+  height: 48px;
+}
+.license-add-btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- 工具列 ---------- */
+.license-page .responsive-toolbar {
+  margin-bottom: 1rem;
+  gap: 0.75rem;
+}
+/* .toolbar-select-label / .toolbar-icon 系列為全站共用 (styles/ui.css) */
+.license-filter-group {
+  align-items: flex-end;
+}
+
+/* 訂購人名稱搜尋：前綴放大鏡 + 清除鈕 */
+.license-customer-field {
+  margin-right: 4px;
+}
+.license-customer-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.license-customer-search-icon {
+  position: absolute;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+.license-customer-input {
+  height: 40px;
+  width: 170px;
+  padding-left: 30px;
+  padding-right: 26px;
+}
+.license-customer-clear {
+  position: absolute;
+  right: 8px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  user-select: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+.license-customer-clear:hover {
+  color: var(--color-text-secondary);
+}
+
+/* 狀態篩選下拉 */
+.license-status-wrap {
+  position: relative;
+}
+.license-status-trigger {
+  width: 150px;
+  height: 40px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 0 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.25s ease;
+}
+.license-status-trigger:hover {
+  border-color: var(--color-primary-light);
+}
+.license-status-trigger span {
+  color: var(--color-text-secondary);
+}
+.license-status-menu {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 150px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  box-shadow: var(--shadow-dropdown);
+  z-index: 1000;
+  overflow: hidden;
+}
+.license-status-option {
+  padding: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  transition: background-color 0.2s;
+}
+.license-status-option:hover {
+  background-color: var(--color-primary-soft);
+}
+
+/* ---------- 表格 ---------- */
+/* 表格列 checkbox (原橘色改為主色 accent-color，見 ui.css 全域 checkbox) */
+.license-row-checkbox {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+#license-select-all {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Modal (新增 / 編輯訂單) ---------- */
+.license-modal {
+  max-width: 800px;
+}
+.license-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+.license-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.license-modal-title span {
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 700;
+}
+.license-modal-close {
+  cursor: pointer;
+}
+.license-form-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.license-modal .form-field {
+  margin-top: 1rem;
+}
+.field-200 {
+  width: 200px;
+}
+.field-300 {
+  width: 300px;
+}
+.field-full {
+  width: 100%;
+}
+.field-grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* 教學組長帳號設定面板 */
+.license-teacher-panel {
+  padding: 15px;
+  background-color: var(--color-bg-page);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-input);
+  margin-top: 1rem;
+}
+.license-teacher-panel-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+.license-teacher-panel .form-field {
+  margin-top: 0.75rem;
+}
+.license-teacher-panel .ui-input {
+  background: var(--color-bg-card);
+}
+
+/* Modal 動作按鈕列 */
+.license-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.modal-action-btn {
+  min-width: 120px;
+  justify-content: center;
+}
+
+/* ---------- 附件 dropzone (原 lib.html.js EnableDragFile 注入的樣式) ---------- */
+.license-upload-block {
+  padding-top: 1rem;
+}
+.license-upload-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
 .dropzone {
-  border: 2px dashed #3b82f6;
-  border-radius: 12px;
+  border: 2px dashed var(--color-primary-light);
+  border-radius: var(--radius-input);
   padding: 24px;
   min-height: 140px;
-  background: #f8fafc;
-  color: #334155;
+  background: var(--color-bg-page);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,44 +254,173 @@
   gap: 6px;
   cursor: pointer;
   user-select: none;
+  margin-top: 0.5rem;
 }
 .dropzone.highlight {
-  background: #eff6ff;
-  border-color: #2563eb;
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+.dropzone-icon {
+  margin-bottom: 4px;
+}
+.dropzone-hint {
+  font-size: 14px;
 }
 .dz-list {
   font-size: 13px;
-  color: #475569;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+  width: 100%;
+}
+.dz-list-existing {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+.dz-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background-color: var(--color-primary-soft);
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-border);
+}
+.dz-item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.dz-item-name img {
+  width: 16px;
+  height: 16px;
+}
+.dz-item-name span {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+.dz-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dz-item-size {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+.dz-item-remove {
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--color-danger);
+  margin-left: 10px;
+  padding: 5px;
 }
 
-/* 工具列按鈕 tooltip 樣式移至全域 layout.style.utility.css (.toolbar-tooltip)，與 Device 頁共用 */
-
-/* 產品下拉選項 hover (原 custom-dropdown-item inline handler) */
+/* 產品下拉 combo (輸入框 + ▼ 按鈕) */
+.license-product-combo {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+.license-product-input {
+  flex: 1;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+.license-product-drop-btn {
+  border: 1px solid var(--color-border);
+  border-left: none;
+  background: var(--color-bg-card);
+  color: var(--color-text-muted);
+  border-radius: 0 var(--radius-input) var(--radius-input) 0;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.license-product-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0 0;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-dropdown);
+}
+.custom-dropdown-item {
+  padding: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  transition: background-color 0.2s;
+}
 .custom-dropdown-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-primary-soft);
 }
 
-/* Modal 按鈕 hover (原 license.html style 區塊) */
-#license_insert-button-cancel,
-#license_insert-button-ok,
-#license_update-button-cancel,
-#license_update-button-ok {
-  transition: background-color 0.2s ease;
+/* ---------- 作廢確認 Modal ---------- */
+.license-delete-overlay {
+  z-index: 1200;
 }
-#license_insert-button-cancel:hover,
-#license_update-button-cancel:hover {
-  background-color: #f5f5f5 !important;
-  color: #333 !important;
+.license-delete-modal {
+  max-width: 500px;
+  padding: 24px;
 }
-#license_insert-button-ok:hover,
-#license_update-button-ok:hover {
-  background-color: #ee963f !important;
+.license-delete-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
 }
-/* 原 www/license.html：新增訂單按鈕 hover 變橘色 */
-#license_list-button-gotopage_insert:hover {
-  background-color: #ee963f !important;
+.license-delete-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-/* 原 www/license.html：手機版 RWD 調整 (Max Width 767px) */
+.license-delete-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.license-delete-body {
+  margin-bottom: 24px;
+}
+.license-delete-body p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+.license-delete-items {
+  margin-top: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-input);
+  padding: 12px;
+}
+.license-delete-items div {
+  padding: 4px 0;
+}
+.license-delete-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* ---------- RWD (原 www/license.html Max Width 767px 調整) ---------- */
 @media screen and (max-width: 767px) {
   .license-page .page-big-icon {
     display: none !important;
@@ -93,11 +431,11 @@
   }
   .license-page .stats-card-container {
     width: 100% !important;
-    padding: 1rem !important;
-    gap: 1rem !important;
-    justify-content: space-around !important;
   }
-  #license_list-button-gotopage_insert {
+  .license-page .stat-card {
+    flex: 1;
+  }
+  .license-add-btn {
     width: 100% !important;
   }
   .license-page .responsive-toolbar {
@@ -110,21 +448,21 @@
     justify-content: flex-start !important;
   }
   /* 右側過濾區塊改為上下堆疊 */
-  .license-page .responsive-toolbar-group:last-child {
+  .license-page .license-filter-group {
     flex-direction: column !important;
     align-items: stretch !important;
     margin-top: 1rem;
   }
-  .license-page .responsive-toolbar-group:last-child > div,
-  .license-page .responsive-toolbar-group:last-child > button,
-  #license_list-customer_name,
-  #license-status-button {
+  .license-page .license-filter-group > div,
+  .license-page .license-filter-group > button,
+  .license-customer-input,
+  .license-status-trigger {
     width: 100% !important;
     margin-left: 0 !important;
     margin-top: 0.2rem !important;
     box-sizing: border-box;
   }
-  #license-status-options {
+  .license-status-menu {
     width: 100% !important;
     left: 0 !important;
   }

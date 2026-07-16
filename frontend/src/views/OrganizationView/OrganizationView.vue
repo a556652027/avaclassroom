@@ -8,11 +8,11 @@
       <div>
         <div class="responsive-toolbar">
           <div class="responsive-toolbar-group">
-            <div id="organization_list-role" style="font-weight: bold; color: #214f7c; font-size: 16px">{{ roleLabel }}</div>
+            <div id="organization_list-role" class="org-role-label">{{ roleLabel }}</div>
           </div>
           <div class="responsive-toolbar-group" style="align-items: flex-end">
-            <div class="styled-select blue rounded" style="margin: 0; width: auto; height: 38px">
-              <select v-model="searchField" style="height: 38px; width: 150px; font-size: 14px">
+            <div class="styled-select" style="margin: 0; width: 160px">
+              <select v-model="searchField">
                 <option value="2">{{ t('common.owner_cid') }}</option>
                 <option value="7">{{ t('organization.country') }}</option>
               </select>
@@ -21,14 +21,14 @@
               v-model="searchValue"
               type="search"
               :placeholder="t('common.search_condition')"
-              style="padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; height: 38px; box-sizing: border-box; margin-left: 8px"
+              class="ui-input org-search-input"
               @keyup.enter="onSearch"
             />
-            <button class="image_button_default" style="margin-left: 8px" @click="onSearch">
+            <button class="btn-secondary btn-sm" style="margin-left: 8px" @click="onSearch">
               <i class="iconfont">&#xe778;&nbsp;</i>
               {{ t('common.search') }}
             </button>
-            <button class="image_button_default" style="margin-left: 8px" @click="openAddModal">
+            <button class="btn-primary btn-sm" style="margin-left: 8px" @click="openAddModal">
               <i class="iconfont">&#xe782;&nbsp;</i>
               {{ t('common.insert') }}
             </button>
@@ -43,7 +43,7 @@
                   <table class="responstable">
                     <thead>
                       <tr>
-                        <th style="width: 5%; background: #2e4660"></th>
+                        <th style="width: 5%"></th>
                         <th>{{ t('organization.group_name') }}</th>
                         <th>{{ t('organization.group_cid') }}</th>
                         <th>{{ t('common.create_time') }}</th>

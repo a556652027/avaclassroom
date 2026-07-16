@@ -12,12 +12,12 @@ function createProgressOverlay(overlayId) {
     'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:10000; display:flex; justify-content:center; align-items:center;'
   const box = document.createElement('div')
   box.style.cssText =
-    'background:white; padding:30px; border-radius:12px; width:400px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.2); font-family: sans-serif;'
+    'background:var(--color-bg-card, #fff); padding:30px; border-radius:var(--radius-card, 12px); width:400px; text-align:center; box-shadow:0 20px 50px rgba(30,45,61,0.18); font-family: var(--font-base, sans-serif);'
   box.innerHTML = `
-      <h3 style="margin:0 0 10px 0; color:#214f7c; font-size:18px;">資料匯出中</h3>
-      <p class="export-progress-text" style="color:#666; font-size:14px; margin-bottom:15px;">正在準備任務...</p>
-      <div style="width:100%; background:#e5e8ea; border-radius:8px; height:16px; overflow:hidden;">
-          <div class="export-progress-bar" style="width:0%; height:100%; background:#ee963f; transition:width 0.3s ease;"></div>
+      <h3 style="margin:0 0 10px 0; color:var(--color-text-primary, #1f2d3d); font-size:18px;">資料匯出中</h3>
+      <p class="export-progress-text" style="color:var(--color-text-secondary, #666); font-size:14px; margin-bottom:15px;">正在準備任務...</p>
+      <div style="width:100%; background:var(--color-border, #e5e8ea); border-radius:8px; height:16px; overflow:hidden;">
+          <div class="export-progress-bar" style="width:0%; height:100%; background:var(--color-primary-light, #3a76c2); transition:width 0.3s ease;"></div>
       </div>
   `
   overlay.appendChild(box)

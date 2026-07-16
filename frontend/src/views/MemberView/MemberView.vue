@@ -15,16 +15,10 @@
       <div>
         <!-- 新增帳戶按鈕 (獨立一行，原版位置) -->
         <div style="margin-top: 1rem; margin-bottom: 1rem">
-          <button
-            type="button"
-            id="member_list-button-open_modal"
-            style="background-color: #214f7c; cursor: pointer; width: 218px; height: 48px; border-radius: 10px; color: #ffffff; border: none"
-            @click="openAddModal"
-          >
-            <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-size: 14px">
-              <img src="/assets/images/Group 607.svg" alt="" style="width: 20px; height: 20px" />
-              {{ t('member.insert') || '新增帳戶' }}
-            </div>
+          <!-- 主要動作：Primary 按鈕 (全站按鈕層級) -->
+          <button type="button" id="member_list-button-open_modal" class="btn-primary member-add-btn" @click="openAddModal">
+            <img src="/assets/images/Group 607.svg" alt="" class="toolbar-icon" />
+            {{ t('member.insert') || '新增帳戶' }}
           </button>
         </div>
 
@@ -34,8 +28,8 @@
             <tr>
               <td colspan="12">
                 <div class="viewpoint-container" style="margin-top: 1rem">
-                  <!-- 工具列與表格相連 (原版 border 貼合樣式) -->
-                  <div class="responsive-toolbar" style="margin-top: 0; border: 1px solid #d9dde3; border-bottom: none">
+                  <!-- 工具列內嵌於表格卡片內，用底線與表格分隔 -->
+                  <div class="responsive-toolbar toolbar-flat">
                     <div class="responsive-toolbar-group">
                       <input
                         id="member-select-all"
@@ -44,7 +38,7 @@
                         style="margin-right: 5px; cursor: pointer"
                         @change="toggleSelectAll"
                       />
-                      <label for="member-select-all" style="color: #404040; font-size: 14px; font-weight: 400; margin-right: 1rem">
+                      <label for="member-select-all" class="toolbar-select-label">
                         {{ t('common.select_all') || '全選' }}
                       </label>
                       <button type="button" id="member-edit-button" class="edit-button" @click="openEditSelected">
@@ -78,23 +72,23 @@
           <thead>
             <tr>
               <th style="width: 5%"></th>
-              <th style="cursor: pointer" @click="sortMemberTable('member_cid')">
+              <th class="th-sortable" @click="sortMemberTable('member_cid')">
                 {{ t('member.member_cid') || '用戶名稱' }}
-                <img id="sort-member_cid" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('member_cid')" />
+                <img id="sort-member_cid" src="/assets/images/sort_up.svg" alt="" class="sort-icon" :style="memberSortIconStyle('member_cid')" />
               </th>
-              <th style="cursor: pointer" @click="sortMemberTable('email')">
+              <th class="th-sortable" @click="sortMemberTable('email')">
                 {{ t('member.email') || '電子郵件' }}
-                <img id="sort-email" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('email')" />
+                <img id="sort-email" src="/assets/images/sort_up.svg" alt="" class="sort-icon" :style="memberSortIconStyle('email')" />
               </th>
-              <th style="cursor: pointer" @click="sortMemberTable('password')">
+              <th class="th-sortable" @click="sortMemberTable('password')">
                 {{ t('common.password') || '密碼' }}
-                <img id="sort-password" src="/assets/images/sort_up.svg" alt="" :style="memberSortIconStyle('password')" />
+                <img id="sort-password" src="/assets/images/sort_up.svg" alt="" class="sort-icon" :style="memberSortIconStyle('password')" />
               </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in sortedRows" :key="row.member_cid" :style="row.record_state === '0' ? { backgroundColor: '#d6d6d6ff' } : {}">
+            <tr v-for="row in sortedRows" :key="row.member_cid" :class="{ 'row-muted': row.record_state === '0' }">
               <td>
                 <input v-model="row.checked" type="checkbox" class="member-row-checkbox" style="margin-left: 1rem; cursor: pointer" />
               </td>
@@ -214,7 +208,7 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="member_insert-group_cid">{{ t('member.group_cid') || '組織' }}</label>
-                  <select id="member_insert-group_cid" v-model="addForm.group_cid" style="background-color: #f9fafb; width: 100%">
+                  <select id="member_insert-group_cid" v-model="addForm.group_cid" class="ui-input" style="width: 100%">
                     <option value="">-- 請選擇組織 --</option>
                     <option v-for="opt in groupOptions" :key="opt.cid" :value="opt.cid">{{ opt.label }}</option>
                   </select>
@@ -223,10 +217,10 @@
             </form>
           </div>
           <div class="member-modal-footer">
-            <button type="button" class="modal-cancel-btn" style="padding: 4px 61px" @click="closeAddModal">
+            <button type="button" class="btn-tertiary modal-action-btn" @click="closeAddModal">
               {{ t('common.cancel') || '取消' }}
             </button>
-            <button type="button" class="modal-ok-btn" style="padding: 4px 61px; cursor: pointer" @click="submitAddMember">
+            <button type="button" class="btn-primary modal-action-btn" @click="submitAddMember">
               {{ t('common.ok') || '新增並寄送郵件給用戶' }}
             </button>
           </div>
@@ -256,7 +250,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem">
                   <!-- 會員編號 -->
                   <div style="display: flex; flex-direction: column">
-                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    <label class="member-field-label">
                       {{ t('member.member_cid') || '用戶名稱' }}
                     </label>
                     <input
@@ -264,12 +258,12 @@
                       type="text"
                       :placeholder="t('member.member_cid_hint')"
                       disabled
-                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f9fafb"
+                      class="ui-input"
                     />
                   </div>
                   <!-- 電子郵件 -->
                   <div style="display: flex; flex-direction: column">
-                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    <label class="member-field-label">
                       {{ t('member.email') || '電子郵件' }}
                     </label>
                     <input
@@ -277,17 +271,17 @@
                       type="email"
                       :placeholder="t('member.email_hint')"
                       required
-                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                      class="ui-input"
                     />
                   </div>
                   <!-- 組織 -->
                   <div style="display: flex; flex-direction: column; grid-column: span 3">
-                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    <label class="member-field-label">
                       {{ t('member.group_cid') || '組織' }}
                     </label>
                     <select
                       v-model="memberForm.group_cid"
-                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #ffffff"
+                      class="ui-input"
                     >
                       <option value="">-- 請選擇組織 --</option>
                       <option v-for="opt in groupOptions" :key="opt.cid" :value="opt.cid">{{ opt.label }}</option>
@@ -300,7 +294,7 @@
               <div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
                   <div style="display: flex; flex-direction: column; position: relative">
-                    <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                    <label class="member-field-label">
                       {{ t('member.password') || '現在密碼' }}
                     </label>
                     <input
@@ -308,7 +302,7 @@
                       :type="showEditPassword ? 'text' : 'password'"
                       :placeholder="t('member.password_hint')"
                       required
-                      style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                      class="ui-input"
                     />
                     <span
                       style="position: absolute; right: 15px; top: 55%; cursor: pointer"
@@ -323,14 +317,14 @@
               <!-- 新密碼 / 確認新密碼 -->
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
                 <div style="display: flex; flex-direction: column; position: relative">
-                  <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                  <label class="member-field-label">
                     {{ t('member.new_password') || '輸入新密碼' }}
                   </label>
                   <input
                     v-model="editNewPassword"
                     :type="showEditNewPassword ? 'text' : 'password'"
                     :placeholder="t('member.new_password_hint')"
-                    style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                    class="ui-input"
                   />
                   <span
                     style="position: absolute; right: 15px; top: 55%; cursor: pointer"
@@ -340,14 +334,14 @@
                   </span>
                 </div>
                 <div style="display: flex; flex-direction: column; position: relative">
-                  <label style="font-size: 14px; line-height: 1.5; font-weight: 500; color: #898c94; margin-bottom: 0.5rem">
+                  <label class="member-field-label">
                     {{ t('member.new_password_comfirm') || '再次輸入新密碼' }}
                   </label>
                   <input
                     v-model="editConfirmPassword"
                     :type="showEditConfirmPassword ? 'text' : 'password'"
                     :placeholder="t('member.new_password_comfirm_hint')"
-                    style="padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px"
+                    class="ui-input"
                   />
                   <span
                     style="position: absolute; right: 15px; top: 55%; cursor: pointer"
@@ -360,10 +354,10 @@
             </div>
           </div>
           <div class="member-modal-footer">
-            <button type="button" class="modal-cancel-btn" style="padding: 4px 61px" @click="closeModal">
+            <button type="button" class="btn-tertiary modal-action-btn" @click="closeModal">
               {{ t('common.cancel') || '取消' }}
             </button>
-            <button type="button" class="modal-ok-btn" style="padding: 4px 61px; cursor: pointer" @click="saveMember">
+            <button type="button" class="btn-primary modal-action-btn" @click="saveMember">
               {{ t('common.save') || '儲存' }}
             </button>
           </div>
@@ -393,10 +387,10 @@
             </div>
           </div>
           <div style="display: flex; gap: 12px; justify-content: flex-end">
-            <button class="member-delete-modal-cancel" @click="deleteModalVisible = false">
+            <button class="delete-modal-cancel" @click="deleteModalVisible = false">
               {{ t('common.cancel') || '取消' }}
             </button>
-            <button class="member-delete-modal-confirm" @click="confirmDeleteMembers">
+            <button class="delete-modal-confirm" @click="confirmDeleteMembers">
               {{ t('common.update') || '確定' }}
             </button>
           </div>

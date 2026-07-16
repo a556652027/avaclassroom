@@ -1,30 +1,119 @@
-.dash-date-input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  width: 140px;
-  outline: none;
-  height: 44px;
-  box-sizing: border-box;
+/* Dashboard 頁面樣式 — 全站 UI 改版：白卡片 + 細陰影 + 統一圓角 (Token 見 styles/variables.css) */
+
+/* ---------- 標題列 ---------- */
+.dashboard-header {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
-.dash-date-search-btn {
-  height: 44px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  background: #fff;
+.dashboard-title-group {
+  display: flex;
+  align-items: center;
+}
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-text-primary);
   cursor: pointer;
-  white-space: nowrap;
+  user-select: none;
 }
+.dashboard-header-right {
+  display: flex;
+  align-items: flex-start;
+}
+.page-big-icon {
+  width: 120px;
+  margin-right: 2rem;
+}
+
+/* ---------- 統計卡片：獨立白卡並排 ---------- */
+.stats-card-container {
+  display: flex;
+  width: fit-content;
+  align-items: stretch;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.stats-cards {
+  display: flex;
+  gap: 1rem;
+}
+/* .stat-card / .stat-label / .stat-value 系列已升級為全站共用樣式 (styles/ui.css) */
+.stat-growth span {
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ---------- 時間選擇器 (與統計卡同層級的獨立卡片) ---------- */
+/* 桌面版強制橫向排列：.stat-card 的 flex-direction: column 不可套用到這張卡，
+   否則日期欄位垂直堆疊會把 header 撐高、內容被擠出視窗需要捲動 */
+.stat-card.search_time {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+.date-field {
+  display: flex;
+  flex-direction: column;
+}
+.dash-date-input {
+  height: 44px;
+  width: 140px;
+  padding: 0 10px;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  box-sizing: border-box;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.dash-date-input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------- 圖表卡片：白底 + 細陰影 (覆寫 public/css/dashboard.css 的灰底) ---------- */
+.dashboard-chart-box {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.dashboard-chart-box.chart-bottom {
+  position: relative;
+  height: auto;
+  padding: 1.5rem 1.5rem 1rem;
+}
+.dash-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+.dash-canvas-line {
+  margin: 0 auto;
+  height: auto;
+  max-height: 240px;
+}
+
+/* 匯出按鈕：主色系小型按鈕 */
 .dash-export-btn {
   width: 56px;
   height: 30px;
   position: absolute;
   top: 1rem;
   right: 1.5rem;
-  background-color: #92bfff;
+  background-color: var(--color-primary-light);
   color: white;
-  border-radius: 15px;
+  border-radius: var(--radius-button);
   border: none;
   cursor: pointer;
   display: flex;
@@ -33,5 +122,8 @@
   gap: 0.3rem;
   font-size: 0.8rem;
   z-index: 10;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
+}
+.dash-export-btn:hover {
+  background-color: var(--color-primary);
 }

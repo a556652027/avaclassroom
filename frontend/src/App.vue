@@ -57,8 +57,8 @@ onMounted(() => {
 }
 #initial-loader .loading-text {
   font-size: 60px;
-  color: #92bfff;
-  font-family: sans-serif;
+  color: var(--color-primary-light, #3a76c2);
+  font-family: var(--font-base, sans-serif);
   font-weight: bold;
   animation: blink 1.5s infinite;
 }

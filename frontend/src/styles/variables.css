@@ -1,0 +1,52 @@
+/* ==========================================================================
+   全站設計 Token — 以登入頁的視覺語言為基準
+   所有頁面/元件請引用這裡的變數，不要再散落硬編碼色票
+   ========================================================================== */
+:root {
+  /* ---------- 顏色 ---------- */
+  /* 主色沿用登入頁按鈕的品牌深藍 */
+  --color-primary: #214f7c;
+  --color-primary-hover: #2a5f96;
+  /* 互動強調藍 (focus ring、連結、active 指示) — 與登入頁 focus 藍一致 */
+  --color-primary-light: #3a76c2;
+  /* 主色極淡背景 (hover / selected 區塊) */
+  --color-primary-soft: #e9f1fa;
+
+  /* 頁面底色 (淺灰藍，與登入頁背景同調) / 卡片一律純白 */
+  --color-bg-page: #f5f7fb;
+  --color-bg-card: #ffffff;
+
+  /* 文字階層 */
+  --color-text-primary: #1f2d3d;
+  --color-text-secondary: #5a6472;
+  --color-text-muted: #8b93a1;
+
+  /* 邊框 */
+  --color-border: #e5e7eb;
+
+  /* 語意色 */
+  --color-danger: #d64545;
+  --color-success: #2f9e63;
+  --color-warning: #e0a23c;
+  --color-accent-orange: #ee963f;
+
+  /* ---------- 陰影 / 圓角 ---------- */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-dropdown: 0 8px 24px rgba(30, 60, 90, 0.12);
+  --radius-card: 16px;
+  --radius-input: 10px;
+  --radius-button: 10px;
+
+  /* ---------- 字體 ---------- */
+  --font-base:
+    'Inter',
+    'Noto Sans TC',
+    'PingFang TC',
+    'Microsoft JhengHei',
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+
+  /* Focus 提示 (與登入頁輸入框 focus glow 一致) */
+  --focus-ring: 0 0 0 4px rgba(58, 118, 194, 0.12);
+}

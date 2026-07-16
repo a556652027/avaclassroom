@@ -1,3 +1,16 @@
+/* 編輯組織 Modal — 全站 UI 改版：改用設計 Token (styles/variables.css) */
+.org-edit-title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 125%;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+.org-edit-modal input::placeholder,
+.org-edit-modal textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
 .org-edit-row {
   display: flex;
   flex-wrap: wrap;
@@ -8,52 +21,86 @@
   display: flex;
   flex-direction: column;
 }
-.org-edit-input {
-  border: 1px solid #e5e8ea;
-  outline: none;
-  height: 38px;
-  padding: 8px;
-  border-radius: 10px;
+.org-edit-field label,
+.org-edit-modal form > div > label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
 }
+.org-edit-input {
+  border: 1px solid var(--color-border);
+  outline: none;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-input);
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.org-edit-input:focus {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.org-edit-input[readonly] {
+  background-color: #f3f4f6;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+.org-edit-textarea {
+  height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+/* 破壞性動作：紅色外框 (Danger 層級) */
 .org-edit-delete-btn {
   width: 130px;
-  height: 48px;
-  background-color: #ffffff;
-  border: 1px solid #de6565;
-  border-radius: 10px;
+  height: 44px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-button);
   cursor: pointer;
   font-size: 14px;
-  color: #de6565;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  color: var(--color-danger);
+  transition: background-color 0.2s ease;
 }
 .org-edit-delete-btn:hover {
-  background-color: #de6565;
-  color: #ffffff;
+  background-color: #fdecec;
 }
+/* 取消：輕量純文字 (Tertiary 層級) */
 .org-edit-cancel-btn {
   width: 130px;
-  height: 48px;
-  background-color: #ffffff;
-  border: 1px solid #e5e8ea;
-  border-radius: 10px;
+  height: 44px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-button);
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary-light);
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 .org-edit-cancel-btn:hover {
-  background-color: #e5e8ea;
-  color: #404040;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
 }
+/* 儲存：Modal 主要動作 (Primary 層級) */
 .org-edit-save-btn {
   width: 130px;
-  height: 48px;
-  background-color: #214f7c;
-  border-radius: 10px;
+  height: 44px;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-button);
   border: none;
   color: #ffffff;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 .org-edit-save-btn:hover {
-  background-color: #ee963f;
+  background-color: var(--color-primary-hover);
   color: #ffffff;
 }

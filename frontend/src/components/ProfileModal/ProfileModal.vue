@@ -22,7 +22,6 @@
               :placeholder="t('member.member_cid') + '...'"
               disabled
               class="pf-input"
-              style="background-color: #f9fafb"
             />
           </div>
 
@@ -58,7 +57,7 @@
           <div style="grid-column: span 3"></div>
 
           <div style="grid-column: span 6">
-            <span style="color: rgba(0, 0, 0, 1); font-size: 18px; font-weight: 500">{{
+            <span class="pf-section-title">{{
               t('profile.change_password')
             }}</span>
           </div>
@@ -96,15 +95,10 @@
       </div>
 
       <div class="modal-footer">
-        <button class="modal-cancel-btn" type="button" style="padding: 4px 61px" @click="hide">
+        <button class="btn-tertiary modal-action-btn" type="button" @click="hide">
           {{ t('common.cancel') }}
         </button>
-        <button
-          class="modal-ok-btn"
-          type="submit"
-          style="padding: 4px 61px; cursor: pointer"
-          @click="save"
-        >
+        <button class="btn-primary modal-action-btn" type="submit" @click="save">
           {{ t('common.save') }}
         </button>
       </div>

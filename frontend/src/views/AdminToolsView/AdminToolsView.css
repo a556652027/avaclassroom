@@ -1,15 +1,21 @@
-/* 原 admin_tools.html 的頁面樣式 */
+/* 進階管理工具頁樣式 — 全站 UI 改版：改用設計 Token (styles/variables.css) */
 .admin-tools-page {
-  background-color: #f5f7fa;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-page);
+  font-family: var(--font-base);
 }
 .admin-tools-page .test-container {
   max-width: 600px;
   margin: 50px auto;
-  background: white;
+  background: var(--color-bg-card);
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.admin-section-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 700;
 }
 .admin-tools-page .form-group {
   margin-bottom: 20px;
@@ -17,27 +23,73 @@
   flex-direction: column;
 }
 .admin-tools-page .form-group label {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #404040;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--color-text-secondary);
 }
 .admin-tools-page .form-group input {
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
   font-size: 14px;
+  font-family: var(--font-base);
+  color: var(--color-text-primary);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
+.admin-tools-page .form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.admin-tools-page .form-group textarea {
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-input) !important;
+}
+/* 主要動作按鈕 (比照全站 Primary) */
 .admin-tools-page .btn-submit {
-  background-color: #214f7c;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: var(--radius-button);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
   width: 100%;
   transition: background-color 0.2s;
 }
 .admin-tools-page .btn-submit:hover {
-  background-color: #ee963f;
+  background-color: var(--color-primary-hover);
+}
+/* 破壞性動作：紅色系 */
+.admin-tools-page .btn-submit--danger {
+  background-color: var(--color-danger);
+}
+.admin-tools-page .btn-submit--danger:hover {
+  background-color: #b93a3a;
+}
+/* 啟用金鑰：成功綠 */
+.admin-tools-page .btn-submit--success {
+  background-color: var(--color-success);
+}
+.admin-tools-page .btn-submit--success:hover {
+  background-color: #268552;
+}
+.admin-hint-success {
+  color: var(--color-success);
+  font-weight: normal;
+  font-size: 12px;
+}
+.admin-back-link {
+  color: var(--color-primary-light);
+  text-decoration: none;
+  font-size: 14px;
+}
+.admin-back-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }

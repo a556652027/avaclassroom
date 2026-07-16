@@ -1,94 +1,90 @@
-/* 原 device.html 的頁面樣式 */
+/* 設備頁樣式 — 全站 UI 改版：工具列/表格/按鈕/checkbox 等共用視覺移至 styles/ui.css */
 .device-page input::placeholder,
 .device-page textarea::placeholder {
-  color: #d1d5db !important;
+  color: var(--color-text-muted);
   opacity: 1;
 }
-#device-download-button:hover,
-#device-download-all-button:hover,
-#device_revoked-button-restore:hover {
-  background-color: #92bfff !important;
-}
-#device_list-button-delete:hover {
-  background-color: #ffe6e6 !important;
-  border-color: #c94a4a !important;
-}
-.device-round-btn {
-  border-radius: 9999px;
-  width: 56px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-left: 12px;
-  background: white;
-}
-.device-date-input {
-  padding: 6px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  height: 38px;
+
+/* 已撤銷項目：輕量紅色調膠囊按鈕 (與工具列圖示按鈕同高，保留紅色語意) */
+.device-revoked-link {
   box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 10px 0 13px;
+  border: 1px solid rgba(214, 69, 69, 0.35);
+  border-radius: 999px;
+  background: rgba(214, 69, 69, 0.05);
+  color: var(--color-danger);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-.sort-icon {
-  width: 1rem;
-  height: 1rem;
-  margin-left: 5px;
+.device-revoked-link:hover {
+  background: #fdecec;
+  border-color: var(--color-danger);
+  box-shadow: 0 2px 8px rgba(214, 69, 69, 0.18);
+  transform: translateY(-1px);
+}
+.device-revoked-link .revoked-link-arrow {
+  width: 14px;
+  height: 14px;
   transition: transform 0.2s ease;
 }
+.device-revoked-link:hover .revoked-link-arrow {
+  transform: translateX(3px);
+}
+
+/* 已撤銷列表返回連結：與「已撤銷的項目」同款膠囊按鈕 (藍色語意，箭頭朝左) */
+.device-back-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  margin: 0;
+  padding: 0 13px 0 10px;
+  border: 1px solid rgba(58, 118, 194, 0.35);
+  border-radius: 999px;
+  background: rgba(58, 118, 194, 0.05);
+  color: var(--color-primary-light);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.device-back-link:hover {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(58, 118, 194, 0.18);
+  transform: translateY(-1px);
+}
+.device-back-link .back-link-arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+.device-back-link:hover .back-link-arrow {
+  transform: translateX(-3px);
+}
+
+/* 列表 checkbox：尺寸與游標 (顏色由全域 accent-color 接手) */
 #selectAll,
 .row-checkbox,
 .row-checkbox-revoked,
 #selectAllRevoked {
   cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  background-color: white;
 }
 #selectAll,
 #selectAllRevoked {
   margin-right: 0.5rem;
 }
-#selectAll:checked,
-.row-checkbox:checked,
-.row-checkbox-revoked:checked,
-#selectAllRevoked:checked {
-  border: 1px solid #ee963f;
-  background-color: #ee963f;
-  border-color: #ee963f;
-}
-.delete-modal-cancel {
-  padding: 8px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: white;
-  color: #374151;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.delete-modal-cancel:hover {
-  background: #f3f4f6;
-}
-.delete-modal-confirm {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  background: rgba(33, 79, 124, 1);
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.delete-modal-confirm:hover {
-  background: #ee963f;
-}
+
 /* 手機版 RWD 調整 */
 @media screen and (max-width: 767px) {
   .responsive-toolbar {

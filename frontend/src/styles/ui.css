@@ -1,0 +1,679 @@
+/* ==========================================================================
+   全站共用元件樣式 — 依 variables.css 的 Token 實作
+   按鈕三層級 / 卡片 / 輸入框 / 字體階層
+   ========================================================================== */
+
+/* ---------- 全站字體 ---------- */
+body,
+#app {
+  font-family: var(--font-base);
+  color: var(--color-text-primary);
+}
+
+/* ---------- 字體階層 ---------- */
+.ui-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-text-primary);
+}
+.ui-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+.ui-stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* 頁面標題圓形圖示底色：深灰改為主色 (覆寫 utility.css) */
+.page-icon-container {
+  background-color: var(--color-primary);
+}
+.page-icon-container:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* ---------- 卡片 ---------- */
+.ui-card {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- 按鈕三層級 ---------- */
+/* Primary: 主要動作 — 深藍實心 (比照登入頁「登入」按鈕) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 18px;
+  height: 44px;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.btn-primary:not(:disabled):hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(40, 90, 180, 0.2);
+}
+.btn-primary:not(:disabled):active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Secondary: 次要動作 — 主色外框 + 主色文字 + 白底 */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 18px;
+  height: 44px;
+  background-color: var(--color-bg-card);
+  color: var(--color-primary);
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.btn-secondary:not(:disabled):hover {
+  background-color: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Tertiary: 輕量動作 — 純文字，無邊框無底色 */
+.btn-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  color: var(--color-primary-light);
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.btn-tertiary:not(:disabled):hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+/* Danger: 破壞性動作 — 紅色外框，明確區隔於一般 Secondary */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 18px;
+  height: 44px;
+  background-color: var(--color-bg-card);
+  color: var(--color-danger);
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.btn-danger:not(:disabled):hover {
+  background-color: #fdecec;
+}
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- 輸入框 (比照登入頁: 淺灰邊框 + focus 品牌藍 glow) ---------- */
+.ui-input {
+  height: 44px;
+  padding: 0 12px;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  box-sizing: border-box;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.ui-input::placeholder {
+  color: var(--color-text-muted);
+}
+.ui-input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+
+/* ==========================================================================
+   全站列表頁共用覆寫 — 取代 layout.style.utility.css / layout.style.table.css
+   的舊視覺 (灰色工具列色塊、深色表頭、橘色 checkbox)
+   ========================================================================== */
+
+/* 頁面底色：改為淺灰藍 (覆寫 utility.css 的灰漸層 body) */
+body {
+  background: var(--color-bg-page);
+}
+
+/* 頁面主標題：粗體大字級，與副標拉開差距 (覆寫 utility.css 的 400/20px) */
+.page-caption h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-text-primary);
+}
+
+/* ---------- 工具列：灰色色塊 → 白卡片 + 細陰影 ---------- */
+.responsive-toolbar {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 14px 18px;
+  margin-top: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- 表格容器：白卡片包表格 ---------- */
+.viewpoint-container {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 0.25rem 1rem;
+}
+
+/* ---------- 表格：深色表頭 → 白底 + 1px 底線；資料列細分隔線 ---------- */
+.responstable thead {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-secondary);
+}
+.responstable th {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  background-color: var(--color-bg-card);
+  border-bottom: 1px solid var(--color-border);
+}
+.responstable tr {
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+}
+.responstable tbody tr:last-child {
+  border-bottom: none;
+}
+.responstable tbody tr:hover {
+  background-color: #f8fafd;
+}
+.responstable td {
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+/* 每列上下留白加大，減少壓迫感 */
+@media (min-width: 480px) {
+  .responstable th,
+  .responstable td {
+    padding: 1rem 1.1rem;
+  }
+}
+/* 過期 / 已停用列：厚重灰底 → 淡灰底 + 淡化文字 */
+.responstable tr.row-muted {
+  background-color: #f3f5f9;
+}
+.responstable tr.row-muted td {
+  color: var(--color-text-muted);
+}
+
+/* 排序箭頭：縮小並淡化，不搶內容焦點 */
+.sort-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  opacity: 0.55;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* ---------- 表格工具列圖示按鈕：統一外框樣式 ---------- */
+.edit-button,
+.device-round-btn {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  width: 56px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-button:hover,
+.device-round-btn:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  color: #fff;
+}
+/* 刪除：保留紅色語意，輕量外框而非實心色塊 */
+.edit-button-trash {
+  border: 1px solid rgba(214, 69, 69, 0.55);
+  border-radius: var(--radius-button);
+  width: 56px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-card);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-button-trash:hover {
+  background-color: #fdecec;
+  border-color: var(--color-danger);
+}
+
+/* ---------- checkbox：橘色 → 主色 ---------- */
+input[type='checkbox'] {
+  accent-color: var(--color-primary);
+}
+
+/* 工具列「全選」標籤與圖示尺寸 (License / Device 等列表頁共用) */
+.toolbar-select-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  margin-right: 8px;
+}
+.toolbar-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.toolbar-icon-lg {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.th-sortable {
+  cursor: pointer;
+}
+.cell-secondary {
+  color: var(--color-text-muted);
+}
+
+/* ---------- 日期輸入框：統一登入頁輸入框語言 ---------- */
+.device-date-input {
+  height: 40px;
+  padding: 0 10px;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  box-sizing: border-box;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.device-date-input:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------- 搜尋框：帶前綴圖示 + 淺灰邊框 + focus 提示 ---------- */
+.search-box {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  height: 40px;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+.search-box:hover {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-primary-light);
+}
+.search-box:focus-within {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.search-box-icon {
+  color: var(--color-text-muted);
+}
+.search-box-input {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+.search-box-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ---------- 共用 Modal (各頁刪除/編輯確認彈窗) ---------- */
+.ui-modal-overlay {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 45, 61, 0.45);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.ui-modal {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: 0 20px 50px rgba(30, 45, 61, 0.18);
+  padding: 28px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* 刪除確認 Modal 按鈕 (Device/License 頁共用):
+   取消 = 輕量外框、確定 = 紅色外框 (破壞性動作) */
+.delete-modal-cancel {
+  padding: 0 18px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.delete-modal-cancel:hover {
+  background: #f3f4f6;
+}
+.delete-modal-confirm {
+  padding: 0 18px;
+  height: 40px;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-button);
+  background: var(--color-bg-card);
+  color: var(--color-danger);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.delete-modal-confirm:hover {
+  background: #fdecec;
+}
+
+/* ---------- 共用表單欄位 ---------- */
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+.form-field > label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+.ui-input:disabled,
+.ui-input[readonly] {
+  background-color: #f3f4f6;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+textarea.ui-input {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+select.ui-input {
+  cursor: pointer;
+}
+/* 工具列用的小尺寸按鈕 (與 40px 輸入框等高) */
+.btn-sm {
+  height: 40px;
+  padding: 0 14px;
+}
+
+/* ---------- 統計數字卡 (Dashboard / License 等頁共用) ---------- */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  padding: 1rem 1.25rem;
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.stat-label {
+  margin-bottom: 0.5rem;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.stat-value-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 44px;
+}
+.stat-value {
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--color-text-primary);
+  min-width: 60px;
+}
+.stat-growth {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ==========================================================================
+   舊版共用元件現代化覆寫 (layout.style.components.default.css)
+   image_button_default / label-style-default / styled-select 仍被
+   Device 編輯頁、Organization、Permission、Member 等頁引用
+   ========================================================================== */
+
+/* 舊墨綠漸層圖片按鈕 → Secondary 外框按鈕 */
+.image_button_default,
+.image_button_005 {
+  width: auto;
+  min-width: 96px;
+  padding: 0 16px;
+  background: var(--color-bg-card);
+  color: var(--color-primary);
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: none;
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-button);
+  height: 40px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.image_button_default:hover,
+.image_button_005:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 14px;
+  padding: 0;
+  text-shadow: none;
+  border: 1px solid var(--color-primary);
+}
+.image_button_default .iconfont,
+.image_button_005 .iconfont {
+  color: var(--color-primary);
+}
+
+/* 舊墨綠圓角膠囊標籤 → 淡雅表單標籤 */
+.label-style-default,
+.label-style-2 {
+  display: inline-block;
+  padding: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.label-style-default:hover,
+.label-style-2:hover {
+  transform: none;
+}
+
+/* 舊 styled-select → 統一輸入框語言 */
+.styled-select {
+  height: 40px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.styled-select:focus-within {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.styled-select select {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+/* 舊 frame-table 表單輸入框 → 統一輸入框語言 (Device 編輯頁等)
+   排除 checkbox/radio：列表頁的 responstable 也包在 frame-table td 內，
+   不排除的話列勾選框會被撐成 40px (全選框因 ID 選擇器特異性較高而倖免) */
+.frame-table td input:not([type='checkbox']):not([type='radio']) {
+  height: 40px;
+  padding: 0 12px;
+  font-family: var(--font-base);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  width: 100%;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.frame-table td input:not([type='checkbox']):not([type='radio']):focus {
+  outline: none;
+  border: 1px solid var(--color-primary-light);
+  box-shadow: var(--focus-ring);
+}
+.frame-table td input:disabled {
+  background-color: #f3f4f6;
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+.frame-table td {
+  padding: 0.35rem 0.35rem;
+}
+
+/* 內嵌於卡片中的工具列 (如 Member 頁)：不再是獨立卡片，用底線分隔 */
+.responsive-toolbar.toolbar-flat {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--color-border);
+  margin: 0;
+}
+
+/* 舊 .block 區塊 (Permission 頁勾選群組) → 白卡片 */
+.block {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  padding: 1rem 1.25rem;
+  margin: 12px 0;
+}
+.block:hover {
+  border: 1px solid var(--color-primary-light);
+  transform: none;
+}
+.block p {
+  color: var(--color-text-primary);
+}
+
+/* 角色切換按鈕的「目前選中」狀態 (disabled = 已選) */
+.image_button_default:disabled,
+.image_button_005:disabled {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  cursor: default;
+}
+.image_button_default:disabled .iconfont,
+.image_button_005:disabled .iconfont {
+  color: #ffffff;
+}
+
+/* Modal 動作按鈕統一尺寸 (各頁 Modal 共用) */
+.modal-action-btn {
+  min-width: 120px;
+  height: 44px;
+  justify-content: center;
+}

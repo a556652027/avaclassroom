@@ -2,14 +2,15 @@
   <nav class="custom-topnav">
     <div class="topnav-logo-container">
       <button class="mobile-hamburger-btn" @click.prevent.stop="toggleMobileSidebar">
-        <svg viewBox="0 0 24 24" width="28" height="28" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
-      <img src="/assets/images/logo.svg" alt="" class="topnav-logo-desktop" />
-      <img src="/assets/images/logo (1).svg" alt="" class="topnav-logo-mobile" />
+      <!-- 白底導覽列改用深色版 logo (原白色 logo 在白底上不可見) -->
+      <img src="/assets/images/logo-dark.svg" alt="" class="topnav-logo-desktop" />
+      <img src="/assets/images/logo-mark-dark.svg" alt="" class="topnav-logo-mobile" />
     </div>
     <div class="topnav-content">
       <ul class="topnav-menu" style="opacity: 1">

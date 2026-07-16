@@ -383,6 +383,7 @@ export default {
     search_confirm: "Search",
     revoked_items: "Revoked Items",
     revoked_device_title: "Revoked Devices",
+    restore: "Restore",
     back_to_list: "Back to List",
     confirm_revoke_msg: "Are you sure you want to revoke this item?",
     msg_data_not_loaded: "Data not loaded yet, please try again later",

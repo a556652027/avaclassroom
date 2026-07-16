@@ -63,3 +63,5 @@ const {
   t,
 } = useSecondaryNav()
 </script>
+
+<style src="./SecondaryNav.css"></style>

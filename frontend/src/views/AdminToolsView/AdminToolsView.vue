@@ -8,7 +8,7 @@
       <div class="test-container">
         <div style="display: flex; align-items: center; margin-bottom: 20px">
           <img src="/assets/images/edit.svg" alt="" style="width: 24px; height: 24px; margin-right: 10px" />
-          <h2 style="margin: 0; color: #214f7c">{{ t('sidebarnav.admin_tools') || '進階管理工具' }}</h2>
+          <h2 class="admin-section-title">{{ t('sidebarnav.admin_tools') || '進階管理工具' }}</h2>
         </div>
 
         <!-- 系統快取管理 -->
@@ -21,7 +21,7 @@
               資料庫發生外部變更 (如手動刪除資料) 時，強制與記憶體同步。
             </p>
           </div>
-          <button class="btn-submit" style="background-color: #ef4444; width: auto; padding: 10px 20px" @click="rebuildCache">
+          <button class="btn-submit btn-submit--danger" style="width: auto; padding: 10px 20px" @click="rebuildCache">
             重建快取
           </button>
         </div>
@@ -40,14 +40,14 @@
         <button class="btn-submit" @click="resetUnregCount">執行重置</button>
 
         <div style="display: flex; gap: 10px; margin-top: 15px">
-          <button class="btn-submit" style="background-color: #10b981" @click="enableKey">啟用金鑰</button>
-          <button class="btn-submit" style="background-color: #ef4444" @click="disableKey">停用金鑰</button>
+          <button class="btn-submit btn-submit--success" @click="enableKey">啟用金鑰</button>
+          <button class="btn-submit btn-submit--danger" @click="disableKey">停用金鑰</button>
         </div>
 
         <!-- 新增金鑰專屬區塊 -->
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
         <div style="display: flex; align-items: center; margin-bottom: 20px">
-          <h2 style="margin: 0; color: #214f7c">新增手動金鑰 (Add Key)</h2>
+          <h2 class="admin-section-title">新增手動金鑰 (Add Key)</h2>
         </div>
 
         <div style="display: flex; gap: 10px">
@@ -88,12 +88,12 @@
           </div>
         </div>
 
-        <button class="btn-submit" style="background-color: #f59e0b" @click="addKey">配發金鑰</button>
+        <button class="btn-submit" @click="addKey">配發金鑰</button>
 
         <!-- 批次產生金鑰專屬區塊 -->
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb" />
         <div style="display: flex; align-items: center; margin-bottom: 20px">
-          <h2 style="margin: 0; color: #214f7c">批次產生金鑰 (Bulk Genkey)</h2>
+          <h2 class="admin-section-title">批次產生金鑰 (Bulk Genkey)</h2>
         </div>
 
         <div style="display: flex; gap: 10px">
@@ -110,7 +110,7 @@
           <div class="form-group" style="flex: 2">
             <label for="test-bulk-license">
               母鑰 (License)
-              <span style="color: #10b981; font-weight: normal; font-size: 12px">*留空將自動產生</span>
+              <span class="admin-hint-success">*留空將自動產生</span>
             </label>
             <input id="test-bulk-license" v-model="bulkForm.license" type="text" placeholder="可留空..." />
           </div>
@@ -120,11 +120,11 @@
           </div>
         </div>
         <div style="display: flex; gap: 10px">
-          <button class="btn-submit" style="background-color: #8b5cf6; flex: 1" @click="bulkGenerateKey">自動批次生產</button>
+          <button class="btn-submit" style="flex: 1" @click="bulkGenerateKey">自動批次生產</button>
           <button
             v-if="lastGeneratedKeys.length > 0"
-            class="btn-submit"
-            style="background-color: #ef4444; flex: 1"
+            class="btn-submit btn-submit--danger"
+            style="flex: 1"
             @click="bulkRevoke"
           >
             作廢上一批 (Undo)
@@ -142,7 +142,7 @@
         </div>
 
         <div style="margin-top: 20px; text-align: center">
-          <a href="#/dashboard" style="color: #92bfff; text-decoration: none; font-size: 14px">返回儀表板</a>
+          <a href="#/dashboard" class="admin-back-link">返回儀表板</a>
         </div>
       </div>
     </div>

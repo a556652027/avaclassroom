@@ -1,125 +1,63 @@
 <template>
   <AppLayout>
-    <div class="page">
+    <div class="page permission-page">
       <div class="page-caption">
         <h1>{{ t('permission.title') || t('sidebarnav.permission') }}</h1>
       </div>
-      <!-- 角色切換與確定按鈕 (原 permission.html frame-table 排版) -->
-      <div>
-        <table class="frame-table">
-          <tbody>
-            <tr>
-              <td colspan="8"></td>
-              <!-- 間隔用的 td -->
-              <td colspan="1">
-                <button
-                  id="permission-button-gotopage_admin"
-                  class="image_button_default"
-                  :disabled="permissionCode === 1"
-                  @click="selectPreset(1)"
-                >
-                  <i class="iconfont">&#xe7A7;&nbsp;</i>
-                  {{ t('role.1') || '系統管理員' }}
-                </button>
-              </td>
-              <td colspan="1">
-                <button
-                  id="permission-button-gotopage_agent"
-                  class="image_button_default"
-                  :disabled="permissionCode === 2"
-                  @click="selectPreset(2)"
-                >
-                  <i class="iconfont">&#xe7A7;&nbsp;</i>
-                  {{ t('role.2') || '代理員' }}
-                </button>
-              </td>
-              <td colspan="1">
-                <button
-                  id="permission-button-gotopage_manager"
-                  class="image_button_default"
-                  :disabled="permissionCode === 3"
-                  @click="selectPreset(3)"
-                >
-                  <i class="iconfont">&#xe7A7;&nbsp;</i>
-                  {{ t('role.3') || '群組管理員' }}
-                </button>
-              </td>
-              <td colspan="1">
-                <button
-                  id="permission-button-gotopage_user"
-                  class="image_button_default"
-                  :disabled="permissionCode === 4"
-                  @click="selectPreset(4)"
-                >
-                  <i class="iconfont">&#xe7A7;&nbsp;</i>
-                  {{ t('role.4') || '使用者' }}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="1">
-                <div id="permission-role"></div>
-              </td>
-              <td colspan="10"></td>
-              <!-- 間隔用的 td -->
-              <td colspan="1">
-                <button id="permission-button-update_ok" class="image_button_default" @click="savePermission">
-                  <i class="iconfont">&#xe786;&nbsp;</i>
-                  {{ t('common.ok') || '確定' }}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="12">
-                <!-- 操作設定 -->
-                <div class="block">
-                  <p>{{ t('permission.label_setting_operation') || '操作設定' }}</p>
-                  <table class="frame-table">
-                    <tbody>
-                      <tr>
-                        <template v-for="field in operateFields" :key="field.key">
-                          <td colspan="1">
-                            <input :id="'permission-' + field.key" v-model="form[field.key]" type="checkbox" />
-                          </td>
-                          <td colspan="1">
-                            <label class="label-style-default" :for="'permission-' + field.key">
-                              {{ t('permission.' + field.key) || field.key }}
-                            </label>
-                          </td>
-                        </template>
-                        <td colspan="2"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <!-- 各模組設定 -->
-                <div v-for="mod in modules" :key="mod.key" class="block">
-                  <p>{{ t('permission.label_setting_' + mod.key) || mod.key }}</p>
-                  <table class="frame-table">
-                    <tbody>
-                      <tr>
-                        <template v-for="action in ['select', 'insert', 'update']" :key="action">
-                          <td colspan="1">
-                            <input
-                              :id="'permission-is_' + action + '_own_' + mod.key"
-                              v-model="form['is_' + action + '_own_' + mod.key]"
-                              type="checkbox"
-                            />
-                          </td>
-                          <td colspan="3">
-                            <label class="label-style-default" :for="'permission-is_' + action + '_own_' + mod.key">
-                              {{ t('permission.is_' + action + '_own_' + mod.key) || 'is_' + action + '_own_' + mod.key }}
-                            </label>
-                          </td>
-                        </template>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+      <!-- 角色切換 (segmented tabs) + 儲存動作 -->
+      <div class="permission-toolbar">
+        <div class="permission-role-tabs" role="tablist">
+          <button
+            v-for="role in roleTabs"
+            :id="'permission-button-gotopage_' + role.id"
+            :key="role.code"
+            type="button"
+            class="permission-role-tab"
+            :class="{ active: permissionCode === role.code }"
+            :disabled="permissionCode === role.code"
+            @click="selectPreset(role.code)"
+          >
+            {{ t('role.' + role.code) || role.fallback }}
+          </button>
+        </div>
+        <button id="permission-button-update_ok" type="button" class="btn-primary" @click="savePermission">
+          {{ t('common.save') || '儲存' }}
+        </button>
+      </div>
+
+      <!-- 權限設定卡片群 -->
+      <div class="permission-groups">
+        <!-- 操作設定 -->
+        <section class="permission-card">
+          <h2 class="permission-card-title">{{ t('permission.label_setting_operation') || '操作設定' }}</h2>
+          <div class="permission-grid">
+            <label v-for="field in operateFields" :key="field.key" class="permission-item" :for="'permission-' + field.key">
+              <input :id="'permission-' + field.key" v-model="form[field.key]" type="checkbox" />
+              <span>{{ t('permission.' + field.key) || field.key }}</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- 各模組設定 -->
+        <section v-for="mod in modules" :key="mod.key" class="permission-card">
+          <h2 class="permission-card-title">{{ t('permission.label_setting_' + mod.key) || mod.key }}</h2>
+          <div class="permission-grid">
+            <label
+              v-for="action in ['select', 'insert', 'update']"
+              :key="action"
+              class="permission-item"
+              :for="'permission-is_' + action + '_own_' + mod.key"
+            >
+              <input
+                :id="'permission-is_' + action + '_own_' + mod.key"
+                v-model="form['is_' + action + '_own_' + mod.key]"
+                type="checkbox"
+              />
+              <span>{{ t('permission.is_' + action + '_own_' + mod.key) || 'is_' + action + '_own_' + mod.key }}</span>
+            </label>
+          </div>
+        </section>
       </div>
     </div>
   </AppLayout>
@@ -140,6 +78,14 @@ const {
   savePermission,
   t,
 } = usePermissionView()
+
+// 角色分頁籤 (id 沿用原 permission.html 的按鈕命名)
+const roleTabs = [
+  { code: 1, id: 'admin', fallback: '系統管理員' },
+  { code: 2, id: 'agent', fallback: '代理員' },
+  { code: 3, id: 'manager', fallback: '群組管理員' },
+  { code: 4, id: 'user', fallback: '使用者' },
+]
 </script>
 
 <style src="./PermissionView.css"></style>

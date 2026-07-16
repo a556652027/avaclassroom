@@ -5,8 +5,8 @@ import { DateAdd, SetToEndOfDay, FormatDateTime, IsAfterToday } from '@/core/tim
 import { changePage } from '@/core/navigation'
 import { VisibleLoaderElement } from '@/core/loader'
 import { apiCall } from '@/core/util'
-import { useLegacyCss } from '@/composables/useLegacyCss'
 import { runExportJob } from '@/services/exportJob'
+import { notify } from '@/services/notify'
 import { PRODUCT_DICTIONARY, getProductName } from '@/core/products'
 import {
   LicenseData,
@@ -179,13 +179,10 @@ function toggleSort(field) {
 }
 
 function sortIconStyle(field) {
+  // 尺寸/顏色交由全站 .sort-icon 樣式 (styles/ui.css)，此處只回傳排序狀態
   const active = sortField.value === field
   return {
-    width: '1rem',
-    height: '1rem',
-    marginLeft: '5px',
-    transition: 'transform 0.2s ease',
-    opacity: active ? 1 : 0.5,
+    opacity: active ? 1 : undefined,
     transform: active && sortOrder.value === 'desc' ? 'rotate(180deg)' : 'rotate(0deg)',
   }
 }
@@ -356,20 +353,9 @@ async function generateOrdersExcel(ordersList) {
   saveAs(new Blob([buffer]), fileName)
 }
 
-// 原 showToast：自動消失的提示訊息
+// 原 showToast：自動消失的提示訊息 (改用全站統一 Toast，類型依訊息語氣自動判斷)
 function showToast(message) {
-  const toast = document.createElement('div')
-  toast.textContent = message
-  toast.style.cssText =
-    'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px 40px; border-radius: 8px; z-index: 10000; font-size: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);'
-  document.body.appendChild(toast)
-  setTimeout(() => {
-    toast.style.transition = 'opacity 0.5s ease'
-    toast.style.opacity = '0'
-    setTimeout(() => {
-      if (document.body.contains(toast)) document.body.removeChild(toast)
-    }, 500)
-  }, 3000)
+  notify(message)
 }
 
 function exportAllLicenses() {
@@ -1223,8 +1209,8 @@ async function LicenseUpdateOne() {
   }
 }
 
-useLegacyCss('/css/page/license.css')
-
+// 全站 UI 改版：不再載入舊版 /css/page/license.css (橘色 hover、橘色 checkbox)，
+// 所需樣式已改由設計 Token 實作於 LicenseView.css / styles/ui.css
 onMounted(() => {
   // 原 initLicenseView：日期預設值 (sessionStorage 記憶 > 近三個月)
   const savedBeginTime = window.sessionStorage.getItem('dashboard_begin_time')
