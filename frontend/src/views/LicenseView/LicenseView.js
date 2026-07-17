@@ -1,4 +1,5 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { t } from '@/locales'
 import { getGroupDisplayName } from '@/core/title'
 import { DateAdd, SetToEndOfDay, FormatDateTime, IsAfterToday } from '@/core/time'
@@ -19,9 +20,20 @@ import {
   CsRequestLicenseExportStatus,
   CsRequestLicenseExportDownload,
 } from '@/api/license'
+import {
+  CsRequestGroupSelectOneRecordByGroupCID,
+  CsRequestGroupUpdateOneRecordByGroupCID,
+} from '@/api/organization'
+import {
+  CsRequestMemberSelectOneRecordByMemberCID,
+  CsRequestMemberUpdateOneRecordByMemberCID,
+} from '@/api/member'
 
 // 原 LicenseView.vue <script setup> 的邏輯，模板繫結經由 useLicenseView() 回傳
 export function useLicenseView() {
+
+const route = useRoute()
+const router = useRouter()
 
 const rows = ref([])
 const totalRecords = ref(0)
@@ -463,29 +475,108 @@ async function confirmDeleteLicenses() {
 
       await apiCall(CsRequestLicenseUpdateOneRecord, license_data)
 
-      // [聯動刪除] avaclassroom 訂單作廢時，一併停用自動生成的學校群組 (sch_ 開頭)
-      if (
-        license_data.product_type === 'avaclassroom' &&
-        license_data.owner_cid &&
-        license_data.owner_cid.startsWith('sch_')
-      ) {
+      // [聯動刪除] avaclassroom 訂單作廢時，該學校群組與對應的教學主任帳號也一併停用，防止後續繼續使用
+      if (license_data.product_type === 'avaclassroom') {
+        const promises = []
+
+        // 1. 停用學校群組 (sch_ 開頭的自動生成群組)：先查詢完整資料以獲取所有必填欄位，再帶全部欄位更新
+        if (license_data.owner_cid && license_data.owner_cid.startsWith('sch_')) {
+          promises.push(
+            new Promise((resolveGroup) => {
+              CsRequestGroupSelectOneRecordByGroupCID(license_data.owner_cid, (okSelect, selectRes) => {
+                if (okSelect) {
+                  try {
+                    const selectJson = JSON.parse(selectRes)
+                    if ((selectJson.errno == 1 || selectJson.errno == 0) && selectJson.records) {
+                      const gRecord = selectJson.records
+                      const updatePayload = {
+                        group_cid: license_data.owner_cid,
+                        group_name: gRecord.group_name ? gRecord.group_name[0] : '',
+                        group_type: gRecord.group_type ? parseInt(gRecord.group_type[0], 10) : 0,
+                        owner_cid: gRecord.owner_cid ? gRecord.owner_cid[0] : '',
+                        record_state: 0, // 設為停用
+                        contact: gRecord.contact ? gRecord.contact[0] : '',
+                        group_ubn: gRecord.group_ubn ? gRecord.group_ubn[0] : '',
+                        contact_phone_01: gRecord.contact_phone_01 ? gRecord.contact_phone_01[0] : '',
+                        contact_email_01: gRecord.contact_email_01 ? gRecord.contact_email_01[0] : '',
+                        city: gRecord.city ? gRecord.city[0] : '',
+                        country: gRecord.country ? gRecord.country[0] : '',
+                        address: gRecord.address ? gRecord.address[0] : '',
+                        billing_addr: gRecord.billing_addr ? gRecord.billing_addr[0] : '',
+                        note00: gRecord.note00 ? gRecord.note00[0] : '',
+                      }
+
+                      CsRequestGroupUpdateOneRecordByGroupCID(updatePayload, (okUpdate, updateRes) => {
+                        if (okUpdate) {
+                          try {
+                            const updateJson = JSON.parse(updateRes)
+                            if (updateJson.errno == 1 || updateJson.errno == 0) {
+                              disabledSchools.push(license_data.owner_cid)
+                            }
+                          } catch (e) {
+                            console.error('Failed to parse group update response', e)
+                          }
+                        }
+                        resolveGroup()
+                      })
+                      return
+                    }
+                  } catch (e) {
+                    console.error('Failed to parse group select response', e)
+                  }
+                }
+                resolveGroup()
+              })
+            }),
+          )
+        }
+
+        // 2. 停用教學主任帳號 (member_cid = 訂購人 Email)：先查詢完整資料再帶全部欄位更新
+        if (license_data.customer_email) {
+          promises.push(
+            new Promise((resolveMember) => {
+              CsRequestMemberSelectOneRecordByMemberCID(license_data.customer_email, (okSelect, selectRes) => {
+                if (okSelect) {
+                  try {
+                    const selectJson = JSON.parse(selectRes)
+                    if ((selectJson.errno == 1 || selectJson.errno == 0) && selectJson.records) {
+                      const mRecord = selectJson.records
+                      const updatePayload = {
+                        member_cid: license_data.customer_email,
+                        password: mRecord.password ? mRecord.password[0] : '',
+                        member_name: mRecord.member_name ? mRecord.member_name[0] : '',
+                        record_state: 0, // 設為停用
+                        group_cid: mRecord.group_cid ? mRecord.group_cid[0] : '',
+                        phone_cell: mRecord.phone_cell ? mRecord.phone_cell[0] : '',
+                        phone_home: mRecord.phone_home ? mRecord.phone_home[0] : '',
+                        phone_work: mRecord.phone_work ? mRecord.phone_work[0] : '',
+                        email: mRecord.email ? mRecord.email[0] : '',
+                        address: mRecord.address ? mRecord.address[0] : '',
+                        city: mRecord.city ? mRecord.city[0] : '',
+                        country: mRecord.country ? mRecord.country[0] : '',
+                        gender: mRecord.gender ? mRecord.gender[0] : '',
+                        birthday: mRecord.birthday ? mRecord.birthday[0] : '',
+                        note00: mRecord.note00 ? mRecord.note00[0] : '',
+                        avatar_url: mRecord.avatar_url ? mRecord.avatar_url[0] : '',
+                      }
+
+                      CsRequestMemberUpdateOneRecordByMemberCID(updatePayload, () => resolveMember())
+                      return
+                    }
+                  } catch (e) {
+                    console.error('Failed to parse member select response', e)
+                  }
+                }
+                resolveMember()
+              })
+            }),
+          )
+        }
+
         try {
-          await new Promise((resolveGroup) => {
-            if (window.Cyberspace?.Client?.SendRequest) {
-              window.Cyberspace.Client.SendRequest(
-                '/ava_system/group/update_one_record',
-                { group_cid: license_data.owner_cid, record_state: 0 },
-                (ok) => {
-                  if (ok) disabledSchools.push(license_data.owner_cid)
-                  resolveGroup()
-                },
-              )
-            } else {
-              resolveGroup()
-            }
-          })
-        } catch (groupErr) {
-          console.error('[closeSelectedRecords] Failed to disable related school group:', groupErr)
+          await Promise.all(promises)
+        } catch (err) {
+          console.error('[closeSelectedRecords] Failed to cascade disable group or member:', err)
         }
       }
 
@@ -1153,7 +1244,17 @@ async function LicenseInsertOne() {
     } catch (e) {}
 
     window.sessionStorage.setItem('product_type', license_data.product_type)
-    await loadLicenses(1)
+
+    // [修復] 為了讓使用者立刻看到新增的產品，避免當前頁面硬重載，改用 SPA 狀態切換：
+    // 以 replace 更新路由的 product 參數 (不留歷史紀錄，等同原版 history.replaceState)；
+    // App.vue 以 fullPath 為 key，query 改變會重新掛載本頁並依新產品重新查詢，
+    // 等同原版 configureListPageForProduct + LicenseSelectAll 的效果
+    const addedProduct = license_data.product_type
+    if ((route.query.product || '') !== addedProduct) {
+      router.replace({ path: route.path, query: { ...route.query, product: addedProduct } })
+    } else {
+      await loadLicenses(1)
+    }
   } catch (e) {
     if (e.message !== 'Handled Server Error') alert('request error')
   } finally {
